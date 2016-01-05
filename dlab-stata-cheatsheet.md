@@ -7,136 +7,171 @@ Chris Kennedy - University of California, Berkeley – January 2016
 
 [Review of Stata Window]
 
-use “your_file.dta”, clear – open a dataset.
+**use** "your_file.dta", clear – open a dataset.
 
-clear – unload the current data from memory.
+**clear** – unload the current data from memory.
 
 Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
-count – report the total number of observations in the dataset.
+**count** – report the total number of observations in the dataset.
 
-describe  - list the variables, total observations, and variable types & labels.
+**describe**  - list the variables, total observations, and variable types & labels.
 
-summarize – show the mean, median, max, min of one or more variables.
+**summarize** – show the mean, median, max, min of one or more variables.
 
-tab my_var – show a breakdown of values for one or two variables.
+**tab** my_var – show a breakdown of values for one variable.
 
-tab1 my_var1 my_var2 – shows separate breakdowns for multiple variables.
+**tab** my_var, **missing** – show a breakdown of values for one variable, and don't hide missing values.
 
-list – display all observations in the dataset.
+**tab1** my_var1 my_var2 – shows separate breakdowns for multiple variables.
 
-pwd – show the current working directory.
+**tab** my_var1 my_var2 – show a breakdown of values across two variables.
 
-cd “other_directory/” – change the working directory to another directory.
+**list** – display all observations in the dataset.
 
-set more off – disable the pause feature when showing multiple pages of output.
+**pwd** – show the current working directory.
 
-log using “my_log.log”, replace – start a log file, and overwrite the file if it already exists.
+**cd** “other_directory/” – change the working directory to another directory.
 
-log close – stop logging (put at the very end of your .do file).
+**set more off** – disable the pause feature when showing multiple pages of output.
 
-gen new_var = 5 – create a new variable and set is value.
+**log using** "my_log.log", replace – start a log file, and overwrite the file if it already exists.
 
-replace new_var = 4 – update the value of an existing variable.
+**log close** – stop logging (put at the very end of your .do file).
 
-rename
+**gen** new_var = 5 – create a new variable and set its value.
 
-save “my_data.dta”, replace – save the current data to a file, overwriting any existing file.
+**replace** new_var = 4 – update the value of an existing variable.
 
-histogram myvar – plot a histogram of a variable.
+**rename** old_varname new_varname - change the name of a variable.
 
-scatter var1 var2 – scatterplot of two variables.
+**save** “my_data.dta”, replace – save the current data to a file, overwriting any existing file.
 
-help – get information about a command
+**histogram** myvar – plot a histogram of a variable.
 
-export delimited
+**scatter** var1 var2 – scatterplot of two variables.
 
-import delimited
+**help** – get information about a command
 
-export excel
+**export delimited** - create a csv text export of the current dataset.
 
-import excel
+**import delimited** - load a csv data file.
 
-label var
+**export excel** - create an Excel export of the current dataset.
 
-clonevar
+**import excel** - load an Excel data file.
 
-label values
+**label** var - create a text description of a variable.
 
-order
+**clonevar** newvar = oldvar - create a copy of a variable, including any labels.
 
-_n
+**label values** - create text for the different values of a variable, esp. for surveys.
 
-sort
+**order** - change the order of a variable in the dataset.
 
-set seed
+**_n** - internal variable for an observation's order in the dataset (1, 2, 3, ..., n).
 
-set sortseed
+**sort** - re-order the dataset based on the value of one or more variables, in ascending order
 
-gen rand = runiform()
+**gsort** - re-order the dataset based on the value of one or more variables, in ascending or descending order
 
-drop
+**drop** - remove observations that meet a certain criteria
 
-keep
+**keep** - remove observations that don't meet a certain criteria
 
-compress
+**display** "Some output" – output a message.
 
-display “Some output” – output a message.
-
+**compress** - reduce the filesize of the dataset if possible.
 
 ## 2. Stata Data Analysis
 
-findit mdesc – search for a user-written command that could be installed
+**findit** mdesc – search for a user-written command that could be installed
 
-ssc install mdesc – install a user-written command from the Stata software archive.
+**ssc install** mdesc – install a user-written command from the Stata software archive.
 
-mdesc
+**mdesc**
 
-corr
+**set seed** - set the random number generator starting point
 
-ttest
+**set sortseed** - when sorting on a variable, ensure that ties are broken in the same random order.
 
-reg indep_var depvar1 depvar2 – fit an OLS regression.
+gen rand = runiform() - create a random number for each observation in the dataset.
 
-reg indep_var depvar1 depvar2, robust – fit an OLS and use robust standard errors.
+**reg** indep_var depvar1 depvar2 – fit an OLS regression.
 
-reg indep_var depvar1 depvar2, r cluster(village_id) – OLS with robust clustered SEs.
+**reg** indep_var depvar1 depvar2, **robust** – fit an OLS and use robust standard errors.
 
-twoway (scatter) (lfit)
+**reg** indep_var depvar1 depvar2, r **cluster**(village_id) – OLS with robust clustered SEs.
 
-predict
+**predict** y_hat - predict y_hat after a regression
 
-logit
+**logit** - fit a logistic regression
 
-logit, nolog
+**logit, nolog** - fit a logistic regression and hide the optimization log
 
-append
+**corr** - correlation table
 
-merge
+**ttest** - t-test
 
-by
+**twoway** (scatter) (lfit)
 
-bysort
+**append** - append one dataset to the currently loaded dataset.
 
-egen
+**merge** - combine a dataset with the currently loaded dataset.
 
-gsort
+**by** - operate on subsets of a sorted dataset.
 
-preserve
+**bysort** - operate on subsets of a dataset and sort automatically
 
-restore
+**egen** - generate a new variable with advanced functions
 
-xi
+**preserve** - make a temporary backup of the current dataset.
 
-factor variables
+**restore** - restore the temporary backup of the dataset.
 
-interaction terms
+**xi** - create indicator/dummy variables for a categorical variable.
 
-outreg2
+**factor variables**
 
-graph export
+**interaction terms**
+
+**duplicates report** - check for duplicate values in a dataset
+
+**duplicates tag** - record the number of duplicates for each observation
+
+**duplicates drop** - remove records that are duplicated
+
+**outreg2**
+
+**graph export**
 
 f-test
+
+survey weighting
+
+## 3. Stata Programming
+
+**quietly** <command> - hide any output from a command
+
+**capture log close** – close an open log file if it exists, and if not ignore the error message.
+
+**return list** - show the custom values that a previous command created
+
+**ereturn list** - show the custom regression-related values that a previous command created
+
+**local** myvar = 1 - create a programming variable (not in the dataset) and set it to 1.
+
+**global** myvar = 1 - same thing, but allow other do files to also see the variable.
+
+**foreach** var in var1 var2 var {
+} - run certain commands seperately for each variable in a list
+
+**forvalues** var in 1/10 {
+} - run certain commands seperately for each value in a given range
+
+**confirm numeric** - check if a variable is numeric or a string.
+
+**reshape** - change a dataset from wide to long format or vice versa.
 
 date processing
 
@@ -146,76 +181,47 @@ floor()
 
 ceil()
 
-## 3. Stata Programming
+**graph combine**
 
-quietly
+**set obs 100**
 
-capture log close – close an open log file if it exists, and if not ignore the error message.
+**datasignature set**
 
-return list
+**datasignature confirm**
 
-ereturn list
 
-local myvar = 1
-
-global myvar = 1
-
-egen
-
-foreach var in var1 var2 var {
-}
-
-forvalues var in 1/10 {
-}
-
-confirm numeric
-
-reshape
-
-graph combine
-
-datasignature set
-
-datasignature confirm
-
-duplicates report
-
-duplicates tag
-
-duplicates drop
 
 
 ## 4. Advanced Stata Programming
 
-matrix
+**matrix** - save the matrix result from a command
 
-matrix list
+**matrix list** - display a saved matrix
 
-ds, has(type numeric)
+**ds**, has(type numeric) - describe variables in a dataset that are a certain type
 
-local var_list: list r(varlist) – exclude_list
+**local** var_list: **list** r(varlist) – exclude_list - remove variables from a list
 
-levelsof
+**levelsof** - determine how many separate values a variable has
 
 multiple log files
 
-display as error
+**display as error** - output a message with color-coding
 
-assert
+**assert** - give an error if a certain condition is not met, for debugging purposes.
 
 timers
 
-local : word count
+**local : word count** - count how many words are in a string
 
 custom ado file
 
-tempvar
+**tempvar** - create temporary variables in a dataset with unique names, useful for ado commands
 
-tempname
+**tempname** - create temporary local macros with unique names, useful for ado commands
 
 regular expressions
 
-survey weighting
 
 ## Stata Resources
 
