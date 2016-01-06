@@ -9,13 +9,17 @@ Chris Kennedy - University of California, Berkeley – January 2016
 
 **use** "your_file.dta", clear – open a dataset.
 
+**help** use – learn more about a command
+
 **clear** – unload the current data from memory.
 
 Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
+**describe**  - list the variables, total observations, and variable types & labels.
+
 **count** – report the total number of observations in the dataset.
 
-**describe**  - list the variables, total observations, and variable types & labels.
+**count if** var > 10 - count how many observations meet certain criteria
 
 **summarize** – show the mean, median, max, min of one or more variables.
 
@@ -29,15 +33,7 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **list** – display all observations in the dataset.
 
-**pwd** – show the current working directory.
-
-**cd** “other_directory/” – change the working directory to another directory.
-
-**set more off** – disable the pause feature when showing multiple pages of output.
-
-**log using** "my_log.log", replace – start a log file, and overwrite the file if it already exists.
-
-**log close** – stop logging (put at the very end of your .do file).
+**list** var1 var2 – display certain variables for all observations in the dataset.
 
 **gen** new_var = 5 – create a new variable and set its value.
 
@@ -51,7 +47,15 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **scatter** var1 var2 – scatterplot of two variables.
 
-**help** – get information about a command
+**pwd** – show the current working directory.
+
+**cd** “other_directory/” – change the working directory to another directory.
+
+**set more off** – disable the pause feature when showing multiple pages of output.
+
+**log using** "my_log.log", replace – start a log file, and overwrite the file if it already exists.
+
+**log close** – stop logging (put at the very end of your .do file).
 
 **export delimited** - create a csv text export of the current dataset.
 
@@ -69,15 +73,15 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **order** - change the order of a variable in the dataset.
 
-**_n** - internal variable for an observation's order in the dataset (1, 2, 3, ..., n).
+**sort** var1 var2 - re-order the dataset based on the value of one or more variables, in ascending order
 
-**sort** - re-order the dataset based on the value of one or more variables, in ascending order
+**gsort** +var1 -var2 - re-order the dataset based on the value of one or more variables, in ascending or descending order
 
-**gsort** - re-order the dataset based on the value of one or more variables, in ascending or descending order
+**drop** var1 var2 - remove specific variables
 
-**drop** - remove observations that meet a certain criteria
+**drop** if var1 > 10 - remove observations that meet a certain criteria
 
-**keep** - remove observations that don't meet a certain criteria
+**keep** if var1 > 10 - remove observations that don't meet a certain criteria
 
 **display** "Some output" – output a message.
 
@@ -95,7 +99,9 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **set sortseed** - when sorting on a variable, ensure that ties are broken in the same random order.
 
-gen rand = runiform() - create a random number for each observation in the dataset.
+**gen** my_order = **_n** - save an observation's order in the dataset (1, 2, 3, ..., n).
+
+**gen** rand = **runiform()** - create a random number for each observation in the dataset.
 
 **reg** y_var x1 x2 – fit an OLS regression.
 
@@ -109,7 +115,7 @@ gen rand = runiform() - create a random number for each observation in the datas
 
 **logit** y_var x1 x2, **nolog** - fit a logistic regression and hide the optimization log
 
-**corr** - correlation table
+**corr** x1 x2 x3 - correlation table
 
 **ttest** - t-test
 
@@ -192,6 +198,10 @@ ceil()
 
 ## 4. Advanced Stata Programming
 
+**display as error** "Ran into an error" - output a message with color-coding
+
+**assert** age >= 50 - give an error if a certain condition is not met, for debugging purposes.
+
 **matrix** - save the matrix result from a command
 
 **matrix list** - display a saved matrix
@@ -203,10 +213,6 @@ ceil()
 **levelsof** - determine how many separate values a variable has
 
 multiple log files
-
-**display as error** - output a message with color-coding
-
-**assert** - give an error if a certain condition is not met, for debugging purposes.
 
 **timer on 37** - start a timer and call it #37
 
