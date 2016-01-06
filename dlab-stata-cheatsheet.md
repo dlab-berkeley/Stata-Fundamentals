@@ -101,6 +101,12 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **mdesc** - review any missing data for each variable in the dataset
 
+**gen** missing_indicator = **missing**(myvar) - create an indicator/dummy for missing data in another variable.
+
+**gen** missing_indicator = myvar == . - another way to do the same thing.
+
+**recode** age (18/29 = 1) (30/50 = 2) (else = 3), gen(age_recoded) - recode a variable based on its values.
+
 **set seed** - set the random number generator starting point
 
 **set sortseed** - when sorting on a variable, ensure that ties are broken in the same random order.
