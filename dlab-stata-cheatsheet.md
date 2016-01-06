@@ -71,7 +71,7 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **label values** - create text for the different values of a variable, esp. for surveys.
 
-**order** - change the order of a variable in the dataset.
+**order** var1, after(var2) - change the order of a variable in the dataset.
 
 **sort** var1 var2 - re-order the dataset based on the value of one or more variables, in ascending order
 
@@ -136,6 +136,8 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 **restore** - restore the temporary backup of the dataset.
 
 **xi** - create indicator/dummy variables for a categorical variable.
+
+**missing values**
 
 **factor variables**
 
