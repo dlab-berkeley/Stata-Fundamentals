@@ -89,7 +89,7 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **ssc install** mdesc – install a user-written command from the Stata software archive.
 
-**mdesc**
+**mdesc** - review any missing data for each variable in the dataset
 
 **set seed** - set the random number generator starting point
 
@@ -97,23 +97,23 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 gen rand = runiform() - create a random number for each observation in the dataset.
 
-**reg** indep_var depvar1 depvar2 – fit an OLS regression.
+**reg** y_var x1 x2 – fit an OLS regression.
 
-**reg** indep_var depvar1 depvar2, **robust** – fit an OLS and use robust standard errors.
+**reg** y_var x1 x2, **robust** – fit an OLS and use robust standard errors.
 
-**reg** indep_var depvar1 depvar2, r **cluster**(village_id) – OLS with robust clustered SEs.
+**reg** y_var x1 x2, r **cluster**(village_id) – OLS with robust clustered SEs.
 
 **predict** y_hat - predict y_hat after a regression
 
-**logit** - fit a logistic regression
+**logit** y_var x1 x2 - fit a logistic regression
 
-**logit, nolog** - fit a logistic regression and hide the optimization log
+**logit** y_var x1 x2, **nolog** - fit a logistic regression and hide the optimization log
 
 **corr** - correlation table
 
 **ttest** - t-test
 
-**twoway** (scatter) (lfit)
+**twoway** (scatter) (lfit) - create a scatterplot chart and add a linear regression line.
 
 **append** - append one dataset to the currently loaded dataset.
 
@@ -181,15 +181,13 @@ floor()
 
 ceil()
 
-**graph combine**
+**graph combine** - combine two charts into a single image
 
-**set obs 100**
+**set obs 100** - create a blank dataset with 100 observations
 
-**datasignature set**
+**datasignature set** - record a unique numeric summary of the current dataset (cryptographic hash)
 
-**datasignature confirm**
-
-
+**datasignature confirm** - check if anything in the dataset has been modified
 
 
 ## 4. Advanced Stata Programming
@@ -210,7 +208,22 @@ multiple log files
 
 **assert** - give an error if a certain condition is not met, for debugging purposes.
 
-timers
+**timer on 37** - start a timer and call it #37
+
+**timer off 37** - stop timer #37
+
+**timer list 37** - display how long has elapsed for timer #37
+
+**timer clear 37** - reset the timer
+
+Show timer output in an easier to read way:
+```stata
+timer off 37
+timer list 37
+dis as text ". Hours: " as result round(r(t37) / 3600, 0.01)
+dis as text ". Minutes: " as result round(r(t37) / 60, 0.01)
+dis as text "Seconds: " as result round(r(t37))
+```
 
 **local : word count** - count how many words are in a string
 
