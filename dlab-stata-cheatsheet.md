@@ -220,8 +220,8 @@ Show timer output in an easier to read way:
 ```stata
 timer off 37
 timer list 37
-dis as text ". Hours: " as result round(r(t37) / 3600, 0.01)
-dis as text ". Minutes: " as result round(r(t37) / 60, 0.01)
+dis as text "Hours: " as result round(r(t37) / 3600, 0.01)
+dis as text "Minutes: " as result round(r(t37) / 60, 0.01)
 dis as text "Seconds: " as result round(r(t37))
 ```
 
