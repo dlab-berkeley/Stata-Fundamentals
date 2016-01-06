@@ -210,15 +210,15 @@ ceil()
 
 **assert** age >= 50 - give an error if a certain condition is not met, for debugging purposes.
 
-**matrix** - save the matrix result from a command
+**matrix** my_betas = e(b) - save the matrix result from a command, e.g. a regression.
 
-**matrix list** - display a saved matrix
+**matrix list** my_betas - display a saved matrix
 
 **ds**, has(type numeric) - describe variables in a dataset that are a certain type
 
 **local** var_list: **list** r(varlist) – exclude_list - remove variables from a list
 
-**levelsof** - determine how many separate values a variable has
+**levelsof** my_var, local(my_local) - determine how many unique values a variable has and save in a local macro
 
 multiple log files
 
