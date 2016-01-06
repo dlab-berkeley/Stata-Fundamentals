@@ -57,19 +57,25 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **log close** – stop logging (put at the very end of your .do file).
 
-**export delimited** - create a csv text export of the current dataset.
+**export delimited** using "my_data_export.csv", replace - create a csv text export of the current dataset.
 
 **import delimited** - load a csv data file.
 
-**export excel** - create an Excel export of the current dataset.
+**export excel** using "my_data_export.xls", firstrow(variables) replace- create an Excel export of the current dataset.
 
-**import excel** - load an Excel data file.
+**import excel** using "my_data_export.xls", firstrow clear - load an Excel data file.
 
-**label** var - create a text description of a variable.
+**label variable** myvar "this is my var" - create a text description of a variable.
 
 **clonevar** newvar = oldvar - create a copy of a variable, including any labels.
 
-**label values** - create text for the different values of a variable, esp. for surveys.
+**label define** my_label 1 "Option 1" 2 "Option 2" - create a set of values and their corresponding string descriptions
+
+**label list** my_label - show the values and string descriptions of a value label.
+
+**label values** myvar my_label - assign an existing set of value labels (from "label define") to a variable in the dataset.
+
+**label data** "this is my dataset, 2016-01-05" - provide a description of the dataset.
 
 **order** var1, after(var2) - change the order of a variable in the dataset.
 
