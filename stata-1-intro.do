@@ -10,11 +10,20 @@ use "/home/ck37/data/rugged_data.dta"
 // Review window
 // Data browser
 
-* How many observations are in this dataset?
-count
+* Learn more about a Stata command.
+help use
+
+* Remove a dataset from memory.
+clear
+
+* Bring up a previously executed command ("use ...")
+[ctrl-r]
 
 * What variables are in this dataset?
 describe
+
+* How many observations are in this dataset?
+count
 
 * Can we describe just a few variables?
 describe rugged cont_africa cont_asia
@@ -25,9 +34,12 @@ summarize
 * Can we summarize just a few variables?
 summarize rugged cont_africa cont_asia
 
+* What are all of the unique values for a variable?
+tab country
+// (Show space and q for the "more" command)
+
 * List all of the variables and values.
 list
-// (Show space and q for the "more" command)
 
 * Disable the pause feature.
 set more off
