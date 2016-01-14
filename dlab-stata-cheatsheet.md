@@ -5,8 +5,6 @@ Chris Kennedy - University of California, Berkeley – January 2016
 
 ## 1. Introduction to Stata
 
-[Review of Stata Window]
-
 **use** "your_file.dta", clear – open a dataset.
 
 **help** use – learn more about a command
@@ -262,4 +260,19 @@ dis as text "Seconds: " as result round(r(t37))
 
 ## Stata Resources
 
+1. Stata book recommendations (Stata Press)
+  - A Gentle Introduction to Stata (http://www.stata-press.com/books/gentle-introduction-to-stata/) - great companion for the trainings
+  - The Workflow of Data Analysis using Stata (http://www.stata-press.com/books/workflow-data-analysis-stata/) - helpful tips on organizing do files, working on teams, improving productivity, and reducing errors
+  - An Introduction to Stata Programming (http://www.stata-press.com/books/introduction-stata-programming/) - advanced book on Stata programming
+- External Stata tutorials
+  - UCLA Statistical Consulting Group (http://www.ats.ucla.edu/stat/stata/)
+  - statalist.org (http://www.statalist.org/)
+
 ## Stata at Berkeley
+
+- Citrix virtual workstation (http://ist.berkeley.edu/is/platforms/citrix)
+- D-Lab computers (http://dlab.berkeley.edu/space)
+- Library Data Lab computers (http://www.lib.berkeley.edu/libraries/data-lab)
+- StataCorp educational discount (http://www.stata.com/order/new/edu/gradplans/student-pricing/)
+
+
