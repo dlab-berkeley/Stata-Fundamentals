@@ -13,7 +13,7 @@ Chris Kennedy - University of California, Berkeley – January 2016
 
 **clear** – unload the current data from memory.
 
-Ctrl-r – keyboard shortcut to quickly go back to a previous command.
+**Ctrl-r** – keyboard shortcut to quickly go back to a previous command.
 
 **describe**  - list the variables, total observations, and variable types & labels.
 
@@ -31,6 +31,8 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **tab** my_var1 my_var2 – show a breakdown of values across two variables.
 
+**tab** my_var1 my_var2, **chi2** – show a breakdown of values across two variables, and run a chi-square test of independence.
+
 **list** – display all observations in the dataset.
 
 **list** var1 var2 – display certain variables for all observations in the dataset.
@@ -39,9 +41,11 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **replace** new_var = 4 – update the value of an existing variable.
 
+**replace** new_var = 3 **if** other_var == 2 – update the value of an existing variable, for observations that meet certain criteria.
+
 **rename** old_varname new_varname - change the name of a variable.
 
-**save** “my_data.dta”, replace – save the current data to a file, overwriting any existing file.
+**save** "my_data.dta", replace – save the current data to a file, overwriting any existing file.
 
 **histogram** myvar – plot a histogram of a variable.
 
@@ -79,15 +83,11 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **order** var1, after(var2) - change the order of a variable in the dataset.
 
-**sort** var1 var2 - re-order the dataset based on the value of one or more variables, in ascending order
-
-**gsort** +var1 -var2 - re-order the dataset based on the value of one or more variables, in ascending or descending order
-
 **drop** var1 var2 - remove specific variables
 
-**drop** if var1 > 10 - remove observations that meet a certain criteria
+**drop** **if** var1 > 10 - remove observations that meet a certain criteria
 
-**keep** if var1 > 10 - remove observations that don't meet a certain criteria
+**keep** **if** var1 > 10 - remove observations that don't meet a certain criteria
 
 **display** "Some output" – output a message.
 
@@ -106,6 +106,10 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 **gen** missing_indicator = myvar == . - another way to do the same thing.
 
 **recode** age (18/29 = 1) (30/50 = 2) (else = 3), gen(age_recoded) - recode a variable based on its values.
+
+**sort** var1 var2 - re-order the dataset based on the value of one or more variables, in ascending order
+
+**gsort** +var1 -var2 - re-order the dataset based on the value of one or more variables, in ascending or descending order
 
 **set seed** - set the random number generator starting point
 
@@ -143,17 +147,13 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **egen** - generate a new variable with advanced functions
 
-**preserve** - make a temporary backup of the current dataset.
-
-**restore** - restore the temporary backup of the dataset.
-
 **xi** - create indicator/dummy variables for a categorical variable.
 
-**missing values**
+[//]: # "missing values"
 
-**factor variables**
+[//]: # "factor variables"
 
-**interaction terms**
+[//]: # "interaction terms"
 
 **duplicates report** - check for duplicate values in a dataset
 
@@ -165,9 +165,9 @@ Ctrl-r – keyboard shortcut to quickly go back to a previous command.
 
 **graph export**
 
-f-test
+[//]: # "f-test"
 
-survey weighting
+[//]: # "survey weighting"
 
 ## 3. Stata Programming
 
@@ -178,6 +178,10 @@ survey weighting
 **return list** - show the custom values that a previous command created
 
 **ereturn list** - show the custom regression-related values that a previous command created
+
+**preserve** - make a temporary backup of the current dataset.
+
+**restore** - restore the temporary backup of the dataset.
 
 **local** myvar = 1 - create a programming variable (not in the dataset) and set it to 1.
 
@@ -193,13 +197,13 @@ survey weighting
 
 **reshape** - change a dataset from wide to long format or vice versa.
 
-date processing
+[//]: # "date processing"
 
-round()
+**round()**
 
-floor()
+**floor()**
 
-ceil()
+**ceil()**
 
 **graph combine** - combine two charts into a single image
 
@@ -226,7 +230,7 @@ ceil()
 
 **levelsof** my_var, local(my_local) - determine how many unique values a variable has and save in a local macro
 
-multiple log files
+[//]: # "multiple log files"
 
 **timer on 37** - start a timer and call it #37
 
@@ -247,13 +251,13 @@ dis as text "Seconds: " as result round(r(t37))
 
 **local : word count** - count how many words are in a string
 
-custom ado file
+[//]: # "custom ado file"
 
 **tempvar** - create temporary variables in a dataset with unique names, useful for ado commands
 
 **tempname** - create temporary local macros with unique names, useful for ado commands
 
-regular expressions
+[//]: # "regular expressions"
 
 
 ## Stata Resources
