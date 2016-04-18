@@ -265,6 +265,7 @@ dis as text "Seconds: " as result round(r(t37))
   - The Workflow of Data Analysis using Stata (http://www.stata-press.com/books/workflow-data-analysis-stata/) - helpful tips on organizing do files, working on teams, improving productivity, and reducing errors
   - An Introduction to Stata Programming (http://www.stata-press.com/books/introduction-stata-programming/) - advanced book on Stata programming
 - External Stata tutorials
+  - Stanis Koleniov's Stata tutorials (http://web.missouri.edu/~kolenikovs/stata/Duke/)
   - UCLA Statistical Consulting Group (http://www.ats.ucla.edu/stat/stata/)
   - statalist.org (http://www.statalist.org/)
 
