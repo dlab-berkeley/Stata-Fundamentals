@@ -125,19 +125,21 @@ Chris Kennedy - University of California, Berkeley – January 2016
 
 **predict** y_hat - predict y_hat after a regression
 
+**quietly** <command> - hide any output from a command
+
+**return list** - show the custom values that a previous command created
+
+**ereturn list** - show the custom regression-related values that a previous command created
+
+**regression vectors** - _b[varname] to access beta coefficients, _se[varname] for standard errors.
+
 **logit** y_var x1 x2 - fit a logistic regression
 
 **logit** y_var x1 x2, **nolog** - fit a logistic regression and hide the optimization log
 
 **corr** x1 x2 x3 - correlation table
 
-**ttest** - t-test
-
-**twoway** (scatter) (lfit) - create a scatterplot chart and add a linear regression line.
-
-**append** - append one dataset to the currently loaded dataset.
-
-**merge** - combine a dataset with the currently loaded dataset.
+**ttest** outcome, by(group_var) - t-test
 
 **by** - operate on subsets of a sorted dataset.
 
@@ -145,23 +147,25 @@ Chris Kennedy - University of California, Berkeley – January 2016
 
 **egen** - generate a new variable with advanced functions
 
-**xi** - create indicator/dummy variables for a categorical variable.
-
-[//]: # "missing values"
-
-[//]: # "factor variables"
-
-[//]: # "interaction terms"
-
 **duplicates report** - check for duplicate values in a dataset
 
 **duplicates tag** - record the number of duplicates for each observation
 
 **duplicates drop** - remove records that are duplicated
 
-**outreg2**
+**twoway** (scatter) (lfit) - create a scatterplot chart and add a linear regression line.
+
+**append** - append one dataset to the currently loaded dataset.
+
+**merge** - combine a dataset with the currently loaded dataset.
+
+**graph matrix** var1 var2 var3 -- bivariate scatterplot matrix to visusalize correlations.
 
 **graph export**
+
+**estout**
+
+**outreg2**
 
 [//]: # "f-test"
 
@@ -169,13 +173,15 @@ Chris Kennedy - University of California, Berkeley – January 2016
 
 ## 3. Stata Programming
 
-**quietly** <command> - hide any output from a command
+**xi** - create indicator/dummy variables for a categorical variable.
+
+**missing values**
+
+**factor variables**
+
+**interaction terms**
 
 **capture log close** – close an open log file if it exists, and if not ignore the error message.
-
-**return list** - show the custom values that a previous command created
-
-**ereturn list** - show the custom regression-related values that a previous command created
 
 **preserve** - make a temporary backup of the current dataset.
 
@@ -203,20 +209,19 @@ Chris Kennedy - University of California, Berkeley – January 2016
 
 **ceil()**
 
-**graph combine** - combine two charts into a single image
-
 **set obs 100** - create a blank dataset with 100 observations
+
+**assert** age >= 50 - give an error if a certain condition is not met, for debugging purposes.
+
+**display as error** "Ran into an error" - output a message with color-coding
+
+**graph combine** - combine two charts into a single image [chart with hist example]
+
+## 4. Advanced Stata Programming
 
 **datasignature set** - record a unique numeric summary of the current dataset (cryptographic hash)
 
 **datasignature confirm** - check if anything in the dataset has been modified
-
-
-## 4. Advanced Stata Programming
-
-**display as error** "Ran into an error" - output a message with color-coding
-
-**assert** age >= 50 - give an error if a certain condition is not met, for debugging purposes.
 
 **matrix** my_betas = e(b) - save the matrix result from a command, e.g. a regression.
 
