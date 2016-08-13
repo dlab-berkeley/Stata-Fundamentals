@@ -2,6 +2,17 @@
 // Results window
 // Command window
 
+* Set a project directory.
+cd "/Users/Charlie/Documents/2016-2009BerkeleySociology/2016 DLab Instructor/stata_intensive/stata-fundamentals/data"
+
+cd C:\Users\garret\Documents\Teaching\DLabStata
+
+* Check the current working diretory.
+pwd
+
+* Disable the "more" feature.
+set more off 
+
 * Load a sample dataset.
 * File -> Open
 use "/home/ck37/data/rugged_data.dta"
@@ -16,8 +27,48 @@ help use
 * Remove a dataset from memory.
 clear
 
+* Reoad our dataset.
+use rugged_data.dta
+
 * Bring up a previously executed command ("use ...")
 [ctrl-r]
+
+// Let's create a new do file.
+// File -> New -> Do File
+// [Copy and Paste previous commands into do-file.]
+// Execute do file.
+
+* Start a log file.
+// File -> Log -> Begin
+log using stata_intro.log
+
+* Then close the log file at the end of the do file.
+log close
+
+* Let's try it one more time.
+log using stata_intro.log
+
+* We need to use the replace option if the log file already exists.
+log using stata_intro.log, replace
+
+* Also, we may want to close any existing log files first.
+capture log close
+
+* SET UP A LOG TO AUTOMATICALLY START DURING EVERY SESSION**
+//CREATE A NEW .DO FILE
+//PASTE THE FOLLOWING IN THE .DO FILE
+
+log using "/Users/Charlie/Documents/2016-2009BerkeleySociology/statalogs/log_$S_DATE.log"
+
+//RUN COMMAND - TRY WITH CONTROL D
+
+//SAVE .DO file as profile.do
+
+save profile.do
+
+//RUN DO FILE WITH COMMAND
+
+do profile.do
 
 * What variables are in this dataset?
 describe
@@ -54,23 +105,6 @@ list rugged  cont_africa cont_asia
 * tab1
 * cross-tab
 
-// Let's create a new do file.
-// File -> New -> Do File
-// [Copy and Paste previous commands into do-file.]
-// Execute do file.
-
-* Set a project directory.
-cd C:\Users\garret\Documents\Teaching\DLabStata
-
-* Check the current working diretory.
-pwd
-
-* Load our dataset.
-use rugged_data.dta
-
-* Disable the "more" feature.
-set more off 
-
 // There are a bunch of ways to comment your .do file.
 
 * You can also just put an asterisk at the beginning of a line
@@ -80,23 +114,6 @@ set more off
 and super informative comment that you didn't want 
 to have all on one line, like this one we're typing
 right now. */
-
-* Start a log file.
-// File -> Log -> Begin
-log using stata_intro.log
-
-* Then close the log file at the end of the do file.
-log close
-
-* Let's try it one more time.
-log using stata_intro.log
-
-* We need to use the replace option if the log file already exists.
-log using stata_intro.log, replace
-
-* Also, we may want to close any existing log files first.
-capture log close
-
 
 * Let's start doing a little data analysis.
 
@@ -143,16 +160,21 @@ move awesomelaw cont_africa
 move awesomelaw2 cont_africa
 move awesomelaw3 cont_africa
 
+* save a data file
+
 save "this is the new file.dta", replace
+
+* export the file to another file format*
 
 export delimited using "comma-separated version.csv", replace
 export delimited using "tab-separated text version.tsv", replace delimiter(tab)
-
-* import delimited
-
 export excel using "this is the excel version.xlsx", firstrow(variables) replace
 
-* import excel
+* import file from another format *
+
+import delimited using "tab-separated text version.tsv", delimiter(tab) clear
+
+import excel using "this is the excel version.xlsx", firstrow clear
 
 *reg y x1 x2 x3 
 reg rgdppc_2000 soil tropical cont_africa
