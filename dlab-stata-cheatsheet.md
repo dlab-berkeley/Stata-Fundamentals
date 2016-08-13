@@ -5,6 +5,8 @@ Chris Kennedy - University of California, Berkeley – January 2016
 
 ## 1. Introduction to Stata
 
+All Materials, including this Cheatsheet, available at https://github.com/dlab-berkeley/stata-fundamentals/
+
 **use** "your_file.dta", clear – open a dataset.
 
 **help** use – learn more about a command
