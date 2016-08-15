@@ -22,7 +22,20 @@ so we don't need to reshape them.*/
 
 //but that's actually a quite unwieldy format, so let's go back
 reshape long
+
 */
+
+**CHARLIE LIKES THIS STUFF FORWARD**
+clear
+*Let's use WASHBdlab
+use WASHdlab.dta
+
+label var el_momnodirt "Do mom's hands have no dirt? Y/N"
+label var el_kidnodirt "Do kid's hands have no dirt? Y/N"
+label var criticaltimessum "Number of critical hw times named w/o prompting"
+label var elhaveplace "Do they have dedicated place for hw? Y/N"
+label var elhavemat "Do they have materials-soap/water-for hw? Y/N"
+
 ******************************
 *LOCALS AND GLOBALS, AKA MACROS
 ******************************
@@ -33,8 +46,8 @@ disp "The local called i has the value `i'"
 local i=`i'+2
 disp "I is now `i'"
 
-*Let's use WASHBdlab
-use WASHdlab.dta
+
+
 summ free_chl_yn tot_chl_yn
 return list
 
@@ -54,15 +67,13 @@ disp .2118126/.2505092
 *GLOBAL
 *Considered bad form in programming, use sparingly.
 *Easy list of long set of variable names
-*Set the file path name for different computers
 
-global garret="C:\Users\garret\Documents\Teaching\DLabStata"
-cd $garret
-*put this at the top of a shared do file
+global RHS_controls="tinroof respage1 respage2 respage3 kiswahili english total_households total_kids"
 
 *************************************
 *LOOPS
 *************************************
+
 reg free_chl_yn treatw
 reg tot_chl_yn treatw
 reg endvf treatw
@@ -73,16 +84,16 @@ reg `var' treatw
 }
 
 //var is just a placeholder, it could be anything
-foreach fudge in el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat{
-reg `fudge' treath
+foreach thingy in el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat{
+reg `thingy' treath
 }
 
 //You may notice that the output from inside a loop is not
 //quite as well documented as from outside a loop
 //So I find it helpful to add display lines explaining where I am
-foreach fudge in el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat{
-disp "********This regresses `fudge' on treath**********"
-reg `fudge' treath
+foreach thingy in el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat{
+disp "********This regresses `thingy' on treath**********"
+reg `thingy' treath
 }
 
 *forvalues loops over numbers
@@ -95,8 +106,8 @@ disp "The number is `X'
 }
 
 //loop over numeric values in variable names
-forvalues fudge=1/8 {
- reg free_chl_yn treat`fudge'
+forvalues thingy=1/8 {
+ reg free_chl_yn treat`thingy'
 }
 *************************
 *If you want a local that is formatted for very nice display,
@@ -110,11 +121,6 @@ foreach var of local watervars{
 }
 
 //try it with hygiene variables
-label var el_momnodirt "Do mom's hands have no dirt? Y/N"
-label var el_kidnodirt "Do kid's hands have no dirt? Y/N"
-label var criticaltimessum "Number of critical hw times named w/o prompting"
-label var elhaveplace "Do they have dedicated place for hw? Y/N"
-label var elhavemat "Do they have materials-soap/water-for hw? Y/N"
 
 local hvar el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat
 foreach var of local hvar{
@@ -128,44 +134,15 @@ forvalues X=1/10 {
  }
 }
 
-*Regress both lists (hygiene and water) over all 8 treatment arms
-*Can Stata loop over multiple lists? Unclear.
-*Can Stata combine lists into master list? Also unclear.
-
-local masterlist el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat endvf free_chl_yn tot_chl_yn
-local i=1 //add an index so we can see how many regs we're doing
-
-/*
-foreach fudge of local masterlist{
- forvalues X=1/8 {
-  display "Regression `i':We're regressing `var' on treat`X'"
-  local i=`i'+1
-  reg `fudge' treat`X'
- }
-}
-*/
-
-*I bet we can do the two loops with globals, though
-global RHS_controls="tinroof respage1 respage2 respage3 kiswahili english total_households total_kids"
-reg free_chl_yn treatw $RHS_controls
-
-*Can we loop over multiple globals? Apparently not.
-/*
-global wvars="endvf free_chl_yn tot_chl_yn"
-global hvars="el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat"
-foreach fudge of $wvars $hvars{
- forvalues X=1/8 {
-  display "Regression `i':We're regressing `var' on treat`X'"
-  local i=`i'+1
-  reg `fudge' treat`X'
- }
-}
-*/
+*
 
 *******************************
 *Let's do nice regression output, looped
 ********************************
 *findit outreg2
+
+reg free_chl_yn treatw $RHS_controls
+
 reg free_chl_yn treatw
 outreg2 using prettyoutput, replace tdec(3) bdec(3) bracket ctitle(Basic) addnote(This table is totally awesome and should be published)
 

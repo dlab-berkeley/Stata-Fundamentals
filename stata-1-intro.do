@@ -3,9 +3,7 @@
 // Command window
 
 * Set a project directory.
-cd "/Users/Charlie/Documents/2016-2009BerkeleySociology/2016 DLab Instructor/stata_intensive/stata-fundamentals/data"
-
-cd C:\Users\garret\Documents\Teaching\DLabStata
+cd "/Users/Charlie/Downloads/stata-fundamentals-master/data"
 
 * Check the current working diretory.
 pwd
@@ -15,7 +13,13 @@ set more off
 
 * Load a sample dataset.
 * File -> Open
-use "/home/ck37/data/rugged_data.dta"
+use "/Users/Charlie/Downloads/stata-fundamentals-master/data/rugged_data.dta"
+
+* Remove a dataset from memory.
+clear
+
+* Reoad our dataset.
+use rugged_data.dta
 
 // Variables window
 // Review window
@@ -23,12 +27,6 @@ use "/home/ck37/data/rugged_data.dta"
 
 * Learn more about a Stata command.
 help use
-
-* Remove a dataset from memory.
-clear
-
-* Reoad our dataset.
-use rugged_data.dta
 
 * Bring up a previously executed command ("use ...")
 [ctrl-r]

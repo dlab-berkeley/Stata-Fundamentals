@@ -65,9 +65,9 @@ colony_esp colony_gbr colony_fra colony_prt
 **********************************************
 *HISTOGRAM
 
-*histogram soil
+histogram soil
 *histogram soil, discrete //don't actually do this
-*histogram soil, bin(5)
+histogram soil, bin(5)
 *histogram soil, width(2)
 *histogram soil, bin(10) title("This is a histogram of soil fertility") 
 *histogram soil, bin(10) title("This is a histogram of soil fertility") addlabels
