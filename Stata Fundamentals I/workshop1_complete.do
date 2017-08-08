@@ -73,8 +73,8 @@ pwd // check the current working directory
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My result window shows this:*/   
 
+cd "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals I/"
 
- 
 /***
 		We paste this command above so that next time we can just run this 
 		do-file from the top and it will run smoothly. We will not need to
@@ -352,7 +352,7 @@ sum wage
 
 * USING A CONDITIONAL OPERATOR
 /***
-		What is the average wage of observations who are married in this
+		What is the average wage of observations who are non-married in this
 		sample
 ***/
 
@@ -376,8 +376,11 @@ variables: wage married
 (hint: Use the operator "if")
 */
 
+*(1)
+count if union==1
 
-
+*(2)
+summ wage if married==0 
 
 
 
@@ -421,7 +424,7 @@ codebook union
 variables: wage tenure
 */
 
-
+summ wage if tenure>=10 & tenure<.
 
 
 
@@ -466,7 +469,7 @@ unmarried earn more (11.30) on average than those who are married (10.10).*/
 Let's ask a few more demography-based questions about this data:
 
 (1) What is the average number of hours worked in the sample? 
-variable: hours
+Variable: hours
 
 (2) What is the average age and age range of this sample? 
 Variable: age
@@ -488,10 +491,27 @@ more elegant way using locals which you'll learn in later workshops. ]
 */
 
 
+*(1)
 
+summ hours
 
+*(2)
 
+summ age, detail
 
+*(3)
+
+summ hours if collgrad==1
+
+*(4)
+
+summ wage if grade>=12 & grade<.
+summ wage if collgrad==1
+
+*(5)
+
+summ hours
+summ wage if hours>=37.21811
 
 
 
@@ -529,15 +549,10 @@ tab union collgrad, col row
 
 (1) How many observations in this dataset fall into each race group?
 (a) What percent of the sample is white?
-
-
-
+Variable: race
 
 (2)	Find the average wage for non-white observations. Give this a try before looking below:
-	
-	
-	
-	
+Variable: wage race
 	
 (3) For the above question, which option(s) is/are correct? Try to answer this without
 running any of the lines of code below. Which code(s) do you think will give the right results?
@@ -551,7 +566,6 @@ running any of the lines of code below. Which code(s) do you think will give the
 	/* H */ sum wage if race==2 | race==3
 	
 	
-
 (4) Let's study race and living in a central city. 
 Variables: race c_city
 
@@ -561,11 +575,31 @@ Variables: race c_city
 (d) What percent of the sample that lives in central cities is black? white?
 (e) What percent of the total sample lives in central cities?
 
-
 */
 
+*(1)
+tab race
 
+*(2)
+sum wage if race==2 | race==3
 
+*(3)
+*sum wage if race!=1 & race!=.
+*sum wage if race>=2 & race<=.
+*sum wage if race!=1 & race<=3
+*sum wage if race==2 | race==3
+
+*(4)
+tab race c_city, row
+*(a) 77.89%
+*(b) 49.06%
+
+tab race c_city, col
+*(c) 80.14%, 18.67% 
+*(d) 55.27%, 43.66%
+
+tab c_city
+*(e) 29.16%
 
 
 
@@ -587,17 +621,15 @@ tab married collgrad, summarize(wage) means
 (1) Use help file to tabulate the standard deviation of wages by marital status.
 variables: married wage
 
-
-
 (2) Find average wage by industry.
 variables: industry wage
 */
 
+*(1)
+tab married, summarize(wage) standard
 
-
-
-
-
+*(2)
+tab industry, summarize(wage) means
 
 
 
@@ -720,8 +752,8 @@ tab hs
 
 
 
-// Create a variable for some college 
-// (more than 12 and less than 16 years of schooling)
+* Create a variable for some college 
+* (more than 12 and less than 16 years of schooling)
 
  
 gen somecollege = (grade>12 & grade<16)
@@ -751,9 +783,27 @@ tab somecollege
 (1d) Create a new value label called yesno that assigns 1 to yes and 0 to no
 
 (1e) Add value label yesno to somecollege3
+*/
+
+*(1a)
+gen somecollege3 = .
+replace somecollege3 = 1 if grade>=12 & grade<16 & grade!=. 
+replace somecollege3 = 0 if grade<12 | (grade>=16 & grade!=.)
+
+*(1b)
+label var somecollege3 "attended some years of college" 
+
+*(1c)
+label drop YN
+
+*(1d)
+label define YN 1 "yes" 0 "no"
+
+*(1e)
+label values somecollege3 YN
 
 
-	
+/*
 (2a) Use method 4 (recode) to creare a new variable "unmarried" that is the 
 opposite of the "married" variable. That is unmarried = 1 when married = 0 and vice versa.
 
@@ -766,7 +816,17 @@ opposite of the "married" variable. That is unmarried = 1 when married = 0 and v
  
 */
 
+*(2a)
+recode married (0 = 1( (1=0), gen(unmarried) 
 
+*(2b)
+label var unmarried "not married"
+
+*(2c)
+label define unmar_lbl 1 "single" 0 "married"
+
+*(2d)
+label values unmarried unmar_lbl
 
 
 
@@ -782,7 +842,6 @@ order hs somecollege , before(collgrad)
 * Save changes to a NEW file
 save "nlsw88_clean" , replace
 // why don't we want to save changes to the original file?
-
 
 
 
@@ -891,5 +950,17 @@ reg wage age i.race grade collgrad married union ttl_exp tenure i.industry c_cit
 
 */
 
+*(1)
+gen annual_inc=wage*hours*52
 
+*(2)
+twoway (kdensity annual_inc if collgrad==1) (kdensity annual_inc if collgrad==0), ///
+legend(label(1 "College Grad") label(2 "Non Grad"))
+
+*(3)
+twoway (scatter annual_inc grade) (lfit annual_inc grade)
+
+*(4)
+twoway (lfit annual_inc grade if race==1 )(lfit annual_inc grade  if race==2), ///
+legend(label(1 "White") label(2 "Black"))
 
