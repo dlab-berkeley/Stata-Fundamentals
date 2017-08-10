@@ -864,6 +864,8 @@ import excel using "nlsw88_clean.xlsx", first clear
 
 des
 
+log close
+
 clear all
 use "$mycomp/nlsw88.dta", clear
 set more off

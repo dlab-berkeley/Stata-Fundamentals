@@ -1,7 +1,8 @@
 ******************************* 
 *	STATA INTENSIVE: WORKSHOP 1
-*	FALL 2017, D-LAB
+*	SPRING 2017, D-LAB
 *	SAIKA BELAL
+*	MAR 1, 2017
 ********************************
 
 
@@ -71,9 +72,9 @@ pwd // check the current working directory
    have saved the data file nlsw88.dta */
    
 /* Step 2: Copy-paste the last command that shows up on result screen.
-   My result window shows this:*/   
+   My resuly window shows this:*/   
 
-cd "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals I/"
+cd "/Users/SSB/Box Sync/D-lab/stata/Workshop series/iteration 2/Workshop 1"
 
 /***
 		We paste this command above so that next time we can just run this 
@@ -131,11 +132,14 @@ des // describes the variables in the data
 des *  describes the variables in the data  <-- this is wrong!
 * des // this suspended the command altogether
 
+/* blah  */
 
-/* But then say you wanted to write a really long
+/* 
+But then say you wanted to write a really long
 and super informative comment that you didn't want 
 to have all on one line, like this one we're typing
-right now. */
+right now. 
+*/
 
 
 /* However, if you forget to close this slash-asterisk loop
@@ -160,7 +164,12 @@ don't			 have
 	burn like fabulous yellow roman candles exploding 
 	like spiders across the stars."
 	-- Jack Kerouac (On the Road, 1957)
-*/
+
+	
+	
+	
+	
+	*/
 
 
 
@@ -174,14 +183,14 @@ don't			 have
 (1) write "presents summary statistics" NEXT to the command "sum"
 
 (2) Suspend all 3 lines of code using one pair of /**/
-*/ 
+*/
 
 
-
+/*
 des
-sum 
-list
-
+sum // "presents summary statistics" 
+list /* lists the data */
+*/
 
 
 
@@ -199,7 +208,7 @@ cap log close // Close any existing log files first.
 // File -> Log -> Begin
 
 log using stata_intro.log, replace
-
+*log using stata_intro_3_2.log, append
 
 /* 	The log is saved in your working directory,
 	understand why we replace or append */
@@ -311,7 +320,9 @@ Variable: wage
 Variable: wage married
 */
 
-
+sort wage , stable
+list wage in  -3/l
+list wage married in  -3/l
 
 
 
@@ -356,7 +367,7 @@ sum wage
 		sample
 ***/
 
-sum wage if married==1
+sum wage if married==1 
 
 
 
@@ -376,12 +387,11 @@ variables: wage married
 (hint: Use the operator "if")
 */
 
-*(1)
+
 count if union==1
 
-*(2)
-summ wage if married==0 
 
+sum wage if married==0
 
 
 * MISSING VALUES *
@@ -424,9 +434,12 @@ codebook union
 variables: wage tenure
 */
 
-summ wage if tenure>=10 & tenure<.
+sum wage if tenure>=10 & tenure!=.
+sum wage if tenure>=10 & tenure<.
 
+sum wage if tenure>=10
 
+sum wage if tenure<10
 
 
 
@@ -451,7 +464,7 @@ sum wage if collgrad==1 // college graduate
 sum wage if married==1 & collgrad==1 // married graduate
 sum wage if married==1 & collgrad==0 // married non-graduate
 sum wage if married==0 & collgrad==1 // unmarried graduate
-sum wage if married==0 & collgrad==1 // unmarried non-graduate
+sum wage if married==0 & collgrad==0 // unmarried non-graduate
 
 
 /* One basic interpretation from the above descriptive statistics:
@@ -469,7 +482,7 @@ unmarried earn more (11.30) on average than those who are married (10.10).*/
 Let's ask a few more demography-based questions about this data:
 
 (1) What is the average number of hours worked in the sample? 
-Variable: hours
+variable: hours
 
 (2) What is the average age and age range of this sample? 
 Variable: age
@@ -491,27 +504,17 @@ more elegant way using locals which you'll learn in later workshops. ]
 */
 
 
-*(1)
+sum hours
 
-summ hours
+sum age
 
-*(2)
+sum hours if collgrad==1
 
-summ age, detail
+sum wage if collgrad==1
+sum wage if grade>=12 & grade!=.
 
-*(3)
-
-summ hours if collgrad==1
-
-*(4)
-
-summ wage if grade>=12 & grade<.
-summ wage if collgrad==1
-
-*(5)
-
-summ hours
-summ wage if hours>=37.21811
+sum hours
+sum wage if hours>37.21811 & hours!=.
 
 
 
@@ -525,13 +528,18 @@ tab collgrad
 tab married
 tab married if hours>=60 & hours<.
 
+tab race collgrad married
 
 * What are tab tab1 and tab2?
 tab1 race union collgrad 
 tab race union collgrad // returns error. why?
 tab union collgrad 
+
 tab2 race union collgrad
 
+tab race union
+tab race collgrad
+tab union collgrad
 
 * Twoway tables 
 tab union collgrad, col 
@@ -549,10 +557,15 @@ tab union collgrad, col row
 
 (1) How many observations in this dataset fall into each race group?
 (a) What percent of the sample is white?
-Variable: race
+
+
+
 
 (2)	Find the average wage for non-white observations. Give this a try before looking below:
-Variable: wage race
+	
+	
+	
+	
 	
 (3) For the above question, which option(s) is/are correct? Try to answer this without
 running any of the lines of code below. Which code(s) do you think will give the right results?
@@ -566,6 +579,7 @@ running any of the lines of code below. Which code(s) do you think will give the
 	/* H */ sum wage if race==2 | race==3
 	
 	
+
 (4) Let's study race and living in a central city. 
 Variables: race c_city
 
@@ -575,33 +589,15 @@ Variables: race c_city
 (d) What percent of the sample that lives in central cities is black? white?
 (e) What percent of the total sample lives in central cities?
 
+
 */
 
-*(1)
+
 tab race
 
-*(2)
-sum wage if race==2 | race==3
+sum wage if race!=1 & race<.
 
-*(3)
-*sum wage if race!=1 & race!=.
-*sum wage if race>=2 & race<=.
-*sum wage if race!=1 & race<=3
-*sum wage if race==2 | race==3
-
-*(4)
-tab race c_city, row
-*(a) 77.89%
-*(b) 49.06%
-
-tab race c_city, col
-*(c) 80.14%, 18.67% 
-*(d) 55.27%, 43.66%
-
-tab c_city
-*(e) 29.16%
-
-
+tab race c_city, col row
 
 * TABULATE, SUMMARIZE
 * Summary statistics of one variable with respect to others 
@@ -621,16 +617,20 @@ tab married collgrad, summarize(wage) means
 (1) Use help file to tabulate the standard deviation of wages by marital status.
 variables: married wage
 
+
+
 (2) Find average wage by industry.
 variables: industry wage
 */
 
-*(1)
-tab married, summarize(wage) standard
 
-*(2)
-tab industry, summarize(wage) means
+tab married, summarize(wage) st
 
+tab industry, summarize(wage)
+
+
+// do you notice anything strange about the wages here?
+// mining wages are the highest??
 
 
 // Let's explore the mining wage...
@@ -752,7 +752,7 @@ tab hs
 
 
 
-* Create a variable for some college 
+* Exercise: Create a variable for some college 
 * (more than 12 and less than 16 years of schooling)
 
  
@@ -783,27 +783,9 @@ tab somecollege
 (1d) Create a new value label called yesno that assigns 1 to yes and 0 to no
 
 (1e) Add value label yesno to somecollege3
-*/
-
-*(1a)
-gen somecollege3 = .
-replace somecollege3 = 1 if grade>=12 & grade<16 & grade!=. 
-replace somecollege3 = 0 if grade<12 | (grade>=16 & grade!=.)
-
-*(1b)
-label var somecollege3 "attended some years of college" 
-
-*(1c)
-label drop YN
-
-*(1d)
-label define YN 1 "yes" 0 "no"
-
-*(1e)
-label values somecollege3 YN
 
 
-/*
+	
 (2a) Use method 4 (recode) to creare a new variable "unmarried" that is the 
 opposite of the "married" variable. That is unmarried = 1 when married = 0 and vice versa.
 
@@ -816,17 +798,7 @@ opposite of the "married" variable. That is unmarried = 1 when married = 0 and v
  
 */
 
-*(2a)
-recode married (0 = 1( (1=0), gen(unmarried) 
 
-*(2b)
-label var unmarried "not married"
-
-*(2c)
-label define unmar_lbl 1 "single" 0 "married"
-
-*(2d)
-label values unmarried unmar_lbl
 
 
 
@@ -842,6 +814,7 @@ order hs somecollege , before(collgrad)
 * Save changes to a NEW file
 save "nlsw88_clean" , replace
 // why don't we want to save changes to the original file?
+
 
 
 
@@ -865,7 +838,18 @@ clear all
 import excel using "nlsw88_clean.xlsx", first clear
 // "first" specifies that the first row in the excel file is a 
 
+
+
+
+
+
+
 des
+
+
+
+
+
 
 clear all
 use "$mycomp/nlsw88.dta", clear
@@ -950,17 +934,5 @@ reg wage age i.race grade collgrad married union ttl_exp tenure i.industry c_cit
 
 */
 
-*(1)
-gen annual_inc=wage*hours*52
 
-*(2)
-twoway (kdensity annual_inc if collgrad==1) (kdensity annual_inc if collgrad==0), ///
-legend(label(1 "College Grad") label(2 "Non Grad"))
-
-*(3)
-twoway (scatter annual_inc grade) (lfit annual_inc grade)
-
-*(4)
-twoway (lfit annual_inc grade if race==1 )(lfit annual_inc grade  if race==2), ///
-legend(label(1 "White") label(2 "Black"))
 
