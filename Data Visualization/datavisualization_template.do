@@ -1,3 +1,8 @@
+******************************* 
+*	STATA SPECIAL TOPICS
+*	DATA VISUALIZATION
+*	FALL 2017, D-LAB
+********************************
 
 clear all
 
@@ -12,7 +17,7 @@ cap log close
 
 * Use file > change directory >> go to the folder you want to save files to *
 * (it can be the folder where you saved this do-file)
-cd "/Users/SSB/Box Sync/D-lab/stata/Special Workshops/Visualization-Graphs/scratch"
+cd "/Users/isabellecohen/Dropbox/DLab/Data Visualization"
 
 pwd
 
