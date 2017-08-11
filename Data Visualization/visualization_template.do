@@ -95,6 +95,7 @@ summarize
 
 * Adding labels to the dataset *
 
+*** help label
 
 label define country_lbl ///
 	1 "Bolivia" 2 "Brazil" 3 "Chile" 4 "Colombia" 5 "CostaRica" 6 "Cuba" ///
@@ -105,7 +106,7 @@ label define country_lbl ///
 
 label values country  country_lbl
 
-	
+
 
 
 ********************************************************************************
@@ -113,9 +114,6 @@ label values country  country_lbl
 * a very very simple graph *
 
 graph twoway scatter change setting 
-
-set scheme s1mono
-
 
 * label variables
 label variable country "country"
@@ -128,8 +126,10 @@ label variable change "percent decline in the crude birth rate"
 
 save effort.dta, replace
 
+*set scheme
+set scheme s1mono
 
-* re-run graph with labels
+* re-run graph with labels and scheme
 graph twoway scatter change setting 
 
 
@@ -176,7 +176,8 @@ graph twoway (scatter change setting)
 ********************************************************************************
 
 help graph_twoway
-help scatter
+help scatter /* click on: marker_options */
+
 
 * this will remind you of the main marker symbols that are available *
 
@@ -189,25 +190,25 @@ palette symbolpalette
 
 * solid circle
 #delimit ;
-graph twoway (scatter change setting, msymbol(circle));
+graph twoway (scatter change setting); /* EDIT */
 #delimit cr
 
 // another way to write it
 #delimit ;
-graph twoway (scatter change setting, msymbol(O));
+graph twoway (scatter change setting); /* EDIT */
 #delimit cr
 
 
 
 * solid triangle
 #delimit ;
-graph twoway (scatter change setting, msymbol(triangle)); 
+graph twoway (scatter change setting); /* EDIT */
 #delimit cr
 
 
 // another way to write it
 #delimit ;
-graph twoway (scatter change setting, msymbol(T)); 
+graph twoway (scatter change setting); /* EDIT */
 #delimit cr
 
 
@@ -216,16 +217,10 @@ EXERCISE: */
 
 
 * hollow triangle
-#delimit ;
-graph twoway (scatter change setting, msymbol(Th)); 
-#delimit cr
-
 
 
 * hollow circle
-#delimit ;
-graph twoway (scatter change setting, msymbol(Oh)); 
-#delimit cr
+
 
 
 
@@ -240,46 +235,21 @@ graph twoway (scatter change setting [w=effort], msymbol(circle_hollow));
 * adding color *
 help colorstyle
 #delimit ;
-graph twoway (scatter change setting, msymbol(O) mcolor(green) );
+graph twoway (scatter change setting, msymbol(O) mcolor(green));
 #delimit cr
+
+* changing size *
+help markersizestyle
+#delimit ;
+graph twoway (scatter change setting, msymbol(O) mcolor(green) msize(large));
+#delimit cr
+
 
 /* what if you want to change the size of the markers?
 EXERCISE */
 *hint:
 help marker_options
 
-#delimit ;
-graph twoway (scatter change setting, msymbol(O)mcolor(green) msize(large));
-#delimit cr
-
-
-**EXTRA:
-
-// adjust intensity
-#delimit ;
-graph twoway (scatter change setting, msymbol(O) mcolor(green*.5) );
-#delimit cr
-
-// adjust line and fill color 
-#delimit ;
-graph twoway (scatter change setting, msymbol(O) mlcolor(green) mfcolor(yellow) );
-#delimit cr
-
-// add a second variable
-// use parantheses to insert another "graph" 
-
-// Stata will also format the two variables differently by default 
-// but it may not look the way you want
-#delimit ;
-graph twoway (scatter change setting )
-			 (scatter effort setting  );
-#delimit cr
-
-// you can also format the two graphs yourself
-#delimit ;
-graph twoway (scatter change setting, msymbol(O) mlcolor(green) mfcolor(yellow) )
-			 (scatter effort setting, msymbol(O) mlcolor(green) mfcolor(green*.3) );
-#delimit cr
 
 
 
@@ -292,29 +262,31 @@ graph twoway (scatter change setting, msymbol(O) mlcolor(green) mfcolor(yellow) 
 		   
 
 
-* using the variable country as a label for the points *
+* using the variable country as a label for the points 
 
 help scatter /* click on: marker_options */
 // see  marker_label_options 
 
-graph twoway (scatter change setting, mlabel(country) ) /* EDIT */ 
+graph twoway (scatter change setting ) /* EDIT */ 
+
+
+
 
 // suppose I want the country numbers to be added to the country label (optional!)
-tab country // there are no numbers
-help labelbook
 numlabel country_lbl, add
 
 * this graph is too cluttered *
 
 * the position of the marker labels can be rotated using mlabposition *
+// see  marker_label_options
 
 // place marker labels beneath markers
 help clockposstyle
-graph twoway (scatter change setting, mlabel(country) mlabposition(6) ) /* EDIT */ 
+graph twoway (scatter change setting ) /* EDIT */ 
 
-* positioning labels at nine o'clock on the watch face *
+// positioning labels at nine o'clock on the watch face 
 
-graph twoway (scatter change setting , mlabel(country) mlabposition(9)) /* EDIT */ 
+graph twoway (scatter change setting ) /* EDIT */ 
 	
 
 	
@@ -370,8 +342,9 @@ Let us remove them from the graph.
 
 **/
 
-
+//  List names of value labels
 label dir
+
 
 numlabel country_lbl, remove
 
@@ -567,18 +540,7 @@ graph twoway (scatter change setting)
 			 ;
 #delimit cr
 
-// Remove a legend item
-#delimit ;
-graph twoway (scatter change setting)
-             (lfit change setting) 
-              , 
-		     title("Fertility Decline by Social Setting" " ")
-             ytitle("Fertility Decline")  
-			 xtitle("Index of Social Setting") 		 
-			 legend(subtitle("This is my legend")
-			        order( 1 "Fertility"))
-			 ;
-#delimit cr
+
 
 * using ring(0) to move the legend inside the plotting area *
 * ring(#) specifies distance from plot region
@@ -614,9 +576,7 @@ graph twoway (scatter change setting)
 			        order(1 "Dot" 2 "Line"))
 			 ;
 #delimit cr
-
-
-						
+			
 			
 /*
 
@@ -751,8 +711,7 @@ help axis_scale_options
 graph twoway (scatter change setting)
              (lfit change setting) 
               , 
-			xscale(range(40 110))
-			yscale(range(-10 50))
+					/* EDIT*/
 		     title("Fertility Decline by Social Setting" " ")
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") 		 
@@ -835,8 +794,7 @@ number in steps of 5)
 graph twoway (scatter change setting)
              (lfit change setting) 
 			 ,
-			 ylabel(0(5)100)
-			 xlabel(0(5)50)
+			 /*  EDIT  */
 		     title("Fertility Decline by Social Setting" " ")
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") 		 
@@ -908,8 +866,7 @@ graph twoway (scatter change setting)
 #delimit cr	
 
 		 
-
-/** MAY SKIP THIS **/
+		 
 		 
 * grids  *
 
@@ -960,10 +917,7 @@ graph twoway (scatter change setting)
 			 ;				
 #delimit cr				 
 		 
-
-/** END SKIP  **/
-
-
+		 
 ********************************************************************************
 
 
@@ -977,8 +931,6 @@ graph twoway (scatter change setting)
 
 
 sysuse uslifeexp, clear
-
-describe
 
 * a simple line plot *
 
@@ -1013,7 +965,7 @@ graph twoway (line le_wmale le_bmale year , lcolor(green red) )
 help linepatternstyle
 
 #delimit
-graph twoway (line le_wmale le_bmale year , lcolor(green red) lpatter(dash dot ))
+graph twoway (line le_wmale le_bmale year , lpatter(dash dot ))
               , 
 			  title("U.S. Life Expectancy") subtitle("Males") 
 	          legend( order(1 "White men" 2 "Black men")) ;
@@ -1110,6 +1062,7 @@ graph dir
 
 graph describe Graph
 
+
 * discards a graph stored in memory *
 
 graph drop Graph
@@ -1164,7 +1117,7 @@ here are some potential formats
 .emf	Windows Enhanced Metafile	
 .pdf	Portable Document Format	
 
-emf -- works well with word
+empf -- works well with word
 eps -- frequently used for Latex
 png -- useful for displaying on websites
 
@@ -1175,7 +1128,6 @@ png -- useful for displaying on websites
 
 #delimit ;
 graph twoway (scatter drate medage, msymbol(circle))
-			(qfitci drate medage)
               ,
 			  name(g3, replace);
 #delimit cr	
@@ -1258,9 +1210,7 @@ twoway (scatter divorce marriage)
 		xtitle(" " "Number of Marriages") 		 
 		note("note:State data excluding Nevada")
 		legend(off)
-		scheme(s1mono)
-		name(myplot, replace)
-		;
+		scheme(s1mono);
 #delimit cr
 
 graph2tex, epsfile(myplot)	
