@@ -45,7 +45,7 @@ corr soil tropical
 
 //What if we want to look at soil, tropical, desert and dist_coast?
 //COMMAND:
-corr soil tropical desert dist_coast
+
 
 *T-TESTS
 
@@ -57,7 +57,7 @@ ttest soil, by(cont_africa)
 //whether a country is or isn't in Europe?
 //Hint: use the cont_europe variable
 //COMMAND:
-ttest soil, by(cont_europe)
+
 
 
 **************************************************
@@ -72,12 +72,11 @@ histogram soil, discrete //don't actually do this
 
 //Let's create a histogram with five bins
 //COMMAND:
-hist soil, bin(5)
+
 
 //What about a histogram with bins of width 2?
 //COMMAND:
-hist soil, width(2)
-hist soil, bin(50)
+
 
 
 histogram soil, bin(10) title("This is a histogram of soil fertility") 
@@ -92,8 +91,9 @@ histogram soil, by(cont_africa)
 //Those labels aren't very nice
 //How can we label the values for cont_africa?
 //COMMAND:
-label define contafrica 0 "Not in Africa" 1 "In Africa"
-label values cont_africa contafrica
+
+
+
 
 histogram soil, by(cont_africa) 
 
@@ -107,7 +107,7 @@ scatter soil desert tropical, title("Soil and Desert by Tropical Land") mcolor(b
 
 //Let's try using a scheme. Make the same scatterplot as above, with the economist scheme.
 //COMMAND:
-scatter soil desert tropical, title("Soil and Desert by Tropical Land") scheme(economist)
+
 
 //There are other formatting changes we can also make
 scatter soil desert tropical, title("Soil and Desert by Tropical Land") legend(on) ///
@@ -126,20 +126,15 @@ twoway scatter soil desert tropical, title("Soil and Desert by Tropical Land") /
 	
 //Let's make the same graph, but now also add a linear prediction line for desert and tropical
 //COMMAND:
-twoway (scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
-	legend(on) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f))) ///
-	(lfit soil tropical, legend(label(3 "Soil vs. Tropical") label(4 "Desert vs. Tropical"))) (lfit desert tropical)
+
 	
 //Now try adding a vertical line at x=40.
 //Hint: Use the scatter help file.
 //COMMAND: 
-twoway (scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
-	legend(on) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f))) ///
-	(lfit soil tropical, legend(label(3 "Soil vs. Tropical") label(4 "Desert vs. Tropical"))) (lfit desert tropical, xline(40))
 
-twoway scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
-	legend(on) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f)) || ///
-	lfit soil tropical, legend(label(3 "Soil vs. Tropical") label(4 "Desert vs. Tropical")) || lfit desert tropical, xline(40)
+
+
+
 
 //Let's save the original graph
 twoway (scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
@@ -166,13 +161,13 @@ reg rgdppc_2000 soil tropical cont_africa, vce(robust)
 //use the variable legor_gbr, which equals 1 if the legal origin is common law.
 //note that the 'if' should come before the comma
 //COMMAND:
-reg rgdppc_2000 soil tropical cont_africa if legor_gbr==1, robust
+
 
 //what about restricting our samples to countries not in Europe or North America?
 //use the cont_europe and cont_north_america variables
 //COMMAND:
-reg rgdppc_2000 soil tropical cont_africa if cont_europe!=1 & cont_north_america!=1, robust
-reg rgdppc_2000 soil tropical cont_africa if cont_europe==0 & cont_north_america==0, robust
+
+
 
 
 //let's try weighting by population
@@ -238,6 +233,7 @@ gen fitted_v2 = _b[soil]*soil + _b[tropical]*tropical + _b[cont_africa]*cont_afr
 
 //Are fitted and fitted_v2 the same? How can we check?
 //COMMAND:
+
 
 
 //Let's graph these
