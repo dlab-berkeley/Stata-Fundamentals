@@ -154,12 +154,14 @@ i() is the variable the data will be at the level of
 j() will be how we're reshaping it*/
 //COMMAND:
 
-
+reshape wide age gender, i(famid) j(childid)
+list // to see if it worked
 
 //Now go back
 //COMMAND:
 
-
+reshape long
+list
 
 
 **********************************************
@@ -170,9 +172,8 @@ j() will be how we're reshaping it*/
 use income_part1, clear
 
 //Let's first reshape income_part1 to long format
-//COMMAND:
-
-
+//COMMMAND:
+reshape long inc ue, i(id) j(year) 
 
 //Now we merge in part 2 using what's called a many-to-one merge
 
@@ -221,7 +222,8 @@ display "The variable label for el_momnodirt is `el_momnodirt_lab'."
 //Use the --help extended_fcn-- file to make a local containing the format of el_momnodirt 
 //COMMAND:
 
-
+local el_momnodirt_format: f el_momnodirt
+display "the format of el_momnodirt is `el_momnodirt_format'"
 
 
 
@@ -256,9 +258,9 @@ foreach var in free_chl_yn tot_chl_yn endvf {
 //Try it yourself! Use another word in place of var.
 //COMMAND:
 
-
-
-
+foreach fudge in free_chl_yn tot_chl_yn endvf {
+	reg `fudge' treatw
+}
 
 //Instead of using foreach fudge in, we can also use foreach fudge of
 //This works only with variables
@@ -279,9 +281,9 @@ foreach fudge in free_chl_yn tot_chl_yn endvf {
 //Outcomes: el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat
 //COMMAND: 
 
-
-
-
+foreach var in el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat {
+	reg `var' treath tinroof
+}
 
 
 /*When running a long loop, you may want to turn off the --more-- command
@@ -313,8 +315,9 @@ forvalues X=1(1)10 {
 //Now set up a loop to display 1 to 9, display only odd numbers.
 //COMMAND: 
 
-
-
+forvalues x = 1(2)9 {
+	disp "The number is `x'."
+}
 
 //You can even loop over numeric values in variable names
 forvalues fudge=1/8 {
@@ -332,9 +335,11 @@ foreach var of local watervars {
 //Outcomes: el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat
 //COMMAND: 
 
-
-
-
+local B el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat
+foreach var of local B {
+ reg `var' treath
+ display "look! it's the variable `var'"
+ }
 
 
 * NESTED LOOPS
@@ -363,12 +368,18 @@ foreach var of varlist `wvar'{
 //How might you keep track of what's going on within the loop?
 //COMMAND: 
 
-
-
-
-
-
-
+local wvar free_chl_yn tot_chl_yn endvf 
+global controlvars tinroof respage1 respage2 respage3 kiswahili english total_households total_kids
+local i=1 
+foreach var of varlist `wvar'{
+	forvalues X=1/8 {
+		display "Regression `i': We're regressing `var' on treat`X'"
+		reg `var' treat`X'
+		display "Regression `i': We're regressing `var' on treat`X' with controls"
+		reg `var' treat`X' $controlvars
+		local i=`i'+1
+	}
+}
 
 
 
@@ -414,10 +425,9 @@ outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) br
 //Append another regression of free_chl_yn on treatw with controls, using the robust specification and clustering on the villageid
 //COMMAND:
  
+reg free_chl_yn treatw $controlvars, robust cluster(villageid) 
+outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) bracket ctitle(Clustered) 
 
- 
- 
- 
 
 //The below does the same thing for a .tex file
 //Here, I also use two loops, first over three variables
