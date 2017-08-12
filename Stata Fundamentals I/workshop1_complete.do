@@ -1,9 +1,8 @@
 ******************************* 
 *	STATA INTENSIVE: WORKSHOP 1
-*	SPRING 2017, D-LAB
-*	SAIKA BELAL
-*	MAR 1, 2017
+*	FALL 2017, D-LAB
 ********************************
+
 
 
 **************************************************
@@ -934,5 +933,13 @@ reg wage age i.race grade collgrad married union ttl_exp tenure i.industry c_cit
 
 */
 
+gen annual_inc = wage*hours*52
 
+twoway (kdensity annual_inc if collgrad==1) (kdensity annual_inc if collgrad==0), ///
+legend(label(1 "College Grad") label(2 "Non Grad"))
+
+twoway (scatter annual_inc grade) (lfit annual_inc grade )
+
+twoway (lfit annual_inc grade if race==1 )(lfit annual_inc grade  if race==2), ///
+legend(label(1 "White") label(2 "Black"))
 

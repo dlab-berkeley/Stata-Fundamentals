@@ -1,8 +1,6 @@
 ******************************* 
 *	STATA INTENSIVE: WORKSHOP 1
-*	SPRING 2017, D-LAB
-*	SAIKA BELAL
-*	MAR 1, 2017
+*	FALL 2017, D-LAB
 ********************************
 
 
@@ -74,8 +72,8 @@ pwd // check the current working directory
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My resuly window shows this:*/   
 
-cd "/Users/SSB/Box Sync/D-lab/stata/Workshop series/RRR"
 
+   
 /***
 		We paste this command above so that next time we can just run this 
 		do-file from the top and it will run smoothly. We will not need to
@@ -191,16 +189,6 @@ don't			 have
 
 (2) Suspend all 3 lines of code using one pair of /**/
 */ 
-
-sum /* presents summary statistics*/
-
-sum // presents summary statistics
-
-/*
-des
-sum 
-list
-*/
 
 
 
@@ -336,10 +324,6 @@ Variable: wage married
 
 
 
-sort wage
-
-list wage married  in -3/l
-
 
 
 
@@ -401,10 +385,6 @@ variables: wage married
 (hint: Use the operator "if")
 */
 
-sum union
-
-count if union==1
-count if union 
 
 
 * MISSING VALUES *
@@ -448,13 +428,6 @@ variables: wage tenure
 */
 
 
-codebook tenure
-sum wage if tenure>=10 & tenure<.
-sum wage if tenure>=10 & tenure!=.
-
-sum wage if tenure<=10
-
-sum wage if tenure>=10
 
 
 **************************************************************
@@ -516,24 +489,6 @@ more elegant way using locals which you'll learn in later workshops. ]
 
 
 */
-
-
-
-codebook hours
-sum hours if hours!=.
-sum hours 
-
-
-sum age
-
-sum hours if collgrad==1
-
-sum wage if grade>=12 & grade!=.
-sum wage if collgrad==1
-
-
-sum hours
-sum wage if hours>37.21811 & hours<.
 
 
 
@@ -618,9 +573,6 @@ Variables: race c_city
 
 
 
-tab race
-
-sum wage if race!=1 & race!=.
 
 
 * TABULATE, SUMMARIZE
@@ -646,10 +598,6 @@ variables: married wage
 (2) Find average wage by industry.
 variables: industry wage
 */
-
-tab married, summarize(wage) st
-
-tab industry, summarize(wage) mean st
 
 
 
