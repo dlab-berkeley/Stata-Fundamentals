@@ -12,10 +12,9 @@ graph drop _all
 
 set more off
 
-
 cap log close
 
-* Use file > change directory >> go to the folder you want to save files to *
+* Use file > change directory >> go to the folder you want to save files to 
 * (it can be the folder where you saved this do-file)
 cd "/Users/isabellecohen/Dropbox/DLab/Data Visualization"
 
@@ -23,6 +22,35 @@ pwd
 
 
 ********************************************************************************
+*TABLE OF CONTENTS:
+*1. Scatter Plots
+	*1.1 Markers
+	*1.2 Labelling points
+	*1.3 Adding titles
+	*1.4 Legends
+	*1.5 Axis
+*2. Line Plots
+*3. Saving and Exporting Graphs 
+	*3.1 Savings graphs
+	*3.2 Exporting graphs
+	*3.3 3.3 Exporting graphs to Latex
+*4. Graphing Results
+	*4.1 Using coefplot
+	*4.2 Using parmest
+	*4.3 More general approach
+*5. Additional Materials
+	*5.1 Aspect ratio
+	*5.2 Jitter
+	*5.3 Graph recordings
+********************************************************************************
+
+
+********************************************************************************
+*                                                                              *
+*                    		1. Scatter Plots                                   *
+*                                                                              *
+********************************************************************************
+
 
 /**
 The Program Effort Data
@@ -95,6 +123,7 @@ summarize
 
 * Adding labels to the dataset *
 
+*** help label
 
 label define country_lbl ///
 	1 "Bolivia" 2 "Brazil" 3 "Chile" 4 "Colombia" 5 "CostaRica" 6 "Cuba" ///
@@ -105,7 +134,7 @@ label define country_lbl ///
 
 label values country  country_lbl
 
-	
+
 
 
 ********************************************************************************
@@ -113,9 +142,6 @@ label values country  country_lbl
 * a very very simple graph *
 
 graph twoway scatter change setting 
-
-set scheme s1mono
-
 
 * label variables
 label variable country "country"
@@ -128,8 +154,10 @@ label variable change "percent decline in the crude birth rate"
 
 save effort.dta, replace
 
+*set scheme
+set scheme s1mono
 
-* re-run graph with labels
+* re-run graph with labels and scheme
 graph twoway scatter change setting 
 
 
@@ -142,7 +170,7 @@ graph twoway scatter change setting
 /** 
 
 
-Many graphing commands end up being very long thereforfe use
+Many graphing commands end up being very long; one option is to use
 
    #delimit ; 
 
@@ -150,13 +178,9 @@ The #delimit command resets the character that marks the end of a command.
 
 
 Commands in a do-file may be delimited with a carriage return or a semicolon.
-
 When a do-file begins, the delimiter is a carriage return.  
-
 The command " #delimit ; " changes the delimiter to a semicolon.
-
 To restore the carriage return delimiter inside a file, use #delimit cr
-
 **/
 
 
@@ -166,17 +190,19 @@ graph twoway (scatter change setting)
 #delimit cr
 
 
-
+graph twoway (scatter change setting) ///
+             (lfit change setting)
 
 
 ********************************************************************************
 *                                                                              *
-*                    Markers                                                   *
+*                    1.1 Markers                                               *
 *                                                                              *
 ********************************************************************************
 
 help graph_twoway
-help scatter
+help scatter /* click on: marker_options */
+
 
 * this will remind you of the main marker symbols that are available *
 
@@ -189,44 +215,49 @@ palette symbolpalette
 
 * solid circle
 #delimit ;
-graph twoway (scatter change setting, msymbol(circle));
+graph twoway (scatter change setting, msymbol(circle)); 
 #delimit cr
 
-// another way to write it
+* another way to write it
 #delimit ;
-graph twoway (scatter change setting, msymbol(O));
+graph twoway (scatter change setting, msymbol(O)); 
 #delimit cr
-
 
 
 * solid triangle
 #delimit ;
-graph twoway (scatter change setting, msymbol(triangle)); 
+graph twoway (scatter change setting, msymbol(triangle))
 #delimit cr
 
 
-// another way to write it
+* another way to write it
 #delimit ;
-graph twoway (scatter change setting, msymbol(T)); 
+graph twoway (scatter change setting, msymbol(T));
 #delimit cr
 
 
 /* Give it a try 
 EXERCISE: */ 
 
-
 * hollow triangle
+
 #delimit ;
-graph twoway (scatter change setting, msymbol(Th)); 
+graph twoway (scatter change setting, msymbol(triangle_hollow));
 #delimit cr
 
-
+#delimit ;
+graph twoway (scatter change setting, msymbol(Th));
+#delimit cr
 
 * hollow circle
+
 #delimit ;
-graph twoway (scatter change setting, msymbol(Oh)); 
+graph twoway (scatter change setting, msymbol(circle_hollow));
 #delimit cr
 
+#delimit ;
+graph twoway (scatter change setting, msymbol(Oh));
+#delimit cr
 
 
 
@@ -240,84 +271,81 @@ graph twoway (scatter change setting [w=effort], msymbol(circle_hollow));
 * adding color *
 help colorstyle
 #delimit ;
-graph twoway (scatter change setting, msymbol(O) mcolor(green) );
+graph twoway (scatter change setting, msymbol(O) mcolor(emerald));
 #delimit cr
+
 
 /* what if you want to change the size of the markers?
-EXERCISE */
-*hint:
-help marker_options
+EXERCISE: */
+*hint: help marker_options
 
 #delimit ;
-graph twoway (scatter change setting, msymbol(O)mcolor(green) msize(large));
+graph twoway (scatter change setting, 
+			  msymbol(O) mcolor(emerald) msize(vlarge));
 #delimit cr
 
 
-**EXTRA:
+* add a second variable *
+* use parantheses to insert another "graph" 
 
-// adjust intensity
+* Stata will also format the two variables differently by default 
+* but it may not look the way you want
 #delimit ;
-graph twoway (scatter change setting, msymbol(O) mcolor(green*.5) );
+graph twoway (scatter change setting)
+			 (scatter effort setting);
 #delimit cr
 
-// adjust line and fill color 
-#delimit ;
-graph twoway (scatter change setting, msymbol(O) mlcolor(green) mfcolor(yellow) );
-#delimit cr
+/*Try formatting the two plots differently yourself
+EXERCISE: */
 
-// add a second variable
-// use parantheses to insert another "graph" 
-
-// Stata will also format the two variables differently by default 
-// but it may not look the way you want
 #delimit ;
-graph twoway (scatter change setting )
-			 (scatter effort setting  );
-#delimit cr
-
-// you can also format the two graphs yourself
-#delimit ;
-graph twoway (scatter change setting, msymbol(O) mlcolor(green) mfcolor(yellow) )
-			 (scatter effort setting, msymbol(O) mlcolor(green) mfcolor(green*.3) );
+graph twoway (scatter change setting, mcolor(emerald) msize(large))
+			 (scatter effort setting, msymbol(Th) mcolor(orange) msize(large));
 #delimit cr
 
 
-
+#delimit ;
+graph twoway (scatter change effort setting
+			  , mcolor(emerald orange) 
+			    msize(large large) msymbol(. Th));
+#delimit cr
 
 ********************************************************************************
 *                                                                              *
-*                    Labelling Points                                          *
+*                    1.2 Labelling Points                                      *
 *                                                                              *
 ********************************************************************************
 		   
 
 
-* using the variable country as a label for the points *
+* using the variable country as a label for the points 
 
-help scatter /* click on: marker_options */
-// see  marker_label_options 
+help scatter 
+// see marker_label_options 
 
-graph twoway (scatter change setting, mlabel(country) ) /* EDIT */ 
+graph twoway (scatter change setting, mlabel(country))
+
+
+
 
 // suppose I want the country numbers to be added to the country label (optional!)
-tab country // there are no numbers
-help labelbook
 numlabel country_lbl, add
+graph twoway (scatter change setting, mlabel(country))
 
 * this graph is too cluttered *
 
 * the position of the marker labels can be rotated using mlabposition *
+// see  marker_label_options
 
 // place marker labels beneath markers
 help clockposstyle
-graph twoway (scatter change setting, mlabel(country) mlabposition(6) ) /* EDIT */ 
+graph twoway (scatter change setting, mlabel(country) mlabp(6)) 
 
-* positioning labels at nine o'clock on the watch face *
-
-graph twoway (scatter change setting , mlabel(country) mlabposition(9)) /* EDIT */ 
+/* Now position the labels at nine o'clock on the watch face 
+EXERCISE: */
 	
+graph twoway (scatter change setting, mlabel(country) mlabp(9)) 
 
-	
 	
 /**
 
@@ -341,18 +369,17 @@ graph twoway (scatter change setting, mlabel(country) mlabv(pos) )
 
 * the graph is still a wee bit cluttered however *
 
-replace pos = 9 if country==19
 * TrinidadTobago *
+replace pos = 8 if country==19
 
-replace pos = 11 if country==5
 * CostaRica *
+replace pos = 12 if country==5
 
-replace pos = 2 if country==16
 * Panama *
+replace pos = 2 if country==16
 
-replace pos = 2 if country==15 
 *Nicaragua* 	
-	
+replace pos = 2 if country==15 	
 	
 * positioning labels on the watch face according to the variable "pos" *
 	
@@ -362,7 +389,7 @@ graph twoway (scatter change setting, mlabel(country) mlabv(pos) )
 
 /**
 
-I am not convinced the numbers alongside the country labels are that useful.
+I'm not convinced the numbers alongside the country labels are that useful.
 
 May get confused for some sort of ranking.
 
@@ -370,21 +397,20 @@ Let us remove them from the graph.
 
 **/
 
-
+//  List names of value labels
 label dir
+
 
 numlabel country_lbl, remove
 
 
-graph twoway (scatter change setting, mlabel(country) mlabv(pos) ) 
-
-
+graph twoway (scatter change setting, mlabel(country) mlabv(pos)) 
 
 
 
 ********************************************************************************
 *                                                                              *
-*                     Adding Titles                                            *
+*                    	 1.3 Adding Titles                                     *
 *                                                                              *
 ********************************************************************************			 
 
@@ -412,9 +438,9 @@ help title_options
 
 
 #delimit ;
-graph twoway (scatter change setting)
-              , 
-		     title("Fertility Decline by Social Setting" " ")
+graph twoway (scatter change setting, mcolor(emerald))
+			 , 
+			 title("Fertility Decline by Social Setting" " ")
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") ;
 #delimit cr		
@@ -439,12 +465,23 @@ graph twoway (scatter change setting)
 			 caption("caption goes here") ;
 #delimit cr
 
+*Note that the " " in the title gives you a space between the title and the graph
+/*What if you wanted to create a title where the words were on two lines?
+EXERCISE: */
+
+#delimit ;
+graph twoway (scatter change setting, mcolor(emerald))
+			 , 
+			 title("Fertility Decline" "by Social Setting" " ")
+             ytitle("Fertility Decline")  
+			 xtitle("Index of Social Setting") ;
+#delimit cr		
 
 
 			 	 
 ********************************************************************************
 *                                                                              *
-*                           Legends                                            *
+*                           	1.4 Legends                                    *
 *                                                                              *
 ********************************************************************************			 
 
@@ -517,7 +554,7 @@ graph twoway (scatter change setting)
 		     title("Fertility Decline by Social Setting" " ")
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") 		 
-			 legend(col(1))
+			 legend(cols(1))
 			 ;
 #delimit cr
 
@@ -532,12 +569,14 @@ graph twoway (scatter change setting)
 		     title("Fertility Decline by Social Setting" " ")
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") 		 
-			 legend(col(1) subtitle("This is my legend"))
+			 legend(cols(1) subtitle("This is my legend"))
 			 ;
 #delimit cr
 
 
-* altering the position of the legend *
+/*What about altering the position of the legend?
+Hint: help legend_options
+EXERCISE: */
 
 #delimit ;
 graph twoway (scatter change setting)
@@ -546,10 +585,9 @@ graph twoway (scatter change setting)
 		     title("Fertility Decline by Social Setting" " ")
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") 		 
-			 legend(col(1) pos(12) subtitle("This is my legend"))
+			 legend(cols(1) subtitle("This is my legend") pos(7))
 			 ;
 #delimit cr
-* position 12 refers to twelve o'clock on a watch face *
 
 
 
@@ -567,7 +605,7 @@ graph twoway (scatter change setting)
 			 ;
 #delimit cr
 
-// Remove a legend item
+* change the order without re-titling 
 #delimit ;
 graph twoway (scatter change setting)
              (lfit change setting) 
@@ -576,7 +614,20 @@ graph twoway (scatter change setting)
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") 		 
 			 legend(subtitle("This is my legend")
-			        order( 1 "Fertility"))
+			        order(2 1))
+			 ;
+#delimit cr
+
+* change the title without re-ordering 
+#delimit ;
+graph twoway (scatter change setting)
+             (lfit change setting) 
+              , 
+		     title("Fertility Decline by Social Setting" " ")
+             ytitle("Fertility Decline")  
+			 xtitle("Index of Social Setting") 		 
+			 legend(subtitle("This is my legend")
+			        label(1 "Dot") label(2 "Line"))
 			 ;
 #delimit cr
 
@@ -610,13 +661,11 @@ graph twoway (scatter change setting)
 		     title("Fertility Decline by Social Setting" " ")
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") 		 
-			 legend(ring(0) pos(5)subtitle("This is my legend")
+			 legend(ring(0) pos(10)subtitle("This is my legend")
 			        order(1 "Dot" 2 "Line"))
 			 ;
 #delimit cr
-
-
-						
+			
 			
 /*
 
@@ -658,7 +707,7 @@ Interpretation of ring()
 	
 ********************************************************************************
 *                                                                              *
-*                           Axis                                               *
+*                           	1.5 Axis                                       *
 *                                                                              *
 ********************************************************************************
 
@@ -738,9 +787,6 @@ only the axes to us.
 **/
 
 
-
-
-
 * changing scales *
 
 help axis_scale_options
@@ -759,7 +805,6 @@ graph twoway (scatter change setting)
 			 legend(off)
 			 ;			 
 #delimit cr
-
 
 
 
@@ -822,28 +867,23 @@ graph twoway (scatter change setting)
 
 
 
-/**
-
-in the label options we specify the rule label 0 to 50 in steps of 5 on the
-y axis and 0 to 100 in steps of 5 on the x axis (without writing out each
+/*We can also use the label options to specify the rule label 0 to 50 in steps of 
+5 on the y axis and 0 to 100 in steps of 5 on the x axis (without writing out each
 number in steps of 5)
-
-**/
-
+EXERCISE: */
 
 #delimit ;
 graph twoway (scatter change setting)
              (lfit change setting) 
 			 ,
-			 ylabel(0(5)100)
-			 xlabel(0(5)50)
+			 ylabel(0(5)50)
+			 xlabel(0(5)100)
 		     title("Fertility Decline by Social Setting" " ")
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") 		 
 			 legend(off)
-			 ;
-#delimit cr	
-			
+			 ;	
+#delimit cr	 
 			
 			
 * adding ticks every 10 units *
@@ -865,8 +905,10 @@ graph twoway (scatter change setting)
 
 
 
-
-* adding minor ticks 5 minor ticks *
+*What about adding minor ticks?
+/*Add five minor ticks to the y and x axis.
+help axis_label_options
+EXERCISE: */
 
 #delimit ;
 graph twoway (scatter change setting)
@@ -880,6 +922,7 @@ graph twoway (scatter change setting)
 			 legend(off)
 			 ;	
 #delimit cr	
+
 
 
 
@@ -908,12 +951,11 @@ graph twoway (scatter change setting)
 #delimit cr	
 
 		 
-
-/** MAY SKIP THIS **/
+		 
 		 
 * grids  *
 
-
+help axis_label_options
 
 #delimit ;
 graph twoway (scatter change setting)
@@ -945,31 +987,29 @@ graph twoway (scatter change setting)
 #delimit cr	
 	
 	
-* grids lines patterns *
+/*Specify a line pattern for the grid
+help axis_label_options
+EXERCISE: */
 
 #delimit ;
 graph twoway (scatter change setting)
              (lfit change setting) 
 			 ,
-			 ylabel(, grid glpatter(shortdash)	)
-			 xlabel(, grid)
-		     title("Fertility Decline by Social Setting" " ")
+			 ylabel(, grid glpattern(dash)) // makes gridlines dashes
+			 xlabel(, grid glp(dash))
+		     title("Fertility Decline by Social Setting" " ") // makes title
              ytitle("Fertility Decline")  
 			 xtitle("Index of Social Setting") 		 
 			 legend(off)
-			 ;				
-#delimit cr				 
-		 
-
-/** END SKIP  **/
-
+			 ;	
+#delimit cr	
 
 ********************************************************************************
 
 
 ********************************************************************************
 *                                                                              *
-*                    Line plots                                                *
+*                   		2. Line Plots                                 	   *
 *                                                                              *    
 ********************************************************************************
 
@@ -977,8 +1017,6 @@ graph twoway (scatter change setting)
 
 
 sysuse uslifeexp, clear
-
-describe
 
 * a simple line plot *
 
@@ -989,7 +1027,7 @@ graph twoway line le_wmale le_bmale year
 /**
 
 If you are puzzled by the dip prior to 1920 
-just search "US life expectancy 1918" using Duck Duck Go.
+just search "US life expectancy 1918" 
 
 **/
 
@@ -1013,26 +1051,25 @@ graph twoway (line le_wmale le_bmale year , lcolor(green red) )
 help linepatternstyle
 
 #delimit
-graph twoway (line le_wmale le_bmale year , lcolor(green red) lpatter(dash dot ))
+graph twoway (line le_wmale le_bmale year , lpatter(dash dash_dot ))
               , 
 			  title("U.S. Life Expectancy") subtitle("Males") 
 	          legend( order(1 "White men" 2 "Black men")) ;
 #delimit cr
 		   
 
-* altering the line width *
-
+/* Now let's altering the line width; set them to thin and thick
 help linewidthstyle
-
+EXERCISE: */
 
 #delimit
-graph twoway (line le_wmale le_bmale year , lwidth(thin thick))
+graph twoway (line le_wmale le_bmale year , 
+			  lpatter(dash dash_dot ) 
+			  lwidth(thin thick))
               , 
 			  title("U.S. Life Expectancy") subtitle("Males") 
 	          legend( order(1 "White men" 2 "Black men")) ;
 #delimit cr
-
-
 
 
 
@@ -1041,7 +1078,16 @@ graph twoway (line le_wmale le_bmale year , lwidth(thin thick))
 
 ********************************************************************************
 *                                                                              *
-*                    Saving Graphs                                             *
+*              		 3. Saving and Exporting Graphs                            *
+*                                                                              *
+********************************************************************************	   
+
+
+
+
+********************************************************************************
+*                                                                              *
+*                    		3.1 Saving Graphs                                  *
 *                                                                              *
 ********************************************************************************	   
 
@@ -1110,6 +1156,7 @@ graph dir
 
 graph describe Graph
 
+
 * discards a graph stored in memory *
 
 graph drop Graph
@@ -1133,7 +1180,7 @@ graph dir
 
 ********************************************************************************
 *                                                                              *
-*                    Exporting Graphs                                          *
+*                    		3.2 Exporting Graphs                               *
 *                                                                              *
 ********************************************************************************
 
@@ -1164,7 +1211,7 @@ here are some potential formats
 .emf	Windows Enhanced Metafile	
 .pdf	Portable Document Format	
 
-emf -- works well with word
+empf -- works well with word
 eps -- frequently used for Latex
 png -- useful for displaying on websites
 
@@ -1175,7 +1222,6 @@ png -- useful for displaying on websites
 
 #delimit ;
 graph twoway (scatter drate medage, msymbol(circle))
-			(qfitci drate medage)
               ,
 			  name(g3, replace);
 #delimit cr	
@@ -1201,15 +1247,21 @@ graph export "g3.png", replace
 * portable document format *
 graph export "g3.ps", replace
 
+*It is not necessary to name the graph in order to export
+
+#delimit ;
+graph twoway (scatter drate medage, msymbol(circle));
+#delimit cr	
 
 * this is a pdf format *
 
-graph export "g3.pdf", replace
+graph export "g4.pdf", replace
+
 
 
 /**
 
-here is a useful wee page on file types etc
+here is a useful web page on file types etc
 
 https://www.ssc.wisc.edu/sscc/pubs/4-23.htm
 
@@ -1220,7 +1272,7 @@ https://www.ssc.wisc.edu/sscc/pubs/4-23.htm
 
 ********************************************************************************
 *                                                                              *
-*                    Exporting Graphs to Latex                                 *
+*                    3.3 Exporting graphs to Latex                             *
 *                                                                              *
 ********************************************************************************
 
@@ -1247,8 +1299,6 @@ graph2tex does two things
 
 findit graph2tex
 
-net install http://www.ats.ucla.edu/stat/stata/ado/analysis/graph2tex.pkg
-
 	#delimit ;
 twoway (scatter divorce marriage) 
         , 
@@ -1258,9 +1308,7 @@ twoway (scatter divorce marriage)
 		xtitle(" " "Number of Marriages") 		 
 		note("note:State data excluding Nevada")
 		legend(off)
-		scheme(s1mono)
-		name(myplot, replace)
-		;
+		scheme(s1mono);
 #delimit cr
 
 graph2tex, epsfile(myplot)	
@@ -1290,11 +1338,16 @@ http://www.ats.ucla.edu/stat/stata/latex/graph_stata_latex.htm
 
 
 
+********************************************************************************
+*                                                                              *
+*              		 		4. Graphing Results                                *
+*                                                                              *
+********************************************************************************	   
 
 
 ********************************************************************************
 *                                                                              *
-*                   Graphing Results   -- with coefplot                                         *
+*                   		4.1 Using coefplot                                 *
 *                                                                              *    
 ********************************************************************************		 
 
@@ -1437,121 +1490,10 @@ http://www.stata.com/meeting/germany14/abstracts/materials/de14_jann.pdf .
 
 **/
 
-********************************************************************************
-
-/**
-
-Finally, the graph from one of my old papers
-
-Gayle, Vernon, and Paul S. Lambert. "Using quasi-variance to communicate 
-   sociological results from statistical models." 
-   Sociology 41.6 (2007): 1191-1208.
-
-**/
-
-
-clear
-input region beta lower upper source
-0	0	0	0 1
-1	0.0943551	0.1143471	0.0743631 1
-2	0.1209922	0.1419642	0.1000202 1
-3	0.148519	0.170275	0.126763  1
-4	0.1302653	0.1510413	0.1094893 1
-5	0.3158952	0.3368672	0.2949232 1
-6	0.3567166	0.3765126	0.3369206 1
-7	0.2606339	0.2819979	0.2392699 1
-8	0.1741903	0.1981023	0.1502783 1
-9	0.2696731	0.2914291	0.2479171 1
-0.2	0	0.0170324	-0.0170324  2
-1.2	0.0943551	0.1049783	0.0837319 2
-2.2	0.1209922	0.133399	0.1085854 2
-3.2	0.148519	0.1620626	0.1349754 2
-4.2	0.1302653	0.1423389	0.1181917 2
-5.2	0.3158952	0.3281844	0.303606 2
-6.2	0.3567166	0.3669282	0.346505 2
-7.2	0.2606339	0.2734131	0.2478547 2
-8.2	0.1741903	0.1910855	0.1572951 2
-9.2	0.2696731	0.2832559	0.2560903 2
-end 
-summarize
-label variable region "GOR region"
-label variable beta "Parameter estimates"
-label variable upper "Upper bound"
-label variable lower "Lower bound"
-label define regl 0 "North East" 1 "North West" 2 "Yorks" 3 "E Mids"  ///
-  4 "W Mids" 5 "East" 6 "South East" ///
-  7 "South West" 8 "Inner London" 9 "Outer London"  
-  
-  
-label values region regl
-tab region
-
-
-summarize
-tab region
-
-
-#delimit ;
-graph twoway 
-	(scatter beta region if source==1, msymbol(circle_hollow) mlcolor(gs0)  msize(medium)) 
-	(scatter beta region if source==2, msymbol(diamond_hollow) mlcolor(gs0)  msize(medium))
-	(rspike upper lower region if source==1, blwidth(medium)  ) 
-	(rspike upper lower region if source==2, blwidth(medthick) ) 
-	, 
-	ytitle("") xtitle("") 
-	yscale(range(-0.02 0.39)) xscale(range(-0.3,9.5))
-	xlabel(0 1 2 3 4 5 6 7 8 9, valuelabel alternate ) 
-	title("Predictions of Good Health, by Government Office Region", 
-	size(large) justification(center) ) 
-	subtitle("Confidence intervals of regression coefficients, by estimation method",	
-	size(medsmall) justification(center) ) 
-	note("Source: UK Census 2001 SARS for England, n=1099294." 
-	"Model 1: Logistic regression predicting 'Good Health'. Other controls for education and gender" 
-	"Gayle and Lambert (2007 p.1195)", justification(left) ) 
-	legend( order(1 2) 
-	label(1 "Conventional regression") label(2 "Quasi-Variance") );
-#delimit cr
-
-			 
-/**
-
-Useful References
-
-Cox, Nicholas J. Speaking Stata Graphics: A Collection from the Stata Journal. 
- Stata Press, 2014
-
-Gayle, Vernon, and Paul S. Lambert. "Using quasi-variance to communicate 
-   sociological results from statistical models." 
-   Sociology 41.6 (2007): 1191-1208.
-
-Kohler, Ulrich, and Frauke Kreuter. Data analysis using Stata. 
- Stata press, 2012.
-
-Jann, Ben. "Plotting regression coefficients and other estimates." 
- Stata Journal 14.4 (2014): 708-737.
-
-Lewandowsky, Stephan, and Ian Spence. "The perception of statistical graphs." 
- Sociological Methods & Research 18.2-3 (1989): 200-242.
-
-Long, J. Scott. The workflow of data analysis using Stata. Stata Press, 2009
-
-Mitchell, Michael N. A visual guide to Stata graphics. Stata Press, 2008.
-
-Newson, Roger B. "From resultssets to resultstables in Stata."
- Stata Journal 12.2 (2012): 191.
-
-
-http://www.ats.ucla.edu/stat/stata/library/GraphExamples/
-
-http://www.stata.com/features/example-graphs/
-
-**/
-
-
 
 ********************************************************************************
 *                                                                              *
-*                    Graphing Results                                          *
+*                    	4.2 Using parmest                                      *
 *                                                                              *
 ********************************************************************************
 
@@ -1589,7 +1531,7 @@ High School and Beyond survey.
 **/
 
 
-use "http://www.ats.ucla.edu/stat/stata/notes/hsb2", clear
+use "https://stats.idre.ucla.edu/stat/stata/notes/hsb2", clear
 
 numlabel _all, add
 
@@ -1655,7 +1597,10 @@ twoway (scatter estimate id if id>1 & id<5, msymbol(circle_hollow))
 
 
 ********************************************************************************
-
+*                                                                              *
+*                    4.3 More general approach                                 *
+*                                                                              *
+********************************************************************************
 
 /**
 
@@ -1665,7 +1610,7 @@ This is more general and can be adapted for other purposes.
 
 **/
 
-use "http://www.ats.ucla.edu/stat/stata/notes/hsb2", clear
+use "https://stats.idre.ucla.edu/stat/stata/notes/hsb2", clear
 
 numlabel _all, add
 
@@ -1740,7 +1685,7 @@ twoway
 	valuelabel alternate ) 
 	title("Standardised Reading Score and Ethnicity", 
 	size(large) justification(center) )
-	subtitle("Regression coefficients and confidence intervals", 
+	subtitle("Regression coefficients", 
 	size(medsmall) justification(center) ) 
 	note("Source: High School and Beyond, n=200." 
 	"Model 1: Regression model 'Reading Score' gender and ethnicity.", 
@@ -1754,18 +1699,14 @@ twoway
 
 
 ********************************************************************************
-********************************************************************************
-*                                                                              *
-*                   Aditional Material                                         *
+*                  	                                                           *
+*                 	 	5. Additional Materials                                 *
 *                                                                              *    
 ********************************************************************************
-********************************************************************************
-********************************************************************************
-
 
 ********************************************************************************
 *                                                                              *
-*                    Aspect Ratio                                              *
+*                    		5.1 Aspect ratio                                   *
 *                                                                              *    
 ********************************************************************************		 
 
@@ -1790,7 +1731,7 @@ graph twoway (line le_wmale le_bmale year , lwidth(thin thick) ) ///
              , 
 		     title("U.S. Life Expectancy") subtitle("Males") ///
 	         legend( order(1 "white" 2 "black")) ///
-		     aspectratio(0.2);
+		     aspectratio(.3);
 #delimit cr
 
 
@@ -1798,7 +1739,7 @@ graph twoway (line le_wmale le_bmale year , lwidth(thin thick) ) ///
 
 ********************************************************************************
 *                                                                              *
-*                    Jitter                                                    *
+*                    			5.2 Jitter                                     *
 *                                                                              *
 ********************************************************************************
 
@@ -1836,10 +1777,34 @@ Jittering solves this problem.
 
 **/
 
-scatter mpg weight, jitter(7) name(jitter, replace)
+scatter mpg weight, jitter(2) name(jitter, replace)
 
 graph combine nonjitter jitter 
 
+********************************************************************************
+*                                                                              *
+*                    		5.3 Graph Recordings                               *
+*                                                                              *
+********************************************************************************
+
+/*Another option is to manually make changes in the Stata graph editor
+One can "record" these changes by pressing the circle at the bottom right
+of the screen, and replay the recordings on the same graph or another graph.
+
+Replaying the changes can be done by:
+- opening the graph in the graph edit window and manually playing the recording
+after navigating to it, using the play button on the bottom right
+- play the recording within your do file, using the 
+graph play
+command
+- (LAST RESORT) opening the .grec recorded file and copying the commands from 
+within it, prefacing them with
+gr_edit
+in your do file
+
+For more information, see:
+help graph_editor##recorder
+*/
 
 ********************************************************************************
 
