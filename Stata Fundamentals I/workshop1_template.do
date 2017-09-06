@@ -25,12 +25,6 @@
 
 
 
-
-
-
-
-
-
 ****************************** 
 *         SETTING UP   		 *
 ******************************
@@ -84,7 +78,7 @@ pwd // check the current working directory
 
 /* Step 3: Open the data file */
 
-use nlsw88.dta , clear // open data file lifeexp.dta
+use nlsw88.dta , clear // open data file 
 
 /* You can also write: */
 
@@ -278,7 +272,8 @@ Very quick rundown of operators in Stata
 **********************************************
 *    EXAMINING A DATA SET: THE BASICS    	 *
 **********************************************
-
+**It is good practice to LOOK at your data before you start working with it
+** That way, you get an idea of its shape and the variables in it quickly
 
 * DESCRIBE
 
@@ -293,6 +288,9 @@ browse
 
 * BROWSE 
 br // browse data in data editor
+
+**What do the different colors mean?
+des married married_txt
 
 
 * LIST
@@ -368,9 +366,15 @@ sum wage
 sum wage if married==1 
 
 
+**How do we edit this command above if we want to look at married_txt?
+sum wage if married_txt=="Married"
 
 
+*Do you see any issues that might arrise from using a string variable?
+codebook married_txt
 
+*How is this variable different than married?
+br married married_txt
 
 //////////////////////////
 /*        CHALLENGE 	*/	
@@ -637,7 +641,20 @@ br if industry==2
 
 * CREATE VARIABLES * 
 
+*We can create numerical or string variables in Stata
 
+***Lets create a string variable
+gen married2="Married" if married==1
+replace married2="Single" if married==0
+
+*See how this differs from the numerical Married variable?
+br  married married2
+
+*For Married2 You must use the text "Married" in the exact spacing, spelling an capitilization 
+*For Married all you need is 1 or 0 - MUCH less text to enter with less chance for error
+
+
+**Lets create a numerical variable
 
 // create a variable that indicates highschool graduate
 // Be careful to think about (1) missing values 

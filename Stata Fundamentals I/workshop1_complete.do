@@ -292,6 +292,10 @@ br
 br // browse data in data editor
 
 
+**What do the different colors mean?
+des married married_txt
+
+
 * LIST
 
 list // lists the data
@@ -369,7 +373,15 @@ sum wage
 sum wage if married==1 
 
 
+**How do we edit this command above if we want to look at married_txt?
+sum wage if married_txt=="Married"
 
+
+*Do you see any issues that might arrise from using a string variable?
+codebook married_txt
+
+*How is this variable different than married?
+br married married_txt
 
 
 
