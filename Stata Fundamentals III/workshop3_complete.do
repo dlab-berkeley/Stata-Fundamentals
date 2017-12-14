@@ -17,7 +17,7 @@
 
 *Setting do-file basics:
 //We want to set a "global" like the one below, to store the file path to today's data
-*global mycomp "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals III/"
+global mycomp "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals III"
 // for my computer
 
 
@@ -41,84 +41,80 @@ cd "$mycomp"
 
 *APPEND DATASETS
 
-* Data for rouund 1, conducted for families 1 and 2
+*Data for round 1
 
 clear all 
-use child_round1.dta, clear
+use nlsw88.dta, clear
+
 
 count // how many observations in this dataset?
-sum famid // what is the range of family id numbers in this dataset?
+sum idcode // what is the range of family id numbers in this dataset?
 br // let's browse the data
 
 
 
-* Data for round 2, conducted for family 3
 
-use child_round2, clear
+* Data for round 2,
+
+use nlsw88_wave2.dta, clear
 
 count // how many observations in this dataset?
-sum famid // what is the range of family id numbers in this dataset?
+sum idcode // what is the range of family id numbers in this dataset?
 br // let's browse the data
 
 
 // how many observations should we have if we combine them?
 
-* Append
+* Append the data
 
-use child_round1, clear
-append using child_round2
+use nlsw88.dta, clear
+append using nlsw88_wave2.dta
 
 count // Do we have the correct number of observations?
-tab famid // Do we have all the expected family ids?
+sum idcode // Do we have all the expected ids?
 br // let's browse the data
 
 
-save child, replace
+save nlsw88_wave1and2.dta, replace
 
 
 
 * MERGE DATASETS
 
+* Data for wave 1 
+use nlsw88_wave1and2.dta, clear
 
-* Data for part 1 of the dataset which contain an id and information on income and unemployment insurance
-
-use income_part1, clear
-
-count 
-des // let's see how many variables are in this dataset
-isid id // check if id makes  a unique identifier
-duplicates report id// another way of checking if the combination of nr and year is unique
-sort id // for merging, it's good practice to sort the data first
-save income_part1, replace
+isid idcode // check if id makes  a unique identifier
+duplicates report idcode 
+duplicates list idcode
 
 
-
-* Data for part 1 of the dataset which contain an id and information on gender
-
-use income_part2, clear
+*Lets look at the second part of the dataset
+use nlsw88_childvars, clear
 
 count 
 des // let's see how many variables are in this dataset
-isid id // check if id makes  a unique identifier
-duplicates report id// another way of checking if the combination of nr and year is unique
-sort id // for merging, it's good practice to sort the data first
-save income_part2, replace
-
-
+isid idcode // check if id makes  a unique identifier
+duplicates report id // another way of checking if the combination of nr and year is unique
 
 * Merge
-use income_part1, clear
+use nlsw88_wave1and2.dta, clear
 
-merge 1:1 nr year using income_part2 //one-to-one merge
+merge 1:1 idcode using nlsw88_childvars //one-to-one merge
 
+*What does it mean to have different _merge values?
 tab _merge
+*What should we do with these observations?
+
 count
 des // how many variables should we have, including the new stata-created _merge variable?
 br
 rename _merge _merge_1 //rename _merge so you can merge again later w/o error
 
+drop _merge_1 //or drop merge
 
-save income, replace
+save nslw88_complete.dta, replace
+
 
 
 
@@ -127,62 +123,76 @@ save income, replace
 **********************************************
 
 *Load data
-use "$mycomp/income.dta", clear
+use nslw88_complete.dta, clear
 
-//This data is in "wide" format
-list //print the data to the screen
+//Some of tis data is in "wide" format
+list idcode childage1 childage2 childage3 childage4 in 1/10  //print the data to the screen
 
 //First, we want to try and reshape it to "long" format
-//Now, each row will be not a single individual, but an individual-year
-reshape long inc ue, i(id) j(year) 
-
-list //print again
-
-reshape wide //once changed, it's easy to change back
-reshape long //it's also easy to change back-back.
+//Now, each row will be not a single individual, but an individual-child
+reshape long childage, i(idcode) j(childidcode) 
 
 
-use "$mycomp/child.dta", clear
+list idcode childage in 1/10 //print again
 
-/*Take this data, and put it into "wide" format
-Right now, the data is organized at the family-child level
+isid idcode // no longer works
+
+isid idcode childidcode
+
+/* Now take this data, and put it back into "wide" format
+
+Right now, the data is organized at the individual-child level
 That means that each observation represents a child
-Instead, let's put the data at the family level, so each row is one family
+Instead, let's put the data at the individual level, so each row is one family
 
 Note that we need to specify i() and j() after the comma
 i() is the variable the data will be at the level of
 j() will be how we're reshaping it*/
+
 //COMMAND:
 
-reshape wide age gender, i(famid) j(childid)
-list // to see if it worked
+reshape wide childage, i(idcode) j(childidcode)
 
-//Now go back
-//COMMAND:
+//Once you've done a reshape, you can easily go back and forth by typing:
 
 reshape long
-list
+
+reshape wide
 
 
 **********************************************
 * I. 	APPENDING & MERGING - EXTENSION
 **********************************************
-//We could also have started by reshaping income_part1, then done a many-to-one merge
+//We could also have started by reshaping nlsw88_childvars, then done a many-to-one merge
 
-use income_part1, clear
+use nlsw88_childvars, clear
 
-//Let's first reshape income_part1 to long format
-//COMMMAND:
-reshape long inc ue, i(id) j(year) 
+//Let's first reshape nlsw88_childvars to long format
+//COMMAND:
 
-//Now we merge in part 2 using what's called a many-to-one merge
+reshape long childage, i(idcode) 
 
-merge m:1 id using income_part2
+*or, if we want to specify our j variable
+
+use nlsw88_childvars, clear
+
+reshape long childage, i(idcode) j(childidcode)
+
+//Now we merge in the full dataset using what's called a many-to-one merge
+
+// order at color is master:using
+
+merge m:1 idcode using nlsw88_wave1and2
 
 
 **********************************************
 * III. 	MACROS
 **********************************************
+
+//Imagine you want to do some analysis on our NLSW data
+use "$mycomp/nslw88_complete.dta", clear
+
+use nslw88_complete.dta, clear
 
 *LOCALS
 
@@ -193,40 +203,34 @@ disp "The local called i has the value `i'"
 local i=`i'+2
 disp "The local called i now has the value `i'"
 
-//Let's use WASHdlab
-use "$mycomp/WASHdlab.dta", clear
-
-summ free_chl_yn tot_chl_yn
+summ hours child_num
 return list
 
-//Calculate the ratio of average levels of free and total chlorine
-summ free_chl_yn
+//Calculate the ratio of hours worked to number of children
+summ hours
 return list
-local free=r(mean) // store the average in a local
+local hours=r(mean) // store the average in a local
 
 
-summ tot_chl_yn
+summ child_num
 return list
-local tot=r(mean) // store the average in a local
+local child_num=r(mean) // store the average in a local
 
-local ratio=round(`free'/`tot',.001)
-disp "The ratio of free to total chlorine is `ratio'"
+local ratio=round(`hours'/`child_num',.001)
+disp "The ratio of hours worked to number of children is `ratio'"
 
 //Let's check the math
-disp .2118126/.2505092
+disp 37.23/2.08
 
 //There are a number of built in commands Stata can use to make locals
-local el_momnodirt_lab: var label el_momnodirt
-display "The variable label for el_momnodirt is `el_momnodirt_lab'."
+local ttl_exp_lab: var label ttl_exp
+display "The variable label for ttl_exp is `ttl_exp_lab'."
 
-//Use the --help extended_fcn-- file to make a local containing the format of el_momnodirt 
+//Use the --help extended_fcn-- file to make a local containing the format of ttl_exp 
 //COMMAND:
 
-local el_momnodirt_format: f el_momnodirt
-display "the format of el_momnodirt is `el_momnodirt_format'"
-
-
-
+local berkeley : format ttl_exp
+display "The variable format for ttl_exp is `berkeley'."
 
 *GLOBALS
 
@@ -245,44 +249,47 @@ display "$mycomp"
 
 *FOREACH LOOPS
 
-reg free_chl_yn treatw
-reg tot_chl_yn treatw
-reg endvf treatw
+reg wage grade
+reg ttl_exp grade
+reg hours grade
 
 //This will do the exact same thing
-foreach var in free_chl_yn tot_chl_yn endvf {
-	reg `var' treatw
+foreach var in wage ttl_exp hours {
+	reg `var' grade
 }
 
 //var is just a placeholder, it could be anything
 //Try it yourself! Use another word in place of var.
 //COMMAND:
 
-foreach fudge in free_chl_yn tot_chl_yn endvf {
-	reg `fudge' treatw
+foreach fudge in wage ttl_exp hours {
+	reg `fudge' grade
 }
+
 
 //Instead of using foreach fudge in, we can also use foreach fudge of
 //This works only with variables
-foreach fudge of varlist free_chl_yn tot_chl_yn endvf {
-	reg `fudge' treath
+foreach fudge of varlist wage ttl_exp hours {
+	reg `fudge' grade
 }
 
 /*You may notice that the output from inside a loop is not
 quite as well documented as from outside a loop
 It can be helpful to add display lines explaining where the code is*/
-foreach fudge in free_chl_yn tot_chl_yn endvf {
-	disp "********This regresses `fudge' on treath**********"
-	reg `fudge' treath
+foreach fudge in wage ttl_exp hours {
+	disp "********This regresses `fudge' on grade **********"
+	reg `fudge' grade
 }
 
-//Regress each of the below outcome variables individually on treath, using a loop
-//Control for whether the respondent has a tin roof, using the variable tinroof
-//Outcomes: el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat
+//Regress each of the below outcome variables individually on grade, using a loop
+//Control for the respondent's age, using the variable age
+//Outcomes: wage ttl_exp hours tenure
+
 //COMMAND: 
 
-foreach var in el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat {
-	reg `var' treath tinroof
+foreach fudge in wage ttl_exp hours tenure {
+	disp "********This regresses `fudge' on grade, controlling for age **********"
+	reg `fudge' grade age
 }
 
 
@@ -295,8 +302,8 @@ EVERYTHING that goes on when you run a command
 This should probably be a last resort, and can be turned off with --set trace off-- */
 
 set trace on
-foreach var in el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat {
-	reg `var' treath tinroof
+foreach var in wage ttl_exp hours {
+	reg `var' grade
 }
 
 set trace off
@@ -305,8 +312,9 @@ set trace off
 
 //What if you want to loop over numbers?
 foreach X in 1 2 3 4 5 6 7 8 9 10 {
-	disp "The number is `X'
+	disp "The number is `X'"
 }
+
 //That works, but it's better to do forvalues
 forvalues X=1(1)10 {
 	disp "The number is `X'."
@@ -315,32 +323,34 @@ forvalues X=1(1)10 {
 //Now set up a loop to display 1 to 9, display only odd numbers.
 //COMMAND: 
 
-forvalues x = 1(2)9 {
-	disp "The number is `x'."
+forvalues X=1(2)9 {
+	disp "The number is `X'."
 }
 
+
 //You can even loop over numeric values in variable names
-forvalues fudge=1/8 {
-	reg free_chl_yn treat`fudge'
+forvalues x=1/4 {
+	summ childage`x'
 }
 
 //loop over a list
-local watervars endvf free_chl_yn tot_chl_yn
+local outcomes wage ttl_exp hours
 
-foreach var of local watervars {
-	reg `var' treatw
+foreach var of local outcomes {
+	reg `var' grade
 }
 
 //Define a list of the outcome variables below, then loop over them
-//Outcomes: el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat
+//Outcomes: wage tenure
 //COMMAND: 
 
-local B el_momnodirt el_kidnodirt criticaltimessum elhaveplace elhavemat
-foreach var of local B {
- reg `var' treath
- display "look! it's the variable `var'"
- }
 
+
+local outcomes wage tenure
+foreach var of local outcomes {
+	display "look! it's the variable `var'"
+	reg `var' grade
+}
 
 * NESTED LOOPS
 
@@ -350,38 +360,38 @@ forvalues X=1/10 {
 	}
 }
 
-//Regress the water variables over all 8 treatment arms
+//Control for the age of a different child in each regression
 
-local wvar free_chl_yn tot_chl_yn endvf 
+local outcomes wage ttl_exp hours
 local i=1 //add an index so we can see how many regs we're doing
-foreach var of varlist `wvar'{
-	forvalues X=1/8 {
-		display "Regression `i':We're regressing `var' on treat`X'"
+foreach var of varlist `outcomes' {
+	forvalues x=1/4 {
+		display "Regression `i':We're regressing `var' on grade, controlling for child age `x'"
 		local i=`i'+1
-		reg `var' treat`X'
+		reg `var' grade childage`x'
 	}
 }
 
-//Now run two versions of each regression, one with controls and one without
+//Now run two versions of each regression, one with additional controls and one without
 //Include the following variables as controls 
-//Controls: tinroof respage1 respage2 respage3 kiswahili english total_households total_kids
+//Controls: south married union
 //How might you keep track of what's going on within the loop?
 //COMMAND: 
 
-local wvar free_chl_yn tot_chl_yn endvf 
-global controlvars tinroof respage1 respage2 respage3 kiswahili english total_households total_kids
+
+local outcomes wage ttl_exp hours
+global controlvars south married union
 local i=1 
-foreach var of varlist `wvar'{
-	forvalues X=1/8 {
-		display "Regression `i': We're regressing `var' on treat`X'"
-		reg `var' treat`X'
-		display "Regression `i': We're regressing `var' on treat`X' with controls"
-		reg `var' treat`X' $controlvars
+foreach var of varlist `outcomes' {
+	forvalues x=1/4 {
+		display "Regression `i':We're regressing `var' on grade, controlling for child age `x'"
+		reg `var' grade childage`x'
+		local i=`i'+1
+		display "Regression `i': We're regressing `var' on treat`X' with child age `x' and other controls"
+		reg `var' grade childage`x' $controlvars
 		local i=`i'+1
 	}
 }
-
-
 
 
 **********************************************
@@ -397,57 +407,60 @@ cap mkdir "$mycomp/Output"
 //To install outreg2:
 ssc install outreg2
 
-global controlvars tinroof respage1 respage2 respage3 kiswahili english total_households total_kids
+global controlvars south married union
 
 //First, output to a .txt file
-reg free_chl_yn treatw
+reg wage grade
 outreg2 using "$mycomp/Output/regression_results", replace tdec(3) bdec(3) bracket ctitle(Basic) addnote(This table is totally awesome and should be published)
 
-reg free_chl_yn treatw $controlvars
+reg wage grade $controlvars
 outreg2 using "$mycomp/Output/regression_results", append tdec(3) bdec(3) bracket ctitle(With Controls)
 
-reg free_chl_yn treatw $controlvars, robust
+reg wage grade $controlvars, robust
 outreg2 using "$mycomp/Output/regression_results", append tdec(3) bdec(3) bracket ctitle(Robust SE)
 
 
 // Export results to EXCEL
 
-reg free_chl_yn treatw
+reg wage grade
 outreg2 using "$mycomp/Output/regression_results.xls", replace tdec(3) bdec(3) bracket ctitle(Basic) addnote(This table is totally awesome and should be published)
 
-reg free_chl_yn treatw $controlvars
+reg wage grade $controlvars
 outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) bracket ctitle(With Controls)
 
-reg free_chl_yn treatw $controlvars, robust
+reg wage grade $controlvars, robust
 outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) bracket ctitle(Robust SE)
 
 
-//Append another regression of free_chl_yn on treatw with controls, using the robust specification and clustering on the villageid
+//Append another regression of free_chl_yn on treatw with controls, using the robust specification and clustering on occupation
 //COMMAND:
  
-reg free_chl_yn treatw $controlvars, robust cluster(villageid) 
-outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) bracket ctitle(Clustered) 
-
+reg wage grade $controlvars, robust cluster(occupation)
+outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) bracket ctitle(Clustered)
+ 
 
 //The below does the same thing for a .tex file
 //Here, I also use two loops, first over three variables
 // Within each variable, we then loop over three specifications (and titles!)
 
-local spec_list `" "$controlvars" "$controlvars, robust" "$controlvars, robust cluster(villageid)" "'
+local spec_list `" "$controlvars" "$controlvars, robust" "$controlvars, robust cluster(occupation)" "'
 local spec_title `" "With Controls" "Robust SE" "Clustered" "'	
 
-local wvar free_chl_yn tot_chl_yn endvf 
+local outcomes wage ttl_exp hours
 
-foreach var of varlist `wvar' {
-	reg `var' treatw
-	outreg2 using "$mycomp/Output/regression_results_`var'.tex", replace tex tdec(3) bdec(3) bracket ctitle(Basic) addnote(This table is totally awesome and should be published)
+foreach var of varlist `outcomes' {
+	reg `var' grade
+	outreg2 using "$mycomp/Output/regression_results_`var'.xls", replace tex tdec(3) bdec(3) bracket ctitle(Basic) addnote(This table is totally awesome and should be published)
 	
 	local j =1
 	foreach spec in `spec_list' {
 		local title : word `j' of `spec_title'
-		reg `var' treatw `spec'
-		outreg2 using "$mycomp/Output/regression_results_`var'.tex", append tex tdec(3) bdec(3) bracket ctitle("`title'")
+		reg `var' grade `spec'
+		outreg2 using "$mycomp/Output/regression_results_`var'.xls", append tex tdec(3) bdec(3) bracket ctitle("`title'")
 		local j = `j' + 1
 	}
 }
+
+
+
 
