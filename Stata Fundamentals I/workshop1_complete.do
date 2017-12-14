@@ -4,7 +4,6 @@
 ********************************
 
 
-
 **************************************************
 
 * Day 1 
@@ -20,15 +19,8 @@
 * 					(iii) CROSS-TABULATE
 * 			C. CREATING VARIABLES
 * VI. 	IMPORTING & EXPORTING 
-* VII. 	GRAPHS & REGRESSION QUICK OVERVIEW (Optional, if we get there)
 
 **************************************************
-
-
-
-
-
-
 
 
 
@@ -71,10 +63,10 @@ pwd // check the current working directory
    have saved the data file nlsw88.dta */
    
 /* Step 2: Copy-paste the last command that shows up on result screen.
-   My resuly window shows this:*/   
+   My result window shows this:*/   
 
-cd "/Users/SSB/Box Sync/D-lab/stata/Workshop series/iteration 2/Workshop 1"
-
+cd "/Users/SSB/Box Sync/D-lab/stata/Workshop files/Workshop 1"
+   
 /***
 		We paste this command above so that next time we can just run this 
 		do-file from the top and it will run smoothly. We will not need to
@@ -85,11 +77,11 @@ cd "/Users/SSB/Box Sync/D-lab/stata/Workshop series/iteration 2/Workshop 1"
 
 /* Step 3: Open the data file */
 
-use nlsw88.dta , clear // open data file lifeexp.dta
+use nlsw88.dta , clear // open data file 
 
 /* You can also write: */
 
-use nlsw88, clear 
+use nlsw88 , clear
 // don't have to specify .dta, that is the default extension
 
 
@@ -131,14 +123,15 @@ des // describes the variables in the data
 des *  describes the variables in the data  <-- this is wrong!
 * des // this suspended the command altogether
 
-/* blah  */
-
-/* 
-But then say you wanted to write a really long
+/* But then say you wanted to write a really long
 and super informative comment that you didn't want 
 to have all on one line, like this one we're typing
-right now. 
-*/
+right now. */
+
+
+/* */
+
+des
 
 
 /* However, if you forget to close this slash-asterisk loop
@@ -147,6 +140,10 @@ then you will suspend all commands underneath! */
 
 
 /* 
+
+
+
+
 This helps you suspend multiple lines at the same time. 
 They
 don't			 have 
@@ -163,36 +160,30 @@ don't			 have
 	burn like fabulous yellow roman candles exploding 
 	like spiders across the stars."
 	-- Jack Kerouac (On the Road, 1957)
-
 	
 	
 	
 	
-	*/
-
-
-
+*/
 
 
 
 //////////////////////////
-/*        CHALLENGE   	*/	
+/*       CHALLENGE 1   	*/	
 ////////////////////////// 
 /* 
-(1) write "presents summary statistics" NEXT to the command "sum"
+(1) write "describes data" NEXT to the command "des" below
 
-(2) Suspend all 3 lines of code using one pair of /**/
-*/
+(2) Suspend all 3 lines of code below using one pair of /**/
+*/ 
 
+* Answer:
 
 /*
-des
-sum // "presents summary statistics" 
-list /* lists the data */
+des //describes data
+sum 
+count
 */
-
-
-
 
 
 
@@ -202,12 +193,15 @@ list /* lists the data */
 
 cap log close // Close any existing log files first.
 
+*log close
 
 * Start a log file.
 // File -> Log -> Begin
 
 log using stata_intro.log, replace
-*log using stata_intro_3_2.log, append
+
+*log using stata_intro.log, append
+
 
 /* 	The log is saved in your working directory,
 	understand why we replace or append */
@@ -233,7 +227,7 @@ log using stata_intro.log
 
 * We may want to close any existing log files first.
 capture log close // this is a good command to include at the beginning of your do-file
-log using stata_intro.log, replace
+log using stata_intro.log, append
 
 
 
@@ -257,11 +251,14 @@ Very quick rundown of operators in Stata
 /	divide 
 ^	exponent
 
+= 	equal
+
 &	and
 |	or
 >	greater than
 >=	greater than or equal to
-=	equal
+<=	less than or equal to
+<	less than 
 !	not (also ~)
 !=	not equal to (also ~=)
 ==	logical test for equality (usually follows "if")
@@ -275,7 +272,8 @@ Very quick rundown of operators in Stata
 **********************************************
 *    EXAMINING A DATA SET: THE BASICS    	 *
 **********************************************
-
+** It is good practice to LOOK at your data before you start working with it
+** That way, you get an idea of its shape and the variables in it quickly
 
 * DESCRIBE
 
@@ -286,60 +284,11 @@ des // describes dataset and variables
  then it's better to type "set more off" directly into the command window */
 
 
-br
-
 * BROWSE 
 br // browse data in data editor
 
-
 **What do the different colors mean?
 des married married_txt
-
-
-* LIST
-
-list // lists the data
-list in 1/10 // list the 1st thry 10th observation
-
-sort age // sort the dataset by age
-list age married in -5/l  /* list the age and marital status of
-last 5 observations, i.e. the highest 5 ages in the data */
-
-
-
-
-
-
-
-//////////////////////////
-/*        CHALLENGE 	*/	
-//////////////////////////
-/*
-(1) List the highest 3 wages in the sample?
-Variable: wage
-
-
-(2) Is the highest wage observation married?
-Variable: wage married
-*/
-
-sort wage , stable
-list wage in  -3/l
-list wage married in  -3/l
-
-
-
-
-
-
-* LIST VS. BROWSE
-
-/*Using the "browse" command, we can look at our data in a spreadsheet format.
-Let's compare what listing data looks like when we do it on the main results
-page and when we do it using browse:*/
-
-list wage married in -100/l   // lists output in results window
-browse wage married in -100/l // shows the same thing browser window 
 
 
 
@@ -363,6 +312,7 @@ count // counts the number of observations
 sum // summarize the data, presents summary statistics
 sum wage
 
+sum wage, detail
 
 * USING A CONDITIONAL OPERATOR
 /***
@@ -384,10 +334,9 @@ codebook married_txt
 br married married_txt
 
 
-
-//////////////////////////
-/*        CHALLENGE 	*/	
-//////////////////////////
+////////////////////////////
+/*        CHALLENGE 2 	  */	
+////////////////////////////
 /*
 (1) Count the number of observations that are union members.
 variable: union
@@ -399,10 +348,17 @@ variables: wage married
 */
 
 
+* Answers
+
+*(1)
+
 count if union==1
 
+*(2)
 
 sum wage if married==0
+
+
 
 
 * MISSING VALUES *
@@ -437,21 +393,18 @@ codebook union
 
 
 
-//////////////////////////
-/*        CHALLENGE 	*/	
-//////////////////////////
+////////////////////////////
+/*        CHALLENGE 3     */	
+////////////////////////////
 /*
 (1) What is the average wage of those who have worked 10 or more years?
 variables: wage tenure
 */
 
-sum wage if tenure>=10 & tenure!=.
-sum wage if tenure>=10 & tenure<.
 
-sum wage if tenure>=10
+* Answer
 
-sum wage if tenure<10
-
+summ wage if tenture>=10 & tenure<.
 
 
 **************************************************************
@@ -478,15 +431,17 @@ sum wage if married==0 & collgrad==1 // unmarried graduate
 sum wage if married==0 & collgrad==0 // unmarried non-graduate
 
 
+sum wage if married==1 | collgrad==1
+
 /* One basic interpretation from the above descriptive statistics:
 For the college graduates in the sample, those who are 
 unmarried earn more (11.30) on average than those who are married (10.10).*/
 
 
 
-//////////////////////////
-/*        CHALLENGE 	*/	
-//////////////////////////
+////////////////////////////
+/*        CHALLENGE 4	  */	
+////////////////////////////
 
 /* 
 
@@ -498,35 +453,25 @@ variable: hours
 (2) What is the average age and age range of this sample? 
 Variable: age
 
-(3) What is the average hours worked by college graduates? 
-Variables: hours collgrad
-
-(4) Who earns more on average - those with at least 12 years of education or
-college graduates? 
-Variables: wage grade collgrad
-
-(5) Find the average wage for those workers that work more hours than 
-the average hours worked in the sample. 
-Variables: wage hours 
-[Hint: you may need to use copy paste for a part of this. There is a 
-more elegant way using locals which you'll learn in later workshops. ]
-
+(3) What is the average age for non-married observations?
+variables: age, married
 
 */
 
+* Answers
 
-sum hours
+*(1)
+summ hours
+// Average number of hours: 37.21811 
 
-sum age
+*(2)
+summ age
+// Average age: 39.15316
+// Age range: 34 to 46
 
-sum hours if collgrad==1
-
-sum wage if collgrad==1
-sum wage if grade>=12 & grade!=.
-
-sum hours
-sum wage if hours>37.21811 & hours!=.
-
+*(3)
+summ age if married==0
+// Average age of non-married observations: 39.21891
 
 
 * TABULATION & CROSS TABULATION *
@@ -536,79 +481,40 @@ sum wage if hours>37.21811 & hours!=.
 // Very helpful for categorical variables
 tab race
 tab collgrad
-tab married
-tab married if hours>=60 & hours<.
+tab union
+tab union if hours>=60 & hours<.
 
-tab race collgrad married
-
-* What are tab tab1 and tab2?
-tab1 race union collgrad 
-tab race union collgrad // returns error. why?
-tab union collgrad 
-
-tab2 race union collgrad
-
-tab race union
-tab race collgrad
-tab union collgrad
 
 * Twoway tables 
 tab union collgrad, col 
 tab union collgrad, row
 tab union collgrad, col row
 
+tab union collgrad, cell
 
-
-//////////////////////////
-/*        CHALLENGE 	*/	
-//////////////////////////
+////////////////////////////
+/*        CHALLENGE 5 	  */	
+////////////////////////////
 
 
 /*
 
-(1) How many observations in this dataset fall into each race group?
-(a) What percent of the sample is white?
+(1) How many observations in this dataset fall into each race group? 
+Variables: race
 
-
-
-
-(2)	Find the average wage for non-white observations. Give this a try before looking below:
-	
-	
-	
-	
-	
-(3) For the above question, which option(s) is/are correct? Try to answer this without
-running any of the lines of code below. Which code(s) do you think will give the right results?
-	/* A */ sum wage if race>1
-	/* B */ sum wage if race!=1
-	/* C */ sum wage if race!=1 & race!=.
-	/* D */ sum wage if race>=2
-	/* E */ sum wage if race>=2 & race<=.
-	/* F */ sum wage if race>1 & race<.
-	/* G */ sum wage if race!=1 & race<=3
-	/* H */ sum wage if race==2 | race==3
-	
-	
-
-(4) Let's study race and living in a central city. 
-Variables: race c_city
-
-(a) What percentage of whites live outside of central cities?
-(b) What percent of blacks lives in central cities?
-(c) What percent of the sample that lives outside of central cities is black? white?
-(d) What percent of the sample that lives in central cities is black? white?
-(e) What percent of the total sample lives in central cities?
+(2) What percent of the sample is white?
+Variable: race
 
 
 */
 
+* Answers
+
+*(1), (2)
 
 tab race
 
-sum wage if race!=1 & race<.
 
-tab race c_city, col row
 
 * TABULATE, SUMMARIZE
 * Summary statistics of one variable with respect to others 
@@ -621,31 +527,26 @@ tab married collgrad, summarize(wage) means
 
 
 
-//////////////////////////
-/*        CHALLENGE 	*/	
-//////////////////////////
+////////////////////////////
+/*        CHALLENGE 6 	  */	
+////////////////////////////
 /*
-(1) Use help file to tabulate the standard deviation of wages by marital status.
-variables: married wage
-
-
-
-(2) Find average wage by industry.
-variables: industry wage
+(1) Find average wage by industry.
+Variables: industry wage
 */
 
-
-tab married, summarize(wage) st
+* Answer
 
 tab industry, summarize(wage)
+
+
 
 
 // do you notice anything strange about the wages here?
 // mining wages are the highest??
 
-
 // Let's explore the mining wage...
-// Let's take a loot at the observations that work in mining
+// Let's take a look at the observations that work in mining
 // first we have to find the industry code that belongs to mining
 
 
@@ -665,6 +566,90 @@ br if industry==2
 
 
 
+////////////////////////////////////
+/*       CHALLENGE 7 (EXTRA)	  */	
+////////////////////////////////////
+/*
+
+
+1. SUMMARY STATISTICS - SUM:
+
+(1.A) 	What is the average hours worked by college graduates? 
+		Variables: hours collgrad
+
+(1.B) 	Who earns more on average - those with at least 12 years of education or
+		college graduates? 
+		Variables: wage grade collgrad
+
+(1.C) 	Find the average wage for those workers that work more hours than 
+		the average hours worked in the sample. 
+		Variables: wage hours 
+		[Hint: you may need to use copy paste for a part of this. There is a 
+		more elegant way using locals which you'll learn in later workshops. ]
+
+2. SUMMARY STATISTICS - TAB:
+
+(2.A)	For the above question, which option(s) is/are correct? Try to answer this without
+		running any of the lines of code below. Which code(s) do you think will give the right results?
+		/* A */ sum wage if race>1
+		/* B */ sum wage if race!=1
+		/* C */ sum wage if race!=1 & race!=.
+		/* D */ sum wage if race>=2
+		/* E */ sum wage if race>=2 & race<=.
+		/* F */ sum wage if race>1 & race<.
+		/* G */ sum wage if race!=1 & race<=3
+		/* H */ sum wage if race==2 | race==3
+	
+
+(2.B) 	Let's study race and living in a central city. 
+		Variables: race c_city
+
+(i) 	What percentage of whites live outside of central cities?
+(ii) 	What percent of blacks lives in central cities?
+(iii) 	What percent of the sample that lives outside of central cities is black? white?
+(iv) 	What percent of the sample that lives in central cities is black? white?
+(v) 	What percent of the total sample lives in central cities?
+
+ 
+*/
+
+
+
+* Answers
+
+
+*(1.A)
+summ hours if collgrad==1
+
+*(1.B)
+summ wage if collgrad==1
+summ wage if grade>=12 & grade<.
+
+*(1.C)
+summ hours
+summ wage if hours>=37.218
+
+
+*(2.A)
+/*In fact, they all work!*/
+
+*(2.B)
+*(i)
+tab race c_city, row
+
+*(ii)
+tab race c_city, row
+
+*(iii)
+tab race c_city, col
+
+*(iv)
+tab race c_city, col
+
+*(v)
+tab race c_city, row
+*or
+tab c_city
 
 
 
@@ -672,20 +657,80 @@ br if industry==2
 *         DATA CLEANING: CREATING VARIABLES    	    *
 *****************************************************
 
+* CREATE VARIABLES *
+
+// We will show 3 different examples:
+// Creating simple numeric variables (constants and simple mathematical transformations)
+// Creating a numeric  variable from a string variable (manual labor and advanced)
+// Creating a numeric indicator variable from another numeric variable 
 
 
-* CREATE VARIABLES * 
+
+/* 	Method 1: manual labor	 */
 
 
+* Simple numeric variables
+
+gen pilotsample=1
+
+gen wage_day = wage*8 // wage per day (8 hour workday)
+
+gen tenure_sqr = tenure^2
+
+
+
+*Lets turn our string variable into a numeric variable
+
+*Remember married and married_txt?
+tab married married_txt
+tab married_txt
+
+gen married2=1 if married_txt=="M" | married_txt=="Married" | married_txt=="m" ///
+	| married_txt=="maried" | married_txt=="married"
+	
+replace married2=0 if married_txt=="single" | married_txt=="S" | married_txt=="SINGLE" ///
+	| married_txt=="Single" | married_txt=="s" | married_txt=="sIngle" ///
+	| married_txt=="singLe" | married_txt=="single" | married_txt=="single " ///
+	| married_txt=="single  " | married_txt==" single" | married_txt=="single   "
+
+encode married_txt, gen(married3) // good when strings are clean
+
+
+
+/*	 Method 2 (advanced!): regular expressions	 */
+
+
+/*
+Regular expressions are one way that you can work with strings in variables
+There are two main commands: regexr and regexm.
+
+regexr REPLACES a value within a string with a new variable
+
+regexm, which we'll use today, combines strings and conditional operators.
+regexm lets you search within a string for a given character; it returns 1, or 
+TRUE, if the string has the character, and 0 otherwise.
+*/
+
+gen married4=1 if regexm(married_txt,"m") | regexm(married_txt,"M")
+replace married4=0 if regexm(married_txt,"s") | regexm(married_txt,"S")
+
+*See how this differs from the string Married variable?
+br  married_txt married2 married3 married4
+
+tab married married2
+
+
+
+* We can also create numeric variables from other numeric variables
 
 // create a variable that indicates highschool graduate
-// Be careful to think about (1) missing values 
+// Be careful to think about 
+// (1) missing values 
 // (2) what should =1 and what should =0 for your variable
 
 //let's first look at grade
 codebook grade
 // it has missing values, so beware
-
 
 
 // method 1
@@ -697,32 +742,26 @@ replace hs1 = 0 if grade<12
 gen hs2 = (grade>=12 & grade!=.) 
 // this assigns 1 to the observations meeting the condition in the () and 0 to all else
 
-
-// method 3
-gen hs3 = .
-replace hs3 = 1 if grade>=12 & grade!=. 
-replace hs3 = 0 if grade<12
-// this method is more careful when missing values are involved (the variable "grade" has 2 missing values)
+//method 3
+recode grade (0/11 = 0) (12/18 = 1), gen(hs3) 
 
 
-//method 4
-recode grade (0/11 = 0) (12/18 = 1), gen(hs4) 
-
-
-
-//check all 4 versions
-sum hs1 hs2 hs3 hs4
+//check all 3 versions
+sum hs1 hs2 hs3 
 sum hs*
-
 
 
 // Why is hs2 different?
 br grade hs* if hs2!=. & hs1==.
 
 
+// Could we have generated hs2 a different way to fix it?
+drop hs2
 
-// drop the wrong version (hs2) and the extraneous versions
-drop hs2 hs3 hs4
+gen hs2 = (grade>=12) if grade!=. 
+
+// drop the extraneous versions
+drop  hs3
 
 
 // Let's tabulate our new variable
@@ -741,7 +780,8 @@ tab hs1
 rename hs1 hs
 
 // Let's add a label to hs1
-label variable hs "high school graduate" 
+label variable hs "high school graduate"
+label variable hs "High school graduate"
 
 // Next, let's add a value label for each of the 2 values of hs
 /* This requires TWO steps: 
@@ -749,66 +789,17 @@ label variable hs "high school graduate"
 	(2) add that value label to the variable hs1
 */
 
+// Let's define a value label called hs_vallabel
+label define hs_vallabel 1 "High school graduate" 0 "Did not graduate high school" 
 
-// Let's define a value label called YN
-label define YN 1 "YES" 0 "NO" 
-
-// Now, let's assign the value label YN to the variable hs
-label values hs YN 
+// Now, let's assign the value label hs_vallabel to the variable hs
+label values hs hs_vallabel 
 
 // Check that the label has been applied
 tab hs 
 
-
-
-
-
-* Exercise: Create a variable for some college 
-* (more than 12 and less than 16 years of schooling)
-
- 
-gen somecollege = (grade>12 & grade<16)
-replace somecollege = . if grade==.
-la var somecollege "attended some (not all) years of college" //Notice the shorthands for the commands
-la val somecollege YN // applying the same label "YN" that was created above for another variable
-tab somecollege
-
-
-
-
-
-
-//////////////////////////
-/*        CHALLENGE 	*/	
-//////////////////////////
-
-/* 
-
-(1a) Create another version of the some college variable (call it somecollege3)
-	using a method similar to method 3 used for creating hs above.
-
-(1b) Label somecollege3 as  "attended some years of college" 
-
-(1c) Use help file for label (help label) to drop the value label YN
-
-(1d) Create a new value label called yesno that assigns 1 to yes and 0 to no
-
-(1e) Add value label yesno to somecollege3
-
-
-	
-(2a) Use method 4 (recode) to creare a new variable "unmarried" that is the 
-opposite of the "married" variable. That is unmarried = 1 when married = 0 and vice versa.
-
-(2b) label unmarried "not married"
-
-(2c) Create a new value label called unmar_lbl that assigns 
-1 to single and 0 to married. 
-
-(2d) Add value label unmar_lbl to unmarried
- 
-*/
-
+// Remember that we can always check the contents of a value label with label list
+label list hs_vallabel
 
 
 
@@ -816,7 +807,7 @@ opposite of the "married" variable. That is unmarried = 1 when married = 0 and v
 * RE-ORDERING VARIABLES
 
 * Re-ordering how variables appead in the dataset
-order hs somecollege , before(collgrad)
+order hs, before(collgrad)
 
 
 
@@ -828,9 +819,88 @@ save "nlsw88_clean" , replace
 
 
 
+////////////////////////////
+/*        CHALLENGE 8	  */	
+////////////////////////////
+
+/*
 
 
-* EXPORTING AND IMPORTING DATA *
+1. VARIABLE CREATION:
+
+(1.A) 	Let's make and label a new variable about college attendance.
+(i)		Create a variable called somecollege, i.e. more than 12 and less than 
+		16 years of schooling) (call it somecollege, using any of the three methods 
+		we used to create hs above.
+
+(ii) 	Label somecollege "Attended some years of college" 
+
+(iii) 	Create a new value label called somecollege_vallabel that assigns labels to 1 and 0
+
+(iv) 	Add your new value label yesno to somecollege
+
+
+	
+(1.B) 	Let's make and label a new variable about marital status.
+(i)		Use method 3 (recode) to creare a new variable "unmarried" that is the 
+		opposite of the "married" variable. That is unmarried = 1 when married = 0 and vice versa.
+
+(ii) 	Label your new unmarried variable "Not married"
+
+(iii) 	Create a new value label called unmar_lbl that assigns 1 to single and 0 to married. 
+
+(iv) 	Add value label unmar_lbl to unmarried
+
+*/
+
+
+* Answers
+
+*(1.A)
+*(i)
+*One way to do this is
+
+gen somecollege = 1 if grade>=12 & grade<16
+replace somecollege = 0 if grade<12 | (grade>=16& grade<.)
+
+*(ii)
+
+label var somecollege "Attended some years of college" 
+
+*(iii)
+
+label define somecoll_label 1 "Attended some college" 0 "Attended none or all years of college"
+
+*(iv)
+
+label values somecollege somecoll_label
+
+
+
+
+* (1.B)
+
+*(i) 
+ recode married (0 = 1) (1=0), gen(unmarried) 
+
+*(ii)
+
+label var unmarried "Not married"
+
+*(iii)
+
+label define unmar_lbl 1 "Single" 0 "Married"
+
+*(iv)
+
+label values unmarried unmar_lbl
+
+
+
+
+*****************************************************
+*     			EXPORTING AND IMPORTING   	    	*
+*****************************************************
 
 
 * Export data for use with other programs
@@ -838,7 +908,6 @@ help export excel
 export delimited using "nlsw88_clean.csv", replace datafmt
 export delimited using "nlsw88_clean.tsv", delimiter(tab) replace  datafmt
 export excel using "nlsw88_clean.xlsx", firstrow(variables) replace   
-
 
 * Import data from excel sheet into stata as nlsw88_clean.xlsx
 
@@ -849,109 +918,4 @@ clear all
 import excel using "nlsw88_clean.xlsx", first clear
 // "first" specifies that the first row in the excel file is a 
 
-
-
-
-
-
-
-des
-
-
-
-
-
-
-clear all
-use "$mycomp/nlsw88.dta", clear
-set more off
-
-
-
-
-
-
-
-
-
-
-
-
-
-*** SNEAK PEEK INTO NEXT TIME ****
-
-****************************** 
-*       	GRAPHS    	 	 *
-******************************
-
-
-
-* Histogram and Density Graphs
-hist wage
-
-twoway (kdensity wage if collgrad==1) (kdensity wage if collgrad==0), ///
-legend(label(1 "College Grad") label(2 "Non Grad"))
-
-// did you notice the use of "///"? how is it different from "//"?
-
-* Scatter Plots and Linear Graphs
-twoway (scatter wage grade) (lfit wage grade )
-
-twoway (lfit wage grade if race==1 )(lfit wage grade  if race==2), ///
-legend(label(1 "White") label(2 "Black"))
-
-
-twoway (lfit wage grade if married==1 )(lfit wage grade  if married==0), ///
-legend(label(1 "married") label(2 "single"))
-
-
-
-
-
-
-
-****************************** 
-*       REGRESSION (MINI)    *
-******************************
-* reg y x1 x2 
-
-* These are not meaningful regressions. For demonstration only!
-reg wage age race 
-reg wage age i.race
-reg wage age i.race grade collgrad married union ttl_exp tenure i.industry c_city smsa south 
-
-
-
-//////////////////////////
-/*        CHALLENGE 	*/	
-//////////////////////////
-
-/*
-
-(1)  Create a variable for annual income (which is the number of hours worked each week
-	multiplied by wages multiplied by the number of weeks in a year). Call this variable annual_inc.
-	
-	
-(2) Plot density graphs of annual income for college graduates and non graduates (separately) 
-	on the same plot. Label the lines appropriately. What is your takeaway?
-
-	
-(3) Plot a scatter plot and a linear graph of how annual income changes with level of education.
-
-
-(4) Plot annual income against education for both whites and blacks on the same plot. 
-	Label lines appropriately.
-	
-
-*/
-
-gen annual_inc = wage*hours*52
-
-twoway (kdensity annual_inc if collgrad==1) (kdensity annual_inc if collgrad==0), ///
-legend(label(1 "College Grad") label(2 "Non Grad"))
-
-twoway (scatter annual_inc grade) (lfit annual_inc grade )
-
-twoway (lfit annual_inc grade if race==1 )(lfit annual_inc grade  if race==2), ///
-legend(label(1 "White") label(2 "Black"))
 
