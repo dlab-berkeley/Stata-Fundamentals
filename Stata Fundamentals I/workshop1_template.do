@@ -1,6 +1,6 @@
-******************************* 
+********************************
 *	STATA INTENSIVE: WORKSHOP 1
-*	FALL 2017, D-LAB
+*	SPRING 2019, D-LAB
 ********************************
 
 
@@ -63,9 +63,9 @@ pwd // check the current working directory
    have saved the data file nlsw88.dta */
    
 /* Step 2: Copy-paste the last command that shows up on result screen.
-   My resuly window shows this:*/   
+   My results window shows this:*/   
 
-cd "/Users/SSB/Box Sync/D-lab/stata/Workshop files/Workshop 1"
+cd "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals I"
    
 /***
 		We paste this command above so that next time we can just run this 
@@ -111,6 +111,7 @@ use nlsw88_13, clear
 *         COMMENTING   		 *
 ****************************** 
 
+*Try to give self enough notes to remember in one year 
 
 // There are a bunch of ways to comment your .do file.
 
@@ -124,11 +125,6 @@ des *  describes the variables in the data  <-- this is wrong!
 * des // this suspended the command altogether
 
 /* But then say you wanted to write a really long
-and super informative comment that you didn't want 
-to have all on one line, like this one we're typing
-right now. */
-
-/*But then say you wanted to write a really long
 and super informative comment that you didn't want 
 to have all on one line, like this one we're typing
 right now. */
@@ -176,13 +172,13 @@ don't			 have
 /*       CHALLENGE 1   	*/	
 ////////////////////////// 
 /* 
-(1) write "describes data" NEXT to the command "des" below
+(1) write "describes data" NEXT to the command "des" below as a comment
 
 (2) Suspend all 3 lines of code below using one pair of /**/
 */ 
 
 
-des
+des // describes data
 sum 
 count
 
@@ -311,7 +307,7 @@ count // counts the number of observations
 ***/
 
 sum // summarize the data, presents summary statistics
-sum wage
+sum w*
 
 sum wage, detail
 
@@ -348,9 +344,9 @@ variables: wage married
 (hint: Use the operator "if")
 */
 
+*(1)
 
-
-
+*(2)
 
 * MISSING VALUES *
 
@@ -391,7 +387,6 @@ codebook union
 (1) What is the average wage of those who have worked 10 or more years?
 variables: wage tenure
 */
-
 
 
 
@@ -464,7 +459,7 @@ tab union if hours>=60 & hours<.
 * Twoway tables 
 tab union collgrad, col 
 tab union collgrad, row
-tab union collgrad, col row
+tab union collgrad, col row cell
 
 tab union collgrad, cell
 
@@ -485,6 +480,9 @@ Variable: race
 */
 
 
+
+
+
 * TABULATE, SUMMARIZE
 * Summary statistics of one variable with respect to others 
 /* e.g. What is the average wage for married/non-married 
@@ -493,7 +491,6 @@ Variable: race
 help tabulate_summarize
 tab collgrad, summarize(wage) means
 tab married collgrad, summarize(wage) means
-
 
 
 ////////////////////////////
@@ -519,7 +516,7 @@ Variables: industry wage
 * Finding numeric codes attached to value labels * 
 
 
-br if industry==mining // no luck, industry is a numerical variable\
+br if industry==Mining // no luck, industry is a numerical variable\
 tab industry 
 tab industry, nolabel
 br if industry==2
@@ -599,7 +596,7 @@ br if industry==2
 
 * Simple numeric variables
 
-gen pilotsample=1
+gen year88=1
 
 gen wage_day = wage*8 // wage per day (8 hour workday)
 
@@ -689,7 +686,7 @@ drop hs2
 gen hs2 = (grade>=12) if grade!=. 
 
 // drop the extraneous versions
-drop  hs3
+drop hs2 hs3
 
 
 // Let's tabulate our new variable
@@ -797,7 +794,7 @@ save "nlsw88_clean" , replace
 help export excel
 export delimited using "nlsw88_clean.csv", replace datafmt
 export delimited using "nlsw88_clean.tsv", delimiter(tab) replace  datafmt
-export excel using "nlsw88_clean.xlsx", firstrow(variables) replace   
+export excel using "nlsw88_clean.xlsx", firstrow(varlabels) replace   
 
 * Import data from excel sheet into stata as nlsw88_clean.xlsx
 
