@@ -1,7 +1,6 @@
-******************************* 
-*	Stata Intensive: Workshop 2
-*	Spring 2017, D-LAB
-*	Isabelle Cohen
+********************************
+*	STATA INTENSIVE: WORKSHOP 2
+*	SPRING 2019, D-LAB
 ********************************
 
 **************************************************
@@ -12,27 +11,42 @@
 * II. 	PLOTTING
 * III. 	REGRESSION AND ITS OUTPUT
 * IV. 	POST-ESTIMATION
+* V. 	PLOTTING REGRESSION RESULTS
 
 **************************************************
 
-*Setting do-file basics:
-//We want to set a "global" like the one below, to store the file path to today's data
-*global mycomp "/Users/isabellecohen/Desktop/DLab/Stata Fundamentals II" // for my computer
 
-//To set yours, manually open the data called "rugged_data.dta" from your computer
-//Do not use the stata menu; instead, find the file in your files, and double-click to open it
-//Then run:
-global mycomp : pwd
 
-//Check if it worked
-display "$mycomp"
+/* Step 1: File > Change Working Directory > Navigate to the folder where you 
+   have saved the data file nlsw88.dta */
+   
+/* Step 2: Copy-paste the last command that shows up on result screen.
+   My result window shows this:*/   
 
-*Load data
-use "$mycomp/rugged_data.dta", clear
+cd "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals II"
+   
+/***
+		We paste this command above so that next time we can just run this 
+		do-file from the top and it will run smoothly. We will not need to
+		use the file menu or copy-paste again. We should be able to run 
+		everything from the do-file.
+***/
+
+
+*Open the data file
+
+use nlsw88.dta, clear // open data file 
+
+
+
 
 **************************************************
 * I. 	CORRELATION AND T-TESTS
 **********************************************
+
+//Let's use the unchanged data again
+
+use nlsw88.dta , clear 
 
 *CORRELATION AND T-TESTS
 
@@ -40,24 +54,31 @@ use "$mycomp/rugged_data.dta", clear
 //First, let's access the help file for `correlate'
 help correlate
 
-//Let's try checking the correlation between soil and tropical
-corr soil tropical
+//Let's try checking the correlation between age and wage
+corr age wage 
 
-//What if we want to look at soil, tropical, desert and dist_coast?
+//What if we want to look at age wage and tenure
 //COMMAND:
-corr soil tropical desert dist_coast
+corr age wage tenure
+
+pwcorr age wage tenure
+
 
 *T-TESTS
 
-//Now, let's test whether the percentile of fertile soil is different in Africa
+//Now, let's test whether wages are different by union membership
 
-ttest soil, by(cont_africa)
+ttest wage, by(union)
 
-//What if we want to look at whether the percentile of fertile soil differs by
-//whether a country is or isn't in Europe?
-//Hint: use the cont_europe variable
+//What if we want to look at whether wages vary by if the person lives in the south?
+
+//Hint: use the south variable
 //COMMAND:
-ttest soil, by(cont_europe)
+
+ttest wage, by(south)
+
+
+*How would you interpret this?
 
 
 **************************************************
@@ -67,86 +88,159 @@ ttest soil, by(cont_europe)
 
 help histogram //let's take a look at the histogram command
 
-histogram soil
-histogram soil, discrete //don't actually do this
+histogram age
+histogram age, freq
+
+histogram wage
+histogram wage, freq
+
+histogram age, discrete 
+histogram wage, discrete
+
 
 //Let's create a histogram with five bins
 //COMMAND:
-hist soil, bin(5)
+
+hist wage, bin(5)
+
 
 //What about a histogram with bins of width 2?
 //COMMAND:
-hist soil, width(2)
-hist soil, bin(50)
+
+hist wage, width(2)
 
 
-histogram soil, bin(10) title("This is a histogram of soil fertility") 
-histogram soil, bin(10) title("This is a histogram of soil fertility") addlabels
-histogram soil, bin(10) title("This is a histogram of soil fertility") addlabels ///
-	xtitle("Override the existing x-axis title") 
-histogram soil if soil!=0, bin(10) title("This is the histogram without zeroes") ///
-	addlabels
 
-histogram soil, by(cont_africa) 
+**All of our histogram options can stack together
 
-//Those labels aren't very nice
-//How can we label the values for cont_africa?
+*Add the following title: "Histogram by Wage in National Labor Survery in 1988"
 //COMMAND:
-label define contafrica 0 "Not in Africa" 1 "In Africa"
-label values cont_africa contafrica
 
-histogram soil, by(cont_africa) 
 
+hist wage, width(2) title(Histogram by Wage in National Labor Survery in 1988)
+
+
+*Change the title for the x-axis
+//COMMAND:
+
+hist wage, width(2) title(Histogram by Wage in National Labor Survery in 1988) xtitle("Hourly Wage (1988 USD)")
+
+
+*************
+**Additional options for a Histogram
+*************
+
+*We can restrict our sample with a conditional statement
+histogram wage if married==1, width(.25) 
+	
+	
+*We can also create a histogram by a categorical variable
+histogram wage, by(married) 
+
+
+//How would we change this command if we wanted to look at the histograms by industry?
+//COMMAND:
+
+
+hist wage, by(industry)
+
+*************
 *SCATTERPLOT
+*************
 
 help scatter //now scatterplots
 
-scatter soil tropical
-scatter soil tropical, title("Soil Fertility vs. Tropical Land") legend(on)
-scatter soil desert tropical, title("Soil and Desert by Tropical Land") mcolor(black blue)
+scatter wage age
+ 
+scatter wage tenure 
+scatter wage age, title("Hourly  vs. Age") legend(on)
+scatter wage age, title("Hourly  vs. Age") mcolor(blue)
 
-//Let's try using a scheme. Make the same scatterplot as above, with the economist scheme.
+//Let's try using a scheme. 
+help scheme
+
+//Make the same scatterplot as above, with a monocolor scheme.
 //COMMAND:
-scatter soil desert tropical, title("Soil and Desert by Tropical Land") scheme(economist)
+
+scatter wage tenure, title("Hourly vs. Tenure") scheme(s1mono) mcolor(navy)
+
 
 //There are other formatting changes we can also make
-scatter soil desert tropical, title("Soil and Desert by Tropical Land") legend(on) ///
-	mcolor(black blue) xlabel(0(20)100, format(%2.1f)) ylabel(,format(%2.1f))
+scatter wage age, title("Hourly  vs. Age") legend(on) ///
+	mcolor(blue) xlabel(34(1)46, format(%2.0f)) ylabel(,format(%2.1f))
 
 *COMBINE GRAPHS
-//We want to make a scatterplot, and add a linear prediction-based line of best fit 
-twoway (scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
-	legend(on) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f))) ///
-	(lfit soil tropical)
+//We want to make a scatterplot, and add a linear prediction-based line of best fit 	
+twoway (scatter wage age, title("Hourly  vs. Age") legend(on) ///
+	mcolor(blue) xlabel(34(1)46, format(%2.0f)) ylabel(,format(%2.1f))) ///
+	(lfit wage age)
 
-//alternatively, we can use || instead of () to define plots
-twoway scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
-	legend(on) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f)) || ///
-	lfit soil tropical
+//Alternatively, we can use || instead of () to define plots
+scatter wage age, title("Hourly  vs. Age") legend(on) ///
+	mcolor(blue) xlabel(34(1)46, format(%2.0f)) ylabel(,format(%2.1f)) || ///
+	lfit wage age
+
+scatter wage age || lfit wage age
+
+//Let's save the graph
+scatter wage age, title("Hourly  vs. Age") scheme(s1color) ///
+	mcolor(blue) xlabel(34(1)46, format(%2.0f)) ylabel(,format(%2.1f)) || ///
+	lfit wage age , legend(on label(1 "Hourly Wage") label(2 "Regression Line"))
 	
-//Let's make the same graph, but now also add a linear prediction line for desert and tropical
-//COMMAND:
-twoway (scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
-	legend(on) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f))) ///
-	(lfit soil tropical, legend(label(3 "Soil vs. Tropical") label(4 "Desert vs. Tropical"))) (lfit desert tropical)
+graph save "wageage.gph", replace // save in Stata format (can be re-opened in Stata)
+graph export "wageage.png", replace //save in .png format for use
+
+*Remember- you can code all these graphs on one line without the /// 
+*I have them broken up into multiple lines for easy display in class 
+*Do what is best for you!
+
+
+*************
+**Additional options for a Scatter Plot
+*************
+
+
+*Scatter plot by wage and age- separate graph for each
+scatter wage age, by(race)
+
+*Same as previous but includes a graph for total cohort
+scatter wage age, by(race, total)
+
+***This is the same syntax as the histogram above!
+
+
+
+******************
+*More Advanced Plotting Options
+******************
+
+**What if we want to put two graphs on the same plot?
+
+**Two histograms in one
+twoway (histogram wage if union==1) ///
+		(histogram wage if union==0)
+		*Hard to differentiate the bars
+		
+*Lets add some color differences and add a legend
+twoway (histogram wage if union==1, color(blue)) ///
+	(histogram wage if union==0, legend(order (1 "Union" 2 "Non-Union")))
 	
-//Now try adding a vertical line at x=40.
-//Hint: Use the scatter help file.
-//COMMAND: 
-twoway (scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
-	legend(on) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f))) ///
-	(lfit soil tropical, legend(label(3 "Soil vs. Tropical") label(4 "Desert vs. Tropical"))) (lfit desert tropical, xline(40))
+*Lets change the opacity of the bars 
+twoway (histogram wage if union==1, percent color(blue) lcolor(black)) ///
+	(histogram wage if union==0, fcolor(none) lcolor(black) /// 
+	legend(order (1 "Union" 2 "Non-Union")))
+	
+*Change the y axis to percentage
+twoway (histogram wage if union==1, percent color(blue) lcolor(black)) ///
+	(histogram wage if union==0, percent fcolor(none) lcolor(black) /// 
+	legend(order (1 "Union" 2 "Non-Union")))
 
-twoway scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
-	legend(on) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f)) || ///
-	lfit soil tropical, legend(label(3 "Soil vs. Tropical") label(4 "Desert vs. Tropical")) || lfit desert tropical, xline(40)
-
-//Let's save the original graph
-twoway (scatter soil desert tropical, title("Soil and Desert by Tropical Land") ///
-	legend(on) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f))) ///
-	(lfit soil tropical)
-graph save "$mycomp/soilanddesert.gph", replace // save in Stata format (can be re-opened in Stata)
-graph export "$mycomp/soilanddesert.png", replace //save in .png format for use
+*Add a title
+twoway (histogram wage if union==1, percent color(blue) lcolor(black)) ///
+	(histogram wage if union==0, title("Wage by Union Status") percent fcolor(none) lcolor(black) /// 
+	legend(order (1 "Union" 2 "Non-Union")))
+	
+	
 
 **************************************************
 * III. 	REGRESSION AND ITS OUTPUT
@@ -156,70 +250,106 @@ graph export "$mycomp/soilanddesert.png", replace //save in .png format for use
 
 help regress //Let's look at the doccumentation for the regress commend
 
-reg rgdppc_2000 soil tropical cont_africa
+*Lets regress wage and age
+reg wage age
 
-//Let's try a robust standard error specification
-reg rgdppc_2000 soil tropical cont_africa, robust
-reg rgdppc_2000 soil tropical cont_africa, vce(robust)
-
-//What if we only want to run this regression for countries whose legal origin is common law?
-//use the variable legor_gbr, which equals 1 if the legal origin is common law.
-//note that the 'if' should come before the comma
+*How about wage, age, union, and married?
 //COMMAND:
-reg rgdppc_2000 soil tropical cont_africa if legor_gbr==1, robust
 
-//what about restricting our samples to countries not in Europe or North America?
-//use the cont_europe and cont_north_america variables
+reg wage age union married
+
+
+
+*Why can't we use married_txt?
+reg wage age union married_txt
+
+*So far all of our variables have been continous or binary
+*What happens when we do a categorical variable?
+
+*What does this output mean?
+reg wage age union married industry // Not right
+
+*We want to treat each industry number as its own category instead of assuming a linear
+*relationship between them
+**How do we fix this?
 //COMMAND:
-reg rgdppc_2000 soil tropical cont_africa if cont_europe!=1 & cont_north_america!=1, robust
-reg rgdppc_2000 soil tropical cont_africa if cont_europe==0 & cont_north_america==0, robust
+
+reg wage age union married i.industry
+
+*The i. here lets us split up the categorical industry variable into dummies by value
+
+//What if we only want to run this regression for certain industries?
+//COMMAND:
+
+reg wage age union married i.industry if industry==3 | industry==4
+reg wage age union married i.industry if industry>=3 & industry<=4
+reg wage age union married i.industry if industry==12
 
 
-//let's try weighting by population
-reg rgdppc_2000 soil tropical cont_africa [aweight=pop_1400] //wow, those are different coeffs
 
-//now, we want to include more controls
-reg rgdppc_2000 soil desert tropical dist_coast q_rule_law cont_africa cont_asia cont_europe cont_oceania cont_north_america legor_gbr legor_fra legor_soc legor_deu colony_esp colony_gbr colony_fra colony_prt
-//that works, but it's ugly.
-
-reg rgdppc_2000 soil desert tropical dist_coast q_rule_law cont_africa cont_asia ///
-	cont_europe cont_oceania cont_north_america legor_gbr legor_fra legor_soc legor_deu ///
-	colony_esp colony_gbr colony_fra colony_prt
-// Three backticks gets you multiple lines in the same command
-// what happens if you copy paste this code to the command window?
+*Note number of observations in these regressions
+*Do all of them match?
 
 
-// Let's add an interaction term for rule of law and Portuguese origins
-gen q_rule_lawXcolony_prt = q_rule_law*colony_prt
+*Why not?
 
-//Run the same basic specification as before, with the robust indicator
-//Include the interaction term and other relevant variables
-reg rgdppc_2000 soil tropical cont_africa q_rule_law  q_rule_lawXcolony_prt colony_prt, robust
+*INTERACTIONS
+
+// Let's add an interaction term for being married and graduating from college
+
+*Basic regression
+reg wage age union married collgrad
+
+gen marriedXcollgrad= married*collgrad
+
+
+reg wage age married collgrad union marriedXcollgrad
+
+// Another way to do this:
+*This produces a version with dummies for each "category"
+reg wage age union married#collgrad
+
+*This produces the same as the original specification
+reg wage age union married##collgrad
+
+// How do these two specifications differ?
+
+*ROBUST STANDARD ERRORS
+
+// Let's add robust standard errors to our regression; use the help file to do so
+//COMMAND:
+
+
+reg wage age married collgrad union marriedXcollgrad, vce(robust)
+
+reg wage age married collgrad union marriedXcollgrad, robust
 
 *LOGIT REGRESSIONS
 //Logits are used for binary dependent variables
 //For a logit regression, we interpret the coefficients as the log odds
 
-//Transform the GDP variable into a binary variable; just an example
-gen high_rgdppc_2000 = (rgdppc_2000>9094.893) if rgdppc_2000<.  //DO NOT DO THIS
+*Lets predict union status
+logit union wage age married
 
-logit high_rgdppc_2000 soil tropical cont_africa
+//The coefficient on wage tells us that, holding age and married at a fixed value,
+//a one-unit increase in wage leads to a certain increase in the log odds of being a union worker
 
-//The coefficient on tropical tells us that, holding soil and cont_africa at a fixed value,
-//a one-unit increase in tropical leads to a certain decrease in the odds of having a high GDP
-
-disp exp(.0146563)
+*What the heck are log odds?
+disp exp(.076859 )
 
 //or use the or option
-logit high_rgdppc_2000 soil tropical cont_africa, or
+logit union wage age married, or
 
-//specifically, we see approximately a 1% decrease in the odds of having a high GDP
+*Or use the logistic command
+logistic union wage age married
+//specifically, we see approximately a 7% increase in the odds of being a union worker
 
-*PROBIT REGRESSIONS
-//Probits are also used for binary dependent variables
-//For a probit regression, we can interpret signs, but not the precise value of the coefficient
 
-probit high_rgdppc_2000 soil tropical cont_africa
+*What is the difference
+help logistic
+help logit
+
+
 
 ******************************************
 * IV. 	POST-ESTIMATION
@@ -229,58 +359,57 @@ probit high_rgdppc_2000 soil tropical cont_africa
 
 help regress postestimation // here is the relevant help file
 
-*PREDICTED VALUES
-reg rgdppc_2000 soil tropical cont_africa, robust
-predict fitted, xb
-
-//What are we doing when we estimate predicted values?
-gen fitted_v2 = _b[soil]*soil + _b[tropical]*tropical + _b[cont_africa]*cont_africa + _b[_cons]
-
-//Are fitted and fitted_v2 the same? How can we check?
-//COMMAND:
-count if fitted!=fitted_v2
+*TESTING FOR HETEROSKEDASTICITY
+reg wage union age married 
+estat hettest
 
 
-//Let's graph these
-scatter rgdppc_2000 fitted tropical, by(cont_africa) // our x and y axes don't look great
-scatter rgdppc_2000 fitted tropical, by(cont_africa) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f))
-scatter rgdppc_2000 fitted tropical, by(cont_africa) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f)) ///
-	sort  c(. l) // we can also connect 
-scatter rgdppc_2000 fitted tropical, by(cont_africa) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f)) ///
-	sort  c(. l) m(. i) // or even drop the dots
-
-*RESIDUALS
-reg rgdppc_2000 soil tropical cont_africa, robust
-predict r, resid
-
-//What are we doing when we estimate residuals?
-gen r_v2 = rgdppc_2000-(_b[soil]*soil + _b[tropical]*tropical + _b[cont_africa]*cont_africa + _b[_cons])
-
-//Are r and r_v2 the same? Check
-//COMMAND:
-count if r!=r_v2
-
-
-scatter rgdppc_2000 r tropical, by(cont_africa) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f))
-//Draw the scatter plot with a line connecting the residuals, with no dots identifying the points
-//COMMAND:
-scatter rgdppc_2000 r tropical, by(cont_africa) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f)) ///
-	sort  c(. l) 
-
-
-//Let's graph both together
-//COMMAND:
-scatter rgdppc_2000 fitted r tropical, by(cont_africa) xlabel(0(20)100, format(%2.0f)) ylabel(,format(%2.0f))
-
-
-
-//What is happening here? What happens when we add together r and fitted?
-gen total=r+fitted
-*br total rgdppc_2000
 
 *WALD TESTS
-reg rgdppc_2000 soil tropical colony_esp colony_gbr, robust
-test colony_esp = colony_gbr
+reg wage union age married 
+test union = married
+
+reg wage age married collgrad union marriedXcollgrad
+test collgrad+marriedXcollgrad=0
+test married+marriedXcollgrad=0
 
 //What are we testing? What do we conclude?
+
+
+
+******************************************
+* V.	PLOTTING REGRESSION RESULTS
+******************************************
+
+// Sometimes, we may want to display results in figures rather than tables
+
+//you will need to run the below to install this very useful user-written command
+ssc install coefplot
+
+reg wage union age married i.industry
+coefplot
+coefplot, horizontal
+coefplot, drop(_cons) horizontal
+
+
+**How would you alter this coefplot for a logistic regression?
+*Use the outcome union
+//COMMAND:
+
+logistic union age married i.industry
+coefplot, drop(_cons) horizontal 
+
+
+*Does the scale need to be changed at all?
+
+
+//What if you want to use 99 percent confidence intervals instead of 95?
+//Use the help file for coefplot to figure out how to plot the above figure that way
+//COMMAND: 
+
+
+reg wage union age married i.industry
+coefplot, drop(_cons) horizontal levels(99)
+
+
 

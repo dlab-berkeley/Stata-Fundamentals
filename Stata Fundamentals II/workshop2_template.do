@@ -1,7 +1,6 @@
-******************************* 
-*	Stata Intensive: Workshop 2
-*	Fall 2017, D-LAB
-*	Jackie Ferguson
+********************************
+*	STATA INTENSIVE: WORKSHOP 2
+*	SPRING 2019, D-LAB
 ********************************
 
 **************************************************
@@ -24,7 +23,7 @@
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My result window shows this:*/   
 
-
+cd "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals II"
    
 /***
 		We paste this command above so that next time we can just run this 
@@ -34,64 +33,9 @@
 ***/
 
 
-*I.  Open the data file */
+*Open the data file
 
-use nlsw88.dta , clear // open data file 
-
-/* You can also write: */
-
-use nlsw88 , clear
-
-
-********************************************************************************
-********************************************************************************
-***From last Workshop!
-********************************************************************************
-********************************************************************************
-
-
-* EXPORTING AND IMPORTING DATA *
-
-
-* Export data for use with other programs
-help export excel
-
-*Export out of Stata in several different formats
-*Can also use the drop down menu to populate this code
-export delimited using "nlsw88.csv", replace datafmt
-export excel using "nlsw88.xlsx", firstrow(variables) replace   
-
-
-* Import data from excel sheet into stata as nlsw88_clean.xlsx
-
-// Let's first clear the current data in memory
-clear all
-
-// import the data file you just exported to excel as nlsw88_clean.xlsx
-import excel using "nlsw88.xlsx", first clear
-
-
-// "first" specifies that the first row in the excel file is a variable name
-*What would happen if we didn't select this option?
-
-
-
-**Do you notice anything different from our datafile to our xlsx file?
-*Was any data lost?
-*Does our data look any different?
-des
-
-
-
-*Compare it to the original data before we exported it to excel
-clear all
-use "nlsw88.dta", clear
-
-
-
-*Set more off for this workshop-
-*You can set it off permanently by adding ", perm" to the end
-set more off
+use nlsw88.dta, clear // open data file 
 
 
 
@@ -99,6 +43,10 @@ set more off
 **************************************************
 * I. 	CORRELATION AND T-TESTS
 **********************************************
+
+//Let's use the unchanged data again
+
+use nlsw88.dta , clear 
 
 *CORRELATION AND T-TESTS
 
@@ -112,6 +60,9 @@ corr age wage
 //What if we want to look at age wage and tenure
 //COMMAND:
 
+
+
+
 *T-TESTS
 
 //Now, let's test whether wages are different by union membership
@@ -122,6 +73,8 @@ ttest wage, by(union)
 
 //Hint: use the south variable
 //COMMAND:
+
+
 
 
 *How would you interpret this?
@@ -148,29 +101,34 @@ histogram wage, discrete
 //COMMAND:
 
 
+
 //What about a histogram with bins of width 2?
 //COMMAND:
 
 
 
+
 **All of our histogram options can stack together
 
-*Add a title 
+*Add the following title: "Histogram by Wage in National Labor Survery in 1988"
 //COMMAND:
 
 
-*Add a title and labels
+
+
+
+*Change the title for the x-axis
 //COMMAND:
 
-*Create a difference X-axist Title
-//COMMAND:
+
+
 
 *************
 **Additional options for a Histogram
 *************
 
-*We can restrict our population by a conditional statement
-histogram wage if married==1, width(.25) title("Wage Histogram only amongst those who are married")
+*We can restrict our sample with a conditional statement
+histogram wage if married==1, width(.25) 
 	
 	
 *We can also create a histogram by a categorical variable
@@ -179,6 +137,8 @@ histogram wage, by(married)
 
 //How would we change this command if we wanted to look at the histograms by industry?
 //COMMAND:
+
+
 
 
 *************
@@ -200,6 +160,8 @@ help scheme
 //COMMAND:
 
 
+
+
 //There are other formatting changes we can also make
 scatter wage age, title("Hourly  vs. Age") legend(on) ///
 	mcolor(blue) xlabel(34(1)46, format(%2.0f)) ylabel(,format(%2.1f))
@@ -208,19 +170,19 @@ scatter wage age, title("Hourly  vs. Age") legend(on) ///
 //We want to make a scatterplot, and add a linear prediction-based line of best fit 	
 twoway (scatter wage age, title("Hourly  vs. Age") legend(on) ///
 	mcolor(blue) xlabel(34(1)46, format(%2.0f)) ylabel(,format(%2.1f))) ///
-	(lfit wage age)	
+	(lfit wage age)
 
 //Alternatively, we can use || instead of () to define plots
 scatter wage age, title("Hourly  vs. Age") legend(on) ///
 	mcolor(blue) xlabel(34(1)46, format(%2.0f)) ylabel(,format(%2.1f)) || ///
-	(lfit wage age)
+	lfit wage age
 
+scatter wage age || lfit wage age
 
 //Let's save the graph
-scatter wage age, title("Hourly  vs. Age") legend(on) scheme(s1color) ///
+scatter wage age, title("Hourly  vs. Age") scheme(s1color) ///
 	mcolor(blue) xlabel(34(1)46, format(%2.0f)) ylabel(,format(%2.1f)) || ///
-	(lfit wage age) 
-	
+	lfit wage age , legend(on label(1 "Hourly Wage") label(2 "Regression Line"))
 	
 graph save "wageage.gph", replace // save in Stata format (can be re-opened in Stata)
 graph export "wageage.png", replace //save in .png format for use
@@ -228,6 +190,7 @@ graph export "wageage.png", replace //save in .png format for use
 *Remember- you can code all these graphs on one line without the /// 
 *I have them broken up into multiple lines for easy display in class 
 *Do what is best for you!
+
 
 *************
 **Additional options for a Scatter Plot
@@ -291,6 +254,9 @@ reg wage age
 //COMMAND:
 
 
+
+
+
 *Why can't we use married_txt?
 reg wage age union married_txt
 
@@ -300,14 +266,22 @@ reg wage age union married_txt
 *What does this output mean?
 reg wage age union married industry // Not right
 
-*This treats each industry number as its own category instead of assuming a linear
-*relationship between each of them
+*We want to treat each industry number as its own category instead of assuming a linear
+*relationship between them
 **How do we fix this?
 //COMMAND:
 
 
+
+*The i. here lets us split up the categorical industry variable into dummies by value
+
 //What if we only want to run this regression for certain industries?
 //COMMAND:
+
+
+
+
+
 
 
 *Note number of observations in these regressions
@@ -316,13 +290,9 @@ reg wage age union married industry // Not right
 
 *Why not?
 
+*INTERACTIONS
 
-******************
-*Interaction Terms
-******************
-
-
-// Let's add an interaction term for being married and education
+// Let's add an interaction term for being married and graduating from college
 
 *Basic regression
 reg wage age union married collgrad
@@ -330,11 +300,23 @@ reg wage age union married collgrad
 gen marriedXcollgrad= married*collgrad
 
 
-//Run the same basic specification as before, with the robust indicator
-//Include the interaction term and other relevant variables
 reg wage age married collgrad union marriedXcollgrad
 
+// Another way to do this:
+*This produces a version with dummies for each "category"
 reg wage age union married#collgrad
+
+*This produces the same as the original specification
+reg wage age union married##collgrad
+
+// How do these two specifications differ?
+
+*ROBUST STANDARD ERRORS
+
+// Let's add robust standard errors to our regression; use the help file to do so
+//COMMAND:
+
+
 
 
 
@@ -379,11 +361,18 @@ reg wage union age married
 estat hettest
 
 
+
 *WALD TESTS
 reg wage union age married 
 test union = married
 
+reg wage age married collgrad union marriedXcollgrad
+test collgrad+marriedXcollgrad=0
+test married+marriedXcollgrad=0
+
 //What are we testing? What do we conclude?
+
+
 
 ******************************************
 * V.	PLOTTING REGRESSION RESULTS
@@ -395,21 +384,25 @@ test union = married
 ssc install coefplot
 
 reg wage union age married i.industry
+coefplot
 coefplot, horizontal
 coefplot, drop(_cons) horizontal
 
-reg wage union age married i.industry
-coefplot, drop(_cons) vertical 
 
 **How would you alter this coefplot for a logistic regression?
+*Use the outcome union
 //COMMAND:
 
 
 
-*Does the Scale need to be changed at all?
+
+*Does the scale need to be changed at all?
 
 
 //What if you want to use 99 percent confidence intervals instead of 95?
 //Use the help file for coefplot to figure out how to plot the above figure that way
 //COMMAND: 
+
+
+
 
