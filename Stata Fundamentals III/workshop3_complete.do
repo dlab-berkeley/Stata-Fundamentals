@@ -1,6 +1,6 @@
 ******************************* 
 *	STATA INTENSIVE: WORKSHOP 3
-*	FALL 2017, D-LAB
+*	SPRING 2018, D-LAB
 ********************************
 
 **************************************************
@@ -17,7 +17,7 @@
 
 *Setting do-file basics:
 //We want to set a "global" like the one below, to store the file path to today's data
-global mycomp "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals III"
+*global mycomp "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals III/"
 // for my computer
 
 
@@ -82,11 +82,10 @@ save nlsw88_wave1and2.dta, replace
 * MERGE DATASETS
 
 * Data for wave 1 
-use nlsw88_wave1and2.dta, clear
+use nlsw88_wave1and2.dta
 
 isid idcode // check if id makes  a unique identifier
 duplicates report idcode 
-duplicates list idcode
 
 
 *Lets look at the second part of the dataset
@@ -100,7 +99,7 @@ duplicates report id // another way of checking if the combination of nr and yea
 * Merge
 use nlsw88_wave1and2.dta, clear
 
-merge 1:1 idcode using nlsw88_childvars //one-to-one merge
+merge 1:1 idcode  using nlsw88_childvars //one-to-one merge
 
 *What does it mean to have different _merge values?
 tab _merge
@@ -132,12 +131,7 @@ list idcode childage1 childage2 childage3 childage4 in 1/10  //print the data to
 //Now, each row will be not a single individual, but an individual-child
 reshape long childage, i(idcode) j(childidcode) 
 
-
 list idcode childage in 1/10 //print again
-
-isid idcode // no longer works
-
-isid idcode childidcode
 
 /* Now take this data, and put it back into "wide" format
 
@@ -153,12 +147,6 @@ j() will be how we're reshaping it*/
 
 reshape wide childage, i(idcode) j(childidcode)
 
-//Once you've done a reshape, you can easily go back and forth by typing:
-
-reshape long
-
-reshape wide
-
 
 **********************************************
 * I. 	APPENDING & MERGING - EXTENSION
@@ -170,17 +158,9 @@ use nlsw88_childvars, clear
 //Let's first reshape nlsw88_childvars to long format
 //COMMAND:
 
-reshape long childage, i(idcode) 
-
-*or, if we want to specify our j variable
-
-use nlsw88_childvars, clear
-
 reshape long childage, i(idcode) j(childidcode)
 
 //Now we merge in the full dataset using what's called a many-to-one merge
-
-// order at color is master:using
 
 merge m:1 idcode using nlsw88_wave1and2
 
@@ -191,8 +171,6 @@ merge m:1 idcode using nlsw88_wave1and2
 
 //Imagine you want to do some analysis on our NLSW data
 use "$mycomp/nslw88_complete.dta", clear
-
-use nslw88_complete.dta, clear
 
 *LOCALS
 
@@ -229,8 +207,8 @@ display "The variable label for ttl_exp is `ttl_exp_lab'."
 //Use the --help extended_fcn-- file to make a local containing the format of ttl_exp 
 //COMMAND:
 
-local berkeley : format ttl_exp
-display "The variable format for ttl_exp is `berkeley'."
+local ttl_exp_format : format ttl_exp
+display "The format for ttl_exp is `ttl_exp_format'."
 
 *GLOBALS
 
@@ -266,7 +244,6 @@ foreach fudge in wage ttl_exp hours {
 	reg `fudge' grade
 }
 
-
 //Instead of using foreach fudge in, we can also use foreach fudge of
 //This works only with variables
 foreach fudge of varlist wage ttl_exp hours {
@@ -287,10 +264,10 @@ foreach fudge in wage ttl_exp hours {
 
 //COMMAND: 
 
-foreach fudge in wage ttl_exp hours tenure {
-	disp "********This regresses `fudge' on grade, controlling for age **********"
-	reg `fudge' grade age
+foreach var of varlist wage ttl_exp hours tenure {
+	reg `var' grade age
 }
+
 
 
 /*When running a long loop, you may want to turn off the --more-- command
@@ -312,9 +289,8 @@ set trace off
 
 //What if you want to loop over numbers?
 foreach X in 1 2 3 4 5 6 7 8 9 10 {
-	disp "The number is `X'"
+	disp "The number is `X'
 }
-
 //That works, but it's better to do forvalues
 forvalues X=1(1)10 {
 	disp "The number is `X'."
@@ -344,13 +320,13 @@ foreach var of local outcomes {
 //Outcomes: wage tenure
 //COMMAND: 
 
-
-
 local outcomes wage tenure
+
 foreach var of local outcomes {
-	display "look! it's the variable `var'"
 	reg `var' grade
 }
+
+
 
 * NESTED LOOPS
 
@@ -378,18 +354,16 @@ foreach var of varlist `outcomes' {
 //How might you keep track of what's going on within the loop?
 //COMMAND: 
 
-
 local outcomes wage ttl_exp hours
-global controlvars south married union
-local i=1 
+local i=1 //add an index so we can see how many regs we're doing
 foreach var of varlist `outcomes' {
 	forvalues x=1/4 {
 		display "Regression `i':We're regressing `var' on grade, controlling for child age `x'"
+		local i=`i'+1
 		reg `var' grade childage`x'
+		display "Regression `i':We're regressing `var' on grade, controlling for child age `x' and south, married and union"
 		local i=`i'+1
-		display "Regression `i': We're regressing `var' on treat`X' with child age `x' and other controls"
-		reg `var' grade childage`x' $controlvars
-		local i=`i'+1
+		reg `var' grade childage`x' south married union
 	}
 }
 
@@ -435,8 +409,10 @@ outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) br
 //Append another regression of free_chl_yn on treatw with controls, using the robust specification and clustering on occupation
 //COMMAND:
  
-reg wage grade $controlvars, robust cluster(occupation)
-outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) bracket ctitle(Clustered)
+ reg wage grade $controlvars, cluster(occupation)
+outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) bracket ctitle(Robust SE)
+
+
  
 
 //The below does the same thing for a .tex file
@@ -450,17 +426,14 @@ local outcomes wage ttl_exp hours
 
 foreach var of varlist `outcomes' {
 	reg `var' grade
-	outreg2 using "$mycomp/Output/regression_results_`var'.xls", replace tex tdec(3) bdec(3) bracket ctitle(Basic) addnote(This table is totally awesome and should be published)
+	outreg2 using "$mycomp/Output/regression_results_`var'.tex", replace tex tdec(3) bdec(3) bracket ctitle(Basic) addnote(This table is totally awesome and should be published)
 	
 	local j =1
 	foreach spec in `spec_list' {
 		local title : word `j' of `spec_title'
 		reg `var' grade `spec'
-		outreg2 using "$mycomp/Output/regression_results_`var'.xls", append tex tdec(3) bdec(3) bracket ctitle("`title'")
+		outreg2 using "$mycomp/Output/regression_results_`var'.tex", append tex tdec(3) bdec(3) bracket ctitle("`title'")
 		local j = `j' + 1
 	}
 }
-
-
-
 

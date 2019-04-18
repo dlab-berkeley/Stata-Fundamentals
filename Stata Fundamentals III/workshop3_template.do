@@ -1,6 +1,6 @@
 ******************************* 
 *	STATA INTENSIVE: WORKSHOP 3
-*	FALL 2017, D-LAB
+*	FALL 2018, D-LAB
 ********************************
 
 **************************************************
@@ -17,7 +17,7 @@
 
 *Setting do-file basics:
 //We want to set a "global" like the one below, to store the file path to today's data
-global mycomp "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals III"
+global mycomp "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals III/"
 // for my computer
 
 
@@ -34,6 +34,8 @@ display "$mycomp"
 * "Show me what the name "mycomp" represents" 
 
 cd "$mycomp"
+
+
 
 **********************************************
 * I. 	APPENDING & MERGING
@@ -82,11 +84,10 @@ save nlsw88_wave1and2.dta, replace
 * MERGE DATASETS
 
 * Data for wave 1 
-use nlsw88_wave1and2.dta, clear
+use nlsw88_wave1and2.dta
 
 isid idcode // check if id makes  a unique identifier
 duplicates report idcode 
-duplicates list idcode
 
 
 *Lets look at the second part of the dataset
@@ -125,19 +126,14 @@ save nslw88_complete.dta, replace
 *Load data
 use nslw88_complete.dta, clear
 
-//Some of tis data is in "wide" format
+//Some of this data is in "wide" format
 list idcode childage1 childage2 childage3 childage4 in 1/10  //print the data to the screen
 
 //First, we want to try and reshape it to "long" format
 //Now, each row will be not a single individual, but an individual-child
 reshape long childage, i(idcode) j(childidcode) 
 
-
 list idcode childage in 1/10 //print again
-
-isid idcode // no longer works
-
-isid idcode childidcode
 
 /* Now take this data, and put it back into "wide" format
 
@@ -150,6 +146,9 @@ i() is the variable the data will be at the level of
 j() will be how we're reshaping it*/
 
 //COMMAND:
+
+
+
 
 
 
@@ -167,15 +166,7 @@ use nlsw88_childvars, clear
 
 
 
-*or, if we want to specify our j variable
-
-use nlsw88_childvars, clear
-
-reshape long childage, i(idcode) j(childidcode)
-
 //Now we merge in the full dataset using what's called a many-to-one merge
-
-// order at color is master:using
 
 merge m:1 idcode using nlsw88_wave1and2
 
@@ -186,8 +177,6 @@ merge m:1 idcode using nlsw88_wave1and2
 
 //Imagine you want to do some analysis on our NLSW data
 use "$mycomp/nslw88_complete.dta", clear
-
-use nslw88_complete.dta, clear
 
 *LOCALS
 
@@ -206,7 +195,6 @@ summ hours
 return list
 local hours=r(mean) // store the average in a local
 
-
 summ child_num
 return list
 local child_num=r(mean) // store the average in a local
@@ -224,6 +212,8 @@ display "The variable label for ttl_exp is `ttl_exp_lab'."
 //Use the --help extended_fcn-- file to make a local containing the format of ttl_exp 
 //COMMAND:
 
+local randomword : format ttl_exp
+display "The format of ttl_exp is `randomword'."
 
 
 *GLOBALS
@@ -247,6 +237,7 @@ reg wage grade
 reg ttl_exp grade
 reg hours grade
 
+
 //This will do the exact same thing
 foreach var in wage ttl_exp hours {
 	reg `var' grade
@@ -255,6 +246,8 @@ foreach var in wage ttl_exp hours {
 //var is just a placeholder, it could be anything
 //Try it yourself! Use another word in place of var.
 //COMMAND:
+
+
 
 
 
@@ -282,6 +275,7 @@ foreach fudge in wage ttl_exp hours {
 
 
 
+
 /*When running a long loop, you may want to turn off the --more-- command
 This can be done with --set more off--
 To do it permanently, you can run --set more off, permanently--*/
@@ -301,9 +295,8 @@ set trace off
 
 //What if you want to loop over numbers?
 foreach X in 1 2 3 4 5 6 7 8 9 10 {
-	disp "The number is `X'"
+	disp "The number is `X'
 }
-
 //That works, but it's better to do forvalues
 forvalues X=1(1)10 {
 	disp "The number is `X'."
@@ -334,7 +327,6 @@ foreach var of local outcomes {
 
 
 
-
 * NESTED LOOPS
 
 forvalues X=1/10 {
@@ -360,13 +352,6 @@ foreach var of varlist `outcomes' {
 //Controls: south married union
 //How might you keep track of what's going on within the loop?
 //COMMAND: 
-
-
-
-
-
-
-
 
 
 
@@ -414,7 +399,7 @@ outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) bdec(3) br
  
 
  
- 
+
 //The below does the same thing for a .tex file
 //Here, I also use two loops, first over three variables
 // Within each variable, we then loop over three specifications (and titles!)
@@ -426,17 +411,14 @@ local outcomes wage ttl_exp hours
 
 foreach var of varlist `outcomes' {
 	reg `var' grade
-	outreg2 using "$mycomp/Output/regression_results_`var'.xls", replace tex tdec(3) bdec(3) bracket ctitle(Basic) addnote(This table is totally awesome and should be published)
+	outreg2 using "$mycomp/Output/regression_results_`var'.tex", replace tex tdec(3) bdec(3) bracket ctitle(Basic) addnote(This table is totally awesome and should be published)
 	
 	local j =1
 	foreach spec in `spec_list' {
 		local title : word `j' of `spec_title'
 		reg `var' grade `spec'
-		outreg2 using "$mycomp/Output/regression_results_`var'.xls", append tex tdec(3) bdec(3) bracket ctitle("`title'")
+		outreg2 using "$mycomp/Output/regression_results_`var'.tex", append tex tdec(3) bdec(3) bracket ctitle("`title'")
 		local j = `j' + 1
 	}
 }
-
-
-
 
