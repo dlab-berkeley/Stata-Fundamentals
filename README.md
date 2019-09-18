@@ -8,13 +8,14 @@ Last updated in December 2017 by [Isabelle Cohen](http://dlab.berkeley.edu/peopl
 ## Stata Resources
 
 1. Stata book recommendations (Stata Press)
-  - A Gentle Introduction to Stata (http://www.stata-press.com/books/gentle-introduction-to-stata/) - great companion for the trainings
-  - The Workflow of Data Analysis using Stata (http://www.stata-press.com/books/workflow-data-analysis-stata/) - helpful tips on organizing do files, working on teams, improving productivity, and reducing errors
-  - An Introduction to Stata Programming (http://www.stata-press.com/books/introduction-stata-programming/) - advanced book on Stata programming
+    - A Gentle Introduction to Stata (http://www.stata-press.com/books/gentle-introduction-to-stata/) - great companion for the trainings
+    - The Workflow of Data Analysis using Stata (http://www.stata-press.com/books/workflow-data-analysis-stata/) - helpful tips on organizing do files, working on teams, improving productivity, and reducing errors
+    - An Introduction to Stata Programming (http://www.stata-press.com/books/introduction-stata-programming/) - advanced book on Stata programming
+
 2. External Stata tutorials
-  - Stanis Koleniov's Stata tutorials (http://web.missouri.edu/~kolenikovs/stata/Duke/)
-  - UCLA Statistical Consulting Group (http://www.ats.ucla.edu/stat/stata/)
-  - statalist.org (http://www.statalist.org/)
+    - Stanis Koleniov's Stata tutorials (http://web.missouri.edu/~kolenikovs/stata/Duke/)
+    - UCLA Statistical Consulting Group (http://www.ats.ucla.edu/stat/stata/)
+    - statalist.org (http://www.statalist.org/)
 
 ## Stata at Berkeley
 
