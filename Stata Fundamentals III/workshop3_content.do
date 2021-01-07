@@ -1,6 +1,6 @@
 ******************************* 
-*	STATA INTENSIVE: WORKSHOP 3
-*	SPRING 2020, D-LAB
+*	STATA FUNDAMENTALS: WORKSHOP 3
+*	SPRING 2021, D-LAB
 ********************************
 
 **************************************************
@@ -22,7 +22,7 @@
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My result window shows this:*/   
 
-cd "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals III"
+cd "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals III"
    
 /***
 		We paste this command above so that next time we can just run this 
@@ -31,66 +31,12 @@ cd "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals III"
 		everything from the do-file.
 ***/
 
-/* Making a Global:*/
-
-//We could instead store this same file path in a global
-global mycomp "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals III"
-
-//Check if it worked
-display "$mycomp"
-
-//"Show me what the name "mycomp" represents" 
-cd "$mycomp"
-
 pwd
 // POLL 1 //
 
 **********************************************
 * 0. 	WORKSHOP II WRAP-UP
 **********************************************
-
-clear all 
-use nlsw88.dta, clear
-
-*POST-ESTIMATION
-
-//We can do more than just display coefficients following regression
-//Examples from linear regression
-
-help regress postestimation // here is the relevant help file
-
-*TESTING FOR HETEROSKEDASTICITY
-reg wage union age married 
-estat hettest
-
-
-*WALD TESTS
-reg wage union age married 
-test union = married
-
-gen marriedXcollgrad=married*collgrad
-reg wage age married collgrad union marriedXcollgrad
-test collgrad+marriedXcollgrad=0
-test married+marriedXcollgrad=0
-
-//What are we testing? What do we conclude?
-
-* PLOTTING REGRESSION RESULTS
-
-// Sometimes, we may want to display results in figures rather than tables
-
-//you will need to run the below to install this very useful user-written command
-ssc install coefplot
-
-reg wage union age married i.industry
-coefplot
-coefplot, horizontal
-coefplot, drop(_cons) horizontal
-
-//what about for a logistic regression?
-
-logit union wage age married i.industry
-coefplot
 
 
 **********************************************
@@ -204,6 +150,45 @@ reshape wide childage, i(idcode) j(childidcode)
 
 // POLL 3 //
 
+
+/* CHALLENGE: RESHAPING AND MERGING **
+	Rather than merging nlsw88_childvars into nlsw88_wave1and2 and then reshaping,
+	we could instead have first reshaped nlsw88_childvars, and then done a
+	many-to-one merge. Let's try that now!*/
+
+/*1.1: Open up nlsw88_childvars, and reshape it to long format*/
+
+
+
+
+/*1.2: Merge nlsw88_wave1and2 (using) into nlsw88_childvars (master)
+	using a many-to-one syntax*/
+
+	
+	
+
+/*1.3: We want this data to be organized at the woman-child level,
+	meaning we should have a number of observations for each woman matching
+	the number of children she has. For example, if a women has 3 children, there
+	should be 3 observations for her. 
+	
+	1.3.1: How many observations are there initially? How many women are there in our data?
+	(hint: use the user-written command --unique-- by typing "install ssc unique"
+	and then looking at the help file)
+	
+	1.3.2: How could you check if there are women with extra observations? 
+		(note: there are many ways to 'answer' this question)
+		
+	1.3.3: Can you find a way to drop observations for "fake" (created by the reshape)
+		child observations?
+		
+	1.3.4: What is the correct number of observations in the end?*/
+
+	
+	
+	
+	
+
 **********************************************
 * III. 	MACROS
 **********************************************
@@ -250,9 +235,25 @@ display "The value label for industry is `industry_lab'."
 //Easy list of long set of variable names
 //Set the file path name for different computers
 
-//We set up a global at the beginning of this do file, which can be very useful
+/* Making a Global:*/
+
+//We could store the file path to the working directory in a global
+pwd
+
+* copy your own working directory and replace mine below*
+
+global mycomp "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals II"
+
+//Check if it worked
 display "$mycomp"
 
+// reset working directory using the global 
+cd "$mycomp"
+
+// check it worked
+pwd
+
+// this global will be useful latter when we save files to a different folder
 
 
 **********************************************
@@ -367,6 +368,54 @@ foreach var of varlist `outcomes' {
 // POLL 6 //
 
 
+/** CHALLENGE 2: LOCALS AND LOOPS **
+	Let's use nlsw88_complete to explore locals and loops further! Let's imagine we want to
+	make a "dictionary" from this dataset, or print on the screen some information
+	about each of the variables in the data.
+	
+	In this exercise, we'll focus on ttl_exp, tenure, south and smsa.*/
+
+/*2.1: Use the --help extended_fcn-- file to make a local containing the variable 
+label of ttl_exp, and display it. The command can be found under the subheading
+"Macro functions for extracting data attributes" in the help file extended_fcn*/
+* (hint: the variable label is the explanation for what the variable is)
+
+
+
+
+/*2.2: Make a loop which goes over ttl_exp, tenure, south and smsa and
+lists the variable label for each one.*/
+
+
+
+
+
+
+/*2.3: Display the sentence - using locals and extended functions, not words
+	- in the following format: "ttl_exp (float) contains the total work experence for each
+	woman in the dataset." */
+ 
+
+ 
+ 
+ 
+/*2.4: Make a loop which takes your sentence above, and fills it in for
+	ttl_exp, tenure, south and smsa. Put a number at the beginning of each sentence
+	which updates by one every time your loop runs*/
+
+
+
+
+
+
+/*2.5 (CHALLENGE): Write a loop which produces the exact same results, 
+	but this time use a forvalues loop to loop over the numbers 1 to 4 to do so.
+
+	Hint: check the extended function help file and look at "word # of string".*/
+
+
+	
+	
 
 **********************************************
 * V. 	EXPORTING RESULTS
@@ -375,6 +424,9 @@ foreach var of varlist `outcomes' {
 //Create a folder to store output
 //the mkdir folder creates the folder specified in " " (if the file path makes sense)
 //cap, or capture, is a Stata command which tells Stata to keep going even if it can't implement that command
+
+// we are making use of your global $mycomp so that we don't have to write out the whole filepath 
+
 cap mkdir "$mycomp/Output"
 
 *OUTREG2
@@ -383,28 +435,9 @@ ssc install outreg2
 
 global controlvars south married union
 
-//First, output to a .txt file
-reg wage grade
-outreg2 using "$mycomp/Output/regression_results", replace tdec(3) ///
-	bdec(3) bracket ctitle(Basic) ///
-	addnote(This table is totally awesome and should be published)
-
-reg wage grade $controlvars
-outreg2 using "$mycomp/Output/regression_results", append tdec(3) ///
-	bdec(3) bracket ctitle(With Controls)
-
-reg wage grade $controlvars, robust
-outreg2 using "$mycomp/Output/regression_results", append tdec(3) ///
-	bdec(3) bracket ctitle(Robust SE)
-
-reg wage grade $controlvars, robust cluster(industry)
-outreg2 using "$mycomp/Output/regression_results", append tdec(3) ///
-	bdec(3) bracket ctitle(Cluster SE)
-
-
 // POLL 7 //
 
-// Export results to EXCEL
+// Export results to EXCEL (default is text file)
 
 reg wage grade
 outreg2 using "$mycomp/Output/regression_results.xls", replace tdec(3) ///
@@ -424,8 +457,7 @@ outreg2 using "$mycomp/Output/regression_results.xls", append tdec(3) ///
 	bdec(3) bracket ctitle(Cluster SE)
 
 
-//The below does the same thing for a .tex file
-//Here, I also use two loops, first over three variables
+// Here, I also use two loops, first over three variables
 // Within each variable, we then loop over three specifications (and titles!)
 
 local spec_list `" "$controlvars" "$controlvars, robust" "$controlvars, robust cluster(industry)" "'
