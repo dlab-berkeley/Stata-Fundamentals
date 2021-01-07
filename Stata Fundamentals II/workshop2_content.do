@@ -1,6 +1,6 @@
 ********************************
-*	STATA INTENSIVE: WORKSHOP 2
-*	SUMMER 2020, D-LAB
+*	STATA FUNDAMENTALS: WORKSHOP 2
+*	SPRING 2021, D-LAB
 ********************************
 
 **************************************************
@@ -23,7 +23,7 @@
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My result window shows this:*/   
 
-cd "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals II"
+cd "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals II"
    
 /***
 		We paste this command above so that next time we can just run this 
@@ -85,6 +85,10 @@ histogram wage, freq width(2) ///
 	xtitle("Hourly Wage in 1988 Dollars")
 
 
+** CHALLENGE **
+* 1. Plot a histogram of weekly hours worked in which each bar represents 5 hours.
+* Label the x-axis "Weekly Hours"
+	// variable: hours
 
 
 *** Additional options for a Histogram
@@ -101,9 +105,17 @@ histogram wage, by(married)
 histogram wage, by(married) name(hist_wageXmarried)
 
 
-
-
 // POLL 3 //
+
+** CHALLENGE **
+* 2. Create a graph with one historgram of wage for each industry.
+	// variables: wage, industry
+	
+* Bonus: Include a (single) title for the whole graph
+	// hint: this is an option WITHIN an option
+
+	
+	
 
 
 *** SCATTERPLOT ***
@@ -215,20 +227,21 @@ twoway (histogram wage if union==1, percent fcolor(blue%50) lcolor(black) start(
 	legend(order (1 "Union" 2 "Non-Union")) title("Wage by Union Status")
 	
 
+** CHALLENGE **
+* 3. Create a graph with a scatter plot of wage (y-axis) and total work experience (x-axis)
+* for (1) white women and (2) black women on the same set of axes.
+* Include a legend that labels the plot for each race
+	// variables: wage, ttl_exp, race (1=white, 2=black)
+
+* BONUS: change the marker colors from the default to 2 different fun colors
+	// hint: help colorstyle	
+	
+	
+	
+	
 	
 	
 // POLL 4 //
-
-
-
-
-
-**********************************************
-* BREAK AND EXERCISES
-**********************************************
-
-
-
 
 
 **********************************************
@@ -257,6 +270,14 @@ pwcorr age wage tenure
 corr age grade wage hours ttl_exp
 
 
+** CHALLENGE **
+* 4. Correlate ALL of the continuous variables in the dataset that are non-missing for ALL variables
+	// hint: continuous variables are numeric variables for which a "unit increase" 
+	// (or decrease) has inherent meaning.
+	
+	
+
+	
 
 *T-TESTS
 
@@ -270,6 +291,15 @@ ttest wage, by(south)
 
 
 *How would you interpret this?
+
+
+** CHALLENGE **
+* 5. Is there a statistically significant difference in the mean wage of white and black women?
+	// variables: wage race
+	// hint: the ttest approach requires a conditional statement
+	
+	
+	
 
 	
 
@@ -325,9 +355,41 @@ reg wage age union married if industry==12
 
 *Note number of observations in these regressions
 *Do all of them match?
-
-
 *Why not?
+
+* OMMITTED CATEGORY 
+* when we run a regression with a categorical variable, there is always an ommitted category 
+* the coefficients are interpretted relative to the ommitted category
+ reg wage age union married i.industry
+ 
+ * you can change the ommitted category - say you wanted it to be relative to farmers
+ codebook occupation
+ label list occlbl	// farmers = 9 
+ reg wage ttl_exp collgrad union ib9.occupation
+ 
+ 
+* a bivariate (two variable) regression is equivalent to testing the difference in group means
+reg wage i.race
+
+* we can compare this to the ttest above
+* do any of the coefficients look the same?
+ttest wage if race <3, by(race)
+
+
+** CHALLENGE **
+* 6. Regress wage (dependent variable) on:
+*	total experience, 
+*	college graduation,
+*	union status, and 
+*	occupation.
+* Omit respondents in occupations that are:
+*	(1) unknown (i.e., "other" or missing) or (2) have fewer than 20 respondents.
+	// variables: wage ttl_exp collgrad union occupation
+
+
+
+
+
 
 *INTERACTIONS
 
@@ -350,47 +412,6 @@ reg wage age union married##collgrad
 
 // How do these two specifications differ?
 
-*ROBUST STANDARD ERRORS
-
-// Let's add robust standard errors to our regression; use the help file to do so
-//COMMAND:
-
-
-reg wage age union married collgrad, vce(robust)
-reg wage age union married collgrad, robust
-
-
-*LOGIT REGRESSIONS
-//Logits are used for binary dependent variables
-//For a logit regression, we interpret the coefficients as the log odds
-
-*Lets predict union status
-logit union grade age married
-
-// The coefficient on grade tells us that, holding age and married at a fixed 
-//value, an additional year of schooling is associated with a certain increase 
-//in the log odds of being a union worker. 
-
-
-*What the heck are log odds?
-disp exp(.0845168)
-
-//or use the or option
-logit union grade age married, or
-
-*Or use the logistic command
-logistic union grade age married
-//specifically, we see approximately a 9% increase in the odds of being a union worker
-
-
-*What is the difference
-help logistic
-help logit
-
-
-
-// POLL 7 //
-
 
 
 
@@ -412,11 +433,14 @@ estat hettest
 reg wage union age married 
 test union = married
 
-reg wage age married collgrad union marriedXcollgrad
-test collgrad+marriedXcollgrad=0
-test married+marriedXcollgrad=0
 
-//What are we testing? What do we conclude?
+
+
+** CHALLENGE **
+* 7. Are the wages of clerical/unskilled workers significantly different from
+* unskilled workers? 
+*(hint: two methods - one using Wald test, another using ommitted categories)
+
 
 
 
@@ -433,21 +457,6 @@ reg wage union age married i.industry
 coefplot
 coefplot, horizontal
 coefplot, drop(_cons) horizontal
-
-
-**Be careful with coefplot for logistic regression
-logit union collgrad age i.industry, or
-coefplot, drop(_cons)
-
-coefplot, drop(_cons) eform
-
-
-*Does the scale need to be changed even when using the logistic command?
-logistic union collgrad age i.industry
-coefplot, drop(_cons)
-
-
-
 
 
 //What if you want to use 99 percent confidence intervals instead of 95?
