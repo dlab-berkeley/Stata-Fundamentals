@@ -1,7 +1,6 @@
 ********************************
 *	STATA FUNDAMENTALS: PART 1
-*	SPRING 2020, D-LAB
-
+*	SPRING 2021, D-LAB
 ********************************
 
 
@@ -11,7 +10,7 @@
 
 * Outline:
 * I. 	SETTING UP
-* II. 	COMMENTING AND KEEPING SESSION LOGS
+* II. 	COMMENTING
 * III. 	EXAMINING DATA & DATA CLEANING
 *			A. MISSING VALUES
 *			B. DESCRIPTIVE STATISTICS
@@ -29,14 +28,7 @@
 *         SETTING UP   		 *
 ******************************
 
-/* 
-		It's good practice to make sure all previous work has 
-		been cleared at the start of your do-file
-*/
- 
- 
- 
-* CLEAR ALL 
+
 * clear all previously open data, variables, labels, matrices, memory, etc., 
 * and close all open files, graph windows, etc
 
@@ -66,7 +58,8 @@ pwd // check the current working directory
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My results window shows this:*/   
 
-cd "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals I"
+cd "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals I"
+
    
 /***
 		We paste this command above so that next time we can just run this 
@@ -110,8 +103,8 @@ use nlsw88_13, clear
 *         COMMENTING   		 *
 ****************************** 
 
-
 // There are a bunch of ways to comment your .do file.
+// Commenting is key for understanding your work. 
 
 * You can also just put an asterisk at the beginning of a line
 * You can use * to comment out lines of code that you want to suspend
@@ -127,120 +120,20 @@ and super informative comment that you didn't want
 to have all on one line, like this one we're typing
 right now. */
 
-/*But then say you wanted to write a really long
-and super informative comment that you didn't want 
-to have all on one line, like this one we're typing
-right now. */
-
-/* */
-
-des
-
-
-/* However, if you forget to close this slash-asterisk loop
-then you will suspend all commands underneath! */
-
-
-
-/* 
-
-
-
-
-This helps you suspend multiple lines at the same time. 
-They
-don't			 have 
-			to be 
-	continuous					 lines 
-	or 
-	paragraphs.
-
-	"The only people for me are the mad ones, 
-	the ones who are mad to live, mad to talk, 
-	mad to be saved, desirous of everything at 
-	the same time, the ones who never yawn or 
-	say a commonplace thing, but burn, burn, 
-	burn like fabulous yellow roman candles exploding 
-	like spiders across the stars."
-	-- Jack Kerouac (On the Road, 1957)
-	
-	
-	
-	
-*/
 
 // POLL 2 //
 
+** CHALLENGE **
+/* 
+(1) write "describes data" NEXT to the command "des" below as a comment
 
-****************************** 
-*            LOG    		 *
-******************************
+(2) Suspend all 3 lines of code below using one pair of /**/
+*/ 
 
-cap log close // Close any existing log files first.
+des 
+sum 
+count
 
-*log close
-
-* Start a log file.
-// File -> Log -> Begin
-
-log using stata_intro.log, replace
-
-*log using stata_intro.log, append
-
-
-/* 	The log is saved in your working directory,
-	understand why we replace or append */
-
-
-
-* Close a log file (Usually done at the end of the do file.)
-log close
-
-
-
-/*
-		If you try using the previous log file by writing:
-
-log using stata_intro.log  
-
-		then stata will return error: "file...already exists" 
-		To use a previously created log file, you need to use either
-		"replace" or "append" after the comma
-*/
-
-
-
-* We may want to close any existing log files first.
-capture log close // this is a good command to include at the beginning of your do-file
-log using stata_intro.log, append
-
-
-****************************** 
-*          OPERATORS    	 *
-******************************
-/*
-
-Very quick rundown of operators in Stata
-
-+	plus
--	minus
-* 	multiply
-/	divide 
-^	exponent
-
-= 	equal
-
-&	and
-|	or
->	greater than
->=	greater than or equal to
-<=	less than or equal to
-<	less than 
-!	not (also ~)
-!=	not equal to (also ~=)
-==	logical test for equality (usually follows "if")
-
-*/
 
 
 **********************************************
@@ -252,10 +145,6 @@ Very quick rundown of operators in Stata
 * DESCRIBE
 
 des // describes dataset and variables
-
-/* the pause ("more") feature turned on again because the "set more off" 
- we wrote above is local to our do file if we're going to stop and start
- then it's better to type "set more off" directly into the command window */
 
 
 * BROWSE 
@@ -279,36 +168,18 @@ codebook union  // shows the contents of the variable union
 count // counts the number of observations
 
 
-* SUMMARIZE
-
-/***
-		Now let's start looking at some summary statistics using command: 
-		"summarize" (or "sum" for short)
-***/
-
-sum // summarize the data, presents summary statistics
-sum wage
-
-sum wage, detail
-
-* USING A CONDITIONAL OPERATOR
-/***
-		What is the average wage of observations who are married in this
-		sample
-***/
-
-sum wage if married==1 
+/* CHALLENGE **
+(3) Count the number of observations that are union members.
+variable: union
+*/
 
 
-**How do we edit this command above if we want to look at married_txt?
-sum wage if married_txt=="Married"
 
 
-*Do you see any issues that might arrise from using a string variable?
-codebook married_txt
+* SUMMARIZE * 
 
-*How is this variable different than married?
-br married married_txt
+* shows number of observations, mean, min & max of all/some vars 
+sum 
 
 
 * MISSING VALUES *
@@ -316,10 +187,87 @@ br married married_txt
 
 /* Notice the observation numbers. Why do some variables have fewer observations? */
 
-
 misstable summarize // tabulates missing values
 
 codebook union 
+
+
+**************************************************************
+*    BASIC DESCRIPTIVE STATISTICS: SUMMARIZE & TABULATE    	 *
+**************************************************************
+
+* SUMMARIZE *
+
+/*
+Now let's start looking at some summary statistics using command: 
+"summarize" (or "sum" for short)
+*/
+
+sum // summarize the data, presents summary statistics
+sum wage
+sum wage, detail
+
+* we can combine conditional operators with the summarize command
+
+* What is the average wage of observations who are married in this sample
+
+sum wage if married==1 
+
+* Let's use conditional operators to study different demographic groups in our data
+
+sum wage if married==1 // married
+sum wage if collgrad==1 // college graduate
+sum wage if married==1 & collgrad==1 // married graduate
+sum wage if married==1 & collgrad==0 // married non-graduate
+sum wage if married==0 & collgrad==1 // unmarried graduate
+sum wage if married==0 & collgrad==0 // unmarried non-graduate
+sum wage if married==1 | collgrad==1 // married OR college graduate
+
+/* One basic interpretation from the above descriptive statistics:
+For the college graduates in the sample, those who are 
+unmarried earn more (11.30) on average than those who are married (10.10).*/
+
+
+
+** CHALLENGES **
+
+/*
+(4) What is the mean wage for those who are not married?
+variables: wage married
+(hint: Use the operator "if")
+*/
+
+
+
+
+/*
+(5) What is the average wage of those who have worked 10 or more years?
+variables: wage tenure
+*/
+
+
+
+
+/* 
+(6) What is the average number of hours worked in the sample? 
+variable: hours
+*/
+
+
+
+
+/*
+(7) What is the average age and age range of this sample? 
+Variable: age
+*/
+
+
+
+
+/*
+(8) What is the average age for non-married observations?
+variables: age, married
+*/
 
 
 
@@ -334,43 +282,7 @@ codebook union
 /* D */ sum wage if union!=0 & union<.
 /* E */ sum wage if union==1
 
-
-
 // POLL 4 //
-
-
-
-
-
-**************************************************************
-*    BASIC DESCRIPTIVE STATISTICS: SUMMARIZE & TABULATE    	 *
-**************************************************************
-
-/* Let's use conditional operators to study different demographic 
-groups in our data
- 
-(1) married
-(2) college graduates
-(3) married college graduates
-(4) married college non-graduates
-(5) unmarried college graduates
-(6) unmarried college non-graduates 
-*/
-
-
-sum wage if married==1 // married
-sum wage if collgrad==1 // college graduate
-sum wage if married==1 & collgrad==1 // married graduate
-sum wage if married==1 & collgrad==0 // married non-graduate
-sum wage if married==0 & collgrad==1 // unmarried graduate
-sum wage if married==0 & collgrad==0 // unmarried non-graduate
-
-
-sum wage if married==1 | collgrad==1
-
-/* One basic interpretation from the above descriptive statistics:
-For the college graduates in the sample, those who are 
-unmarried earn more (11.30) on average than those who are married (10.10).*/
 
 
 
@@ -397,6 +309,23 @@ tab union collgrad, cell
 // POLL 5 //
 
 
+** CHALLENGE **
+/*
+(9) How many observations in this dataset fall into each race group? 
+Variables: race
+*/
+
+
+
+
+/*
+(10) What percent of the sample is white?
+Variable: race
+*/
+
+
+
+
 * TABULATE, SUMMARIZE
 * Summary statistics of one variable with respect to others 
 /* e.g. What is the average wage for married/non-married 
@@ -406,8 +335,15 @@ help tabulate_summarize
 tab collgrad, summarize(wage) means
 tab married collgrad, summarize(wage) means
 
-* we could find the average wage by industry 
-tab industry, summarize(wage) means
+
+** CHALLENGE **
+/*
+(11) Find average wage by industry.
+Variables: industry wage
+*/
+
+
+
 
 // do you notice anything strange about the wages here?
 // mining wages are the highest??
@@ -432,10 +368,6 @@ label list indlbl
 br if industry==2
 
 
-
-// PART 1 EXERCISES - see workshop1_exercises.do //
-
-
 *****************************************************
 *         DATA CLEANING: CREATING VARIABLES    	    *
 *****************************************************
@@ -443,16 +375,12 @@ br if industry==2
 * CREATE VARIABLES *
 
 // We will show 3 different examples:
-// Creating simple numeric variables (constants and simple mathematical transformations)
-// Creating a numeric  variable from a string variable (manual labor and advanced)
-// Creating a numeric indicator variable from another numeric variable 
+// (1) Creating simple numeric variables (constants and simple mathematical transformations)
+// (2) Creating a numeric  variable from a string variable (manual labor and advanced)
+// (3) Creating a numeric indicator variable from another numeric variable 
 
 
-
-/* 	Method 1: manual labor	 */
-
-
-* Simple numeric variables
+* (1) Simple numeric variables
 
 gen year88=1
 
@@ -462,7 +390,19 @@ gen tenure_sqr = tenure^2
 
 
 
-*Lets turn our string variable into a numeric variable
+* (2) Turning our string variable into a numeric variable
+
+* Why do we want to convert a string to a numeric variable? Example:
+
+sum wage if married_txt=="Married"
+sum wage if married == 1
+
+*Do you see any issues that might arrise from using a string variable?
+tab married_txt married 
+
+
+/* 	Method 1: manual labor	 */
+
 
 *Remember married and married_txt?
 tab married married_txt
@@ -490,6 +430,7 @@ replace married_txt2=upper(married_txt2)
 
 /*
 Regular expressions are one way that you can work with strings in variables
+Regular expressions are methods that allows for searching, matching and replacing within strings.
 There are two main commands: regexr and regexm.
 
 regexr REPLACES a value within a string with a new variable
@@ -509,7 +450,7 @@ tab married married2
 
 
 
-* We can also create numeric variables from other numeric variables
+* (3) Create numeric variables from other numeric variables
 
 // create a variable that indicates highschool graduate
 // Be careful to think about 
@@ -595,6 +536,35 @@ label list hs_vallabel
 
 // POLL 7 //
 
+** CHALLENGE **
+/*
+Let's make and label a new variable about college attendance.
+(12a)	Create a variable called somecollege, i.e. more than 12 and less than 
+	16 years of schooling) (call it somecollege, using any of the three methods 
+	we used to create hs.
+*/
+
+
+
+
+/*
+(12b) Label somecollege "Attended some years of college" 
+*/
+
+
+
+
+/*
+(12c) Create a new value label called somecollege_vallabel that assigns labels to 1 and 0
+*/
+
+
+
+
+/*
+(12d) Add your new value label to somecollege and check it has added
+*/
+
 
 * RE-ORDERING VARIABLES
 
@@ -609,8 +579,6 @@ order hs, before(collgrad)
 save "nlsw88_clean" , replace
 // why don't we want to save changes to the original file?
 
-
-// PART 2 EXERCISES - see workshop1_exercises.do //
 
 *****************************************************
 *     			EXPORTING AND IMPORTING   	    	*
