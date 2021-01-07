@@ -3,7 +3,8 @@ For use in Stata workshops and intensives, as of May 2015. Minor modifications t
 
 Materials by [Garret Christensen](https://www.ocf.berkeley.edu/~garret/dlab/index.html) and [Chris Kennedy](http://ck37.com).
 
-Last updated in December 2017 by [Isabelle Cohen](http://dlab.berkeley.edu/people/isabelle-cohen), [Jackie Ferguson](https://dlab.berkeley.edu/people/jackie-ferguson), and [Saika Belal](https://dlab.berkeley.edu/people/saika-belal).
+* Updated December 2017 by [Isabelle Cohen](http://dlab.berkeley.edu/people/isabelle-cohen), [Jackie Ferguson](https://dlab.berkeley.edu/people/jackie-ferguson), and [Saika Belal](https://dlab.berkeley.edu/people/saika-belal).
+* Updated January 2021 by [Hero Ashman](https://dlab.berkeley.edu/people/hero-ashman) and Isabelle Cohen
 
 ## Stata Resources
 
