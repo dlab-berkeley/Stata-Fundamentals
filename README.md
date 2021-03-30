@@ -15,7 +15,7 @@ Materials by [Garret Christensen](https://www.ocf.berkeley.edu/~garret/dlab/inde
 
 2. External Stata tutorials
     - [Stanis Koleniov's Stata tutorials](http://web.missouri.edu/~kolenikovs/stata/Duke/)
-    - [UCLA Statistical Consulting Group](http://www.ats.ucla.edu/stat/stata/)
+    - [UCLA Statistical Consulting Group](https://stats.idre.ucla.edu/stata/)
     - [statalist.org](http://www.statalist.org/)
 
 ## Stata at Berkeley
