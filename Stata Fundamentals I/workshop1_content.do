@@ -28,102 +28,88 @@
 *         SETTING UP   		 *
 ******************************
 
+* In this section, we'll learn how to import your data into Stata and how to run your code. In Stata, we often refer to the file that contains your code as a ".do file". 
 
-* clear all previously open data, variables, labels, matrices, memory, etc., 
-* and close all open files, graph windows, etc
+* first, clear all previously open data, variables, labels, matrices, memory, etc., and close all open files, graph windows, etc
 
 clear all 
 
 
+* SET A WORKING DIRECTORY
 
-* SET A PROJECT DIRECTORY
+* The working directory is the folder on your computer containing the files associated with a given Stata file - it's where Stata will look when you try to load data, and where it will export your data, unless you specify otherwise. Your working directory doesn't necessarily have to be the same folder where your do-file is saved. Stata will choose a default directory based on your application settings, and we can use a command to check which directory that is:
 
 pwd // check the current working directory
 
+* Often, the current working directory isn't actually the folder we want to use to store our work - below, we show how you can change the working directory to your desired folder.
 
 * Method: Copy & Paste 
 
 /**** 
-		This is not the most efficient method for telling Stata to locate 
-		and open your files, but it is the simplest, so we will work with 
-		this for day 1 of the workshop                    
+This is not the most efficient method for telling Stata where to locate and open your files, but it is the simplest, so we will work with this for day 1 of the workshop                    
 ****/
 	
-	
-
-
-/* Step 1: File > Change Working Directory > Navigate to the folder where you 
-   have saved the data file nlsw88.dta */
+/* Step 1: File > Change Working Directory > Navigate to the folder where you have saved the data file nlsw88.dta */
    
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My results window shows this:*/   
 
-cd "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals I"
+cd "\\Client\C$\Users\salma\Box\dlab_workshops-s21\stata-fundamentals\Stata Fundamentals I"
 
-   
+
 /***
-		We paste this command above so that next time we can just run this 
-		do-file from the top and it will run smoothly. We will not need to
-		use the file menu or copy-paste again. We should be able to run 
-		everything from the do-file.
+We paste this command above so that next time we can just run this do-file from the top and it will run smoothly. We will not need to use the file menu or copy-paste again. We should be able to run everything from the do-file.
 ***/
 
 // POLL 1 //
 
-
-/* Step 3: Open the data file */
+/* Step 3: Open the data file.*/
 
 use nlsw88.dta , clear // open data file 
 
+/***
+Stata uses a special file type called .dta files to save data in a table format (similar to how Excel has their own .xlsx file types). At the end of today's workshop, we'll go over how to import other file types that are more common (e.g. .csv files).
+***/
+
 /* You can also write: */
 
-use nlsw88 , clear
-// don't have to specify .dta, that is the default extension
+use nlsw88 , clear // don't have to specify .dta, that is the default extension
 
 
 /***
-		If you are using an older version of Stata, then please use:
-		
-use nlsw88_13, clear
+If you are using an older version of Stata, then please use: use nlsw88_13, clear
 ***/
 
-
-
-
-
 /* 
-	Pause here, and now highlight everything above this point and click
-	on the "do" button. It should run smoothly! You've started to create a 
-	functional do-file!
+Pause here, and now highlight everything above this point and click on the "do" button. It should run smoothly! You've started to create a functional .do file!
 */
-
 
 
 ****************************** 
 *         COMMENTING   		 *
 ****************************** 
 
-// There are a bunch of ways to comment your .do file.
-// Commenting is key for understanding your work. 
+// Comments are meant to make your code easier to understand. There are a bunch of ways to comment your .do file; comments will show up in green text while commands (the steps you want Stata to execute) will show up in black or blue text.
 
-* You can also just put an asterisk at the beginning of a line
-* You can use * to comment out lines of code that you want to suspend
-// you can use double slash to make comments at the end of a command line or just as a line by itself (like this one)
-// asterisk (*) cannot be placed at the end of a command line
+/* 
+If you want to write a really long and super informative comment and you want to clearly show where the comment begins and ends, you can wrap it in a slash-asterisk (/* at the start, and */ at the end), like this one we're typing right now. 
+*/
+* You can put an asterisk at the beginning of a line to comment it out
+* You can also use * to comment out lines of code that you want to suspend
+// You can use double slash to make comments at the end of a command line or just as a line by itself (like this one)
+// asterisk (*) cannot be placed at the end of a command line - it  can only be used on a line by itself. For example:
 
 des // describes the variables in the data
 des *  describes the variables in the data  <-- this is wrong!
 * des // this suspended the command altogether
 
-/* But then say you wanted to write a really long
-and super informative comment that you didn't want 
-to have all on one line, like this one we're typing
-right now. */
-
+/* 
+Try highlighting and running just the three lines above. The first line should run smoothly, giving us a description of the data. The second should give an error because it's not commented properly! 
+*/
 
 // POLL 2 //
 
-** CHALLENGE **
+/* Challenge question 1 */
 /* 
 (1) write "describes data" NEXT to the command "des" below as a comment
 
@@ -134,43 +120,44 @@ des
 sum 
 count
 
-
-
 **********************************************
 *    EXAMINING A DATA SET: THE BASICS    	 *
 **********************************************
-** It is good practice to LOOK at your data before you start working with it
-** That way, you get an idea of its shape and the variables in it quickly
+* It is good practice to LOOK at your data before you start working with it
+* That way, you get an idea of its shape and the variables in it quickly
 
 * DESCRIBE
 
 des // describes dataset and variables
 
-
 * BROWSE 
 br // browse data in data editor
 
-**What do the different colors mean?
-des married married_txt
+/* Challenge question 2 */
+/*
+What do the different colors mean in the data editor?
+*/ 
 
-
+des married married_txt // we can describe selected variables by specifying which ones - here, we're just describing the married and married_txt fields
 
 * CODEBOOK
+* The codebook command in Stata provides additional details about each variable, beyond what is output by des
+* We could use it to get a codebook of all the variables, which will result in a lengthy output. For now, let's just look at the contents of the variable union
 
 codebook union  // shows the contents of the variable union
 
-
 // POLL 3 //
 
-
 * COUNT
-
 count // counts the number of observations
+* The command above counts the total number of observations in our dataset. But we can also count observations with a condition. For instance, if we want to know how many rows represent individuals who are over 40, we can use:
+count if age > 40 // counts the number of observations where age is greater than 40
 
-
-/* CHALLENGE **
-(3) Count the number of observations that are union members.
-variable: union
+/* Challenge question 3 */
+/*
+Count the number of observations that are union members. (hint: you can use the command 
+	codebook union
+to first figure out what different values the variable union can have)
 */
 
 
