@@ -149,34 +149,32 @@ codebook union  // shows the contents of the variable union
 // POLL 3 //
 
 * COUNT
+
 count // counts the number of observations
+
 * The command above counts the total number of observations in our dataset. But we can also count observations with a condition. For instance, if we want to know how many rows represent individuals who are over 40, we can use:
 count if age > 40 // counts the number of observations where age is greater than 40
 
 /* Challenge question 3 */
 /*
-Count the number of observations that are union members. (hint: you can use the command 
+Count the number of observations that are union members. 
+(hint: you can use the command 
 	codebook union
 to first figure out what different values the variable union can have)
 */
 
+* SUMMARIZE
+* shows number of observations, mean, min & max of all or some vars 
+sum  // summarize all variables
 
-
-
-* SUMMARIZE * 
-
-* shows number of observations, mean, min & max of all/some vars 
-sum 
-
-
-* MISSING VALUES *
-
-
-/* Notice the observation numbers. Why do some variables have fewer observations? */
+* MISSING VALUES
+* Notice the observation numbers. Why do some variables have fewer observations?
 
 misstable summarize // tabulates missing values
 
-codebook union 
+/* 
+Stata uses a period (".") to indicate missing values - so the count of missing values for each vairable can be found in the column "Obs=."
+*/
 
 
 **************************************************************
