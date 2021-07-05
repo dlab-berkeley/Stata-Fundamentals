@@ -23,7 +23,7 @@
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My result window shows this:*/   
 
-cd "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals II"
+cd "\\Client\C$\Users\salma\Box\dlab_workshops-s21\stata-fundamentals\Stata Fundamentals II"
    
 /***
 		We paste this command above so that next time we can just run this 
@@ -33,6 +33,12 @@ cd "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals II"
 ***/
 
 // POLL 1 //
+/*
+Run the command “pwd”. Is your working directory set to the proper folder on YOUR computer?
+(1) Yes
+(2) No
+(3) Don’t know
+*/
 
 **********************************************
 * 0. 	WORKSHOP I WRAP-UP
@@ -52,13 +58,23 @@ use nlsw88.dta , clear
 help histogram //let's take a look at the histogram command
 
 // POLL 2 //
+/*
+Refresher on help files: based on the help file syntax, what information MUST be provided to run a command?
+(1) bolded words
+(2) bolded words and italicized arguments that are NOT in brackets
+(3) bolded words and arguments in brackets
+(4) bolded words and words after commas
+(5) bolded words, italicized (non-bracketed) arguments, and words after commas
+*/
 
+/* the default histogram command gives the density of values per bin, but using the option freq allows us to visualize the frequency of values per bin */
 histogram age
 histogram age, freq
 
 histogram wage
 histogram wage, freq
 
+/* the option discrete allows us to specify that the data are discrete, which means that we visualize a separate bin for each value */
 histogram age, discrete 
 histogram wage, discrete
 
@@ -85,10 +101,12 @@ histogram wage, freq width(2) ///
 	xtitle("Hourly Wage in 1988 Dollars")
 
 
-** CHALLENGE **
-* 1. Plot a histogram of weekly hours worked in which each bar represents 5 hours.
-* Label the x-axis "Weekly Hours"
+** Challenge question 1 **
+/*
+(1) Plot a histogram of weekly hours worked in which each bar represents 5 hours.
+(2) Label the x-axis "Weekly Hours"
 	// variable: hours
+*/
 
 
 *** Additional options for a Histogram
@@ -106,20 +124,26 @@ histogram wage, by(married) name(hist_wageXmarried)
 
 
 // POLL 3 //
+/*
+Which of the following options can be combined in Stata’s histogram command?
+(1) bin and width
+(2) density and frequency
+(3) start and width
+(4) discrete and bin
+(5) none of the above
+*/
 
-** CHALLENGE **
-* 2. Create a graph with one historgram of wage for each industry.
+** Challenge question 2 **
+/*
+(1) Create a graph with one historgram of wage for each industry.
 	// variables: wage, industry
 	
-* Bonus: Include a (single) title for the whole graph
+(2) Bonus: Include a (single) title for the whole graph
 	// hint: this is an option WITHIN an option
+*/
 
 	
-	
-
-
 *** SCATTERPLOT ***
-
 
 help scatter //now scatterplots
 
@@ -139,18 +163,15 @@ scatter wage age, title("Hourly  vs. Age") scheme(s1mono)
 scatter wage age, title("Hourly  vs. Age") scheme(s1mono) mcolor(blue)
 
 
-
-
 //There are other formatting changes we can also make
 scatter wage age, title("Hourly  vs. Age") legend(on) ///
 	mcolor(blue) xlabel(34(1)46, format(%2.0f)) ylabel(,format(%2.1f))
-
 
 	
 *** COMBINE GRAPHS
 help twoway
 
-//We want to make a scatterplot, and add a linear prediction-based line of best fit 	
+// We want to make a scatterplot, and add a linear prediction-based line of best fit 	
 twoway (scatter wage age, mcolor(blue)) ///
 	(lfit wage age), title("Hourly  vs. Age") xlabel(34(1)46, format(%2.0f)) ///
 	ylabel(,format(%2.1f)) legend(on)
@@ -176,16 +197,12 @@ graph save hist_wageXmarried "hist_wageXmarried.gph", replace
 graph display hist_wageXmarried
 graph export "hist_wageXmarried.png", name(hist_wageXmarried) replace
 
-
 *Remember- you can code all these graphs on one line without the /// 
 *I have them broken up into multiple lines for easy display in class 
 *Do what is best for you!
 
 
-
 ** Additional options for a Scatter Plot
-
-
 
 *Scatter plot by wage and age- separate graph for each
 scatter wage age, by(race)
@@ -194,8 +211,6 @@ scatter wage age, by(race)
 scatter wage age, by(race, total)
 
 ***This is the same syntax as the histogram above!
-
-
 
 
 *** More Advanced Plotting Options ***
@@ -227,28 +242,31 @@ twoway (histogram wage if union==1, percent fcolor(blue%50) lcolor(black) start(
 	legend(order (1 "Union" 2 "Non-Union")) title("Wage by Union Status")
 	
 
-** CHALLENGE **
-* 3. Create a graph with a scatter plot of wage (y-axis) and total work experience (x-axis)
-* for (1) white women and (2) black women on the same set of axes.
-* Include a legend that labels the plot for each race
-	// variables: wage, ttl_exp, race (1=white, 2=black)
+** Challenge question 3 **
+/*
+Create a graph with a scatter plot of wage (y-axis) and total work experience (x-axis) for (1) white women and (2) black women on the same set of axes.
 
-* BONUS: change the marker colors from the default to 2 different fun colors
+Include a legend that labels the plot for each race
+	// variables: wage, ttl_exp, race (1=white, 2=black)
+	
+BONUS: change the marker colors from the default to 2 different fun colors
 	// hint: help colorstyle	
-	
-	
-	
-	
-	
-	
+*/
+
 // POLL 4 //
+/*
+Which of the following is true about plotting in Stata?
+(1) You can plot UP TO two graphs at a time
+(2) There is only one right way to write code for any desired graph
+(3) You can only have one graph open at a time
+(4) Once you set a scheme, you cannot adjust the appearance of your graph
+(5) None of the above 
+*/
 
 
 **********************************************
 * II. 	CORRELATION AND T-TESTS
 **********************************************
-
-
 
 *CORRELATION AND T-TESTS
 
@@ -261,22 +279,27 @@ corr age wage
 
 // What if we want to look at age wage and tenure?
 // Notice anything different?
-//COMMAND:
+// COMMAND:
 
 corr age wage tenure
 pwcorr age wage tenure
 
 // POLL 5 //
-corr age grade wage hours ttl_exp
+corr age grade wage hours ttl_exp // run this line to answer poll 5
+/* 
+Which pair of variables has the WEAKEST correlation?
+(1) age and wage
+(2) hours and age
+(3) wage and hours
+(4) grade and ttl_exp
+*/
 
-
-** CHALLENGE **
-* 4. Correlate ALL of the continuous variables in the dataset that are non-missing for ALL variables
-	// hint: continuous variables are numeric variables for which a "unit increase" 
-	// (or decrease) has inherent meaning.
+** Challenge question 4 **
+/*
+Correlate ALL of the continuous variables in the dataset that are non-missing for ALL variables
+	// hint: continuous variables are numeric variables for which a "unit increase" (or decrease) has inherent meaning.
+*/
 	
-	
-
 	
 
 *T-TESTS
@@ -293,14 +316,12 @@ ttest wage, by(south)
 *How would you interpret this?
 
 
-** CHALLENGE **
-* 5. Is there a statistically significant difference in the mean wage of white and black women?
+** Challenge question 5 **
+/*
+Is there a statistically significant difference in the mean wage of white and black women?
 	// variables: wage race
 	// hint: the ttest approach requires a conditional statement
-	
-	
-	
-
+*/
 	
 
 **************************************************
@@ -309,7 +330,7 @@ ttest wage, by(south)
 
 *LINEAR REGRESSION
 
-help regress //Let's look at the doccumentation for the regress commend
+help regress //Let's look at the documentation for the regress commend
 
 *Lets regress wage and age
 reg wage age
@@ -317,10 +338,16 @@ reg wage age
 *How about wage on age, union, and married?
 reg wage age union married
 
-
-
 // POLL 6 //
-
+reg wage age union married // run this line to answer poll 6
+/*
+Which coefficients are statistically significant (at the conventional 95% confidence level)? 
+(1) age
+(2) union
+(3) married
+(4) union and married
+(5) age, union, and married
+*/
 
 
 *Why can't we use married_txt?
@@ -330,43 +357,33 @@ reg wage age union married_txt
 *What happens when we do a categorical variable?
 
 *What does this output mean?
-reg wage age union married industry // Not right
+reg wage age union married industry // not right: an increase or decreae in the value of industry does not have inherent meaning 
 
-*We want to treat each industry number as its own category instead of assuming a linear
-*relationship between them
+*We want to treat each industry number as its own category instead of assuming a linear relationship between them
 **How do we fix this?
 //COMMAND:
-
 reg wage age union married i.industry
-
 *The i. here lets us split up the categorical industry variable into dummies by value
-
-
-
 
 //What if we only want to run this regression for certain industries?
 //COMMAND:
-
-
 reg wage age union married if industry==5
 reg wage age union married if industry==12
-
-
 
 *Note number of observations in these regressions
 *Do all of them match?
 *Why not?
 
-* OMMITTED CATEGORY 
+
+* OMITTED CATEGORY 
 * when we run a regression with a categorical variable, there is always an ommitted category 
-* the coefficients are interpretted relative to the ommitted category
- reg wage age union married i.industry
+* the coefficients are interpreted relative to the omitted category
+reg wage age union married i.industry
  
- * you can change the ommitted category - say you wanted it to be relative to farmers
- codebook occupation
- label list occlbl	// farmers = 9 
- reg wage ttl_exp collgrad union ib9.occupation
- 
+* you can change the omitted category - say you wanted it to be relative to farmers
+codebook occupation
+label list occlbl	// farmers = 9 
+reg wage ttl_exp collgrad union ib9.occupation
  
 * a bivariate (two variable) regression is equivalent to testing the difference in group means
 reg wage i.race
@@ -376,19 +393,17 @@ reg wage i.race
 ttest wage if race <3, by(race)
 
 
-** CHALLENGE **
-* 6. Regress wage (dependent variable) on:
-*	total experience, 
-*	college graduation,
-*	union status, and 
-*	occupation.
-* Omit respondents in occupations that are:
-*	(1) unknown (i.e., "other" or missing) or (2) have fewer than 20 respondents.
-	// variables: wage ttl_exp collgrad union occupation
-
-
-
-
+** Challenge question 6 **
+/*
+Regress wage (dependent variable) on:
+	total experience, 
+	college graduation,
+	union status, and 
+	occupation.
+Omit respondents in occupations that are:
+	(1) unknown (i.e., "other" or missing) or (2) have fewer than 20 respondents.
+	variables: wage ttl_exp collgrad union occupation
+*/
 
 
 *INTERACTIONS
@@ -397,9 +412,7 @@ ttest wage if race <3, by(race)
 
 *Basic regression
 reg wage age union married collgrad
-
 gen marriedXcollgrad= married*collgrad
-
 
 reg wage age union married collgrad marriedXcollgrad
 
@@ -413,13 +426,11 @@ reg wage age union married##collgrad
 // How do these two specifications differ?
 
 
-
-
 ******************************************
 * IV. 	POST-ESTIMATION
 ******************************************
-//We can do more than just display coefficients following regression
-//Examples from linear regression
+// We can do more than just display coefficients following regression
+// Examples from linear regression
 
 help regress postestimation // here is the relevant help file
 
@@ -427,21 +438,16 @@ help regress postestimation // here is the relevant help file
 reg wage union age married 
 estat hettest
 
-
-
 *WALD TESTS
 reg wage union age married 
 test union = married
 
 
-
-
-** CHALLENGE **
-* 7. Are the wages of clerical/unskilled workers significantly different from
-* unskilled workers? 
-*(hint: two methods - one using Wald test, another using ommitted categories)
-
-
+** Challenge question 7**
+/*
+Are the wages of clerical/skilled workers significantly different from unskilled workers? 
+(hint: two methods - one using Wald test, another using omitted categories)
+*/
 
 
 ******************************************
@@ -450,7 +456,7 @@ test union = married
 
 // Sometimes, we may want to display results in figures rather than tables
 
-//you will need to run the below to install this very useful user-written command
+// you will need to run the below to install this very useful user-written command
 ssc install coefplot
 
 reg wage union age married i.industry
@@ -458,12 +464,9 @@ coefplot
 coefplot, horizontal
 coefplot, drop(_cons) horizontal
 
-
-//What if you want to use 99 percent confidence intervals instead of 95?
-//Use the help file for coefplot to figure out how to plot the above figure that way
+// What if you want to use 99 percent confidence intervals instead of 95?
+// Use the help file for coefplot to figure out how to plot the above figure that way
 //COMMAND: 
-
-
 reg wage union age married i.industry
 coefplot, levels(99 95)
 
