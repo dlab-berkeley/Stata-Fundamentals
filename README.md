@@ -1,10 +1,10 @@
 # stata-fundamentals
-For use in Stata workshops and intensives, as of May 2015. Minor modifications to these materials were used in D-Lab's Stata Intensive August 2015.
 
-Materials by [Garret Christensen](https://www.ocf.berkeley.edu/~garret/dlab/index.html) and [Chris Kennedy](http://ck37.com).
+[Stata Fundamentals Google Slides, Parts 1-3](https://docs.google.com/presentation/d/1UsaH3xREfqFM-tW0FQ4Uykfwnfv8CccLSIsLZH_bDG0/edit?usp=sharing)
 
-* Updated December 2017 by [Isabelle Cohen](http://dlab.berkeley.edu/people/isabelle-cohen), [Jackie Ferguson](https://dlab.berkeley.edu/people/jackie-ferguson), and [Saika Belal](https://dlab.berkeley.edu/people/saika-belal).
-* Updated January 2021 by [Hero Ashman](https://dlab.berkeley.edu/people/hero-ashman) and Isabelle Cohen
+Please follow the instructions to download and install Stata on your device.
+You can familiarize yourself with the Do file contents and Solutions files for Parts 1-3.
+
 
 ## Stata Resources
 
