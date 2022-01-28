@@ -22,7 +22,7 @@
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My result window shows this:*/   
 
-cd "/Users/reneestarowicz/Desktop/Stata Fundamentals/Stata Fundamentals III"
+cd "/Users/reneestarowicz/Downloads/stata-fundamentals-master 3 _2021 Updates/Stata Fundamentals III"
    
 /***
 		We paste this command above so that next time we can just run this 
@@ -32,7 +32,6 @@ cd "/Users/reneestarowicz/Desktop/Stata Fundamentals/Stata Fundamentals III"
 ***/
 
 pwd
-
 // POLL 1 //
 
 **********************************************
@@ -57,6 +56,8 @@ sum idcode // what is the range of id numbers in this dataset?
 br // let's browse the data
 
 
+
+
 * Data for round 2,
 
 use nlsw88_wave2.dta, clear
@@ -66,14 +67,15 @@ sum idcode // what is the range of id numbers in this dataset?
 br // let's browse the data
 
 
-// how many observations should we have if we combine them? What would we expect to see for the Max. and Min. idcodes?
+// how many observations should we have if we combine them?
 
+
+// 2246 + 916 = 3,162
 
 * Append the datastat
 
 use nlsw88.dta, clear
 append using nlsw88_wave2.dta
-help append
 
 count // Do we have the correct number of observations?
 sum idcode // Do we have all the expected ids?
@@ -156,7 +158,7 @@ Instead, let's put the data at the individual (idcode- mother) level, so each ro
 Note that we need to specify i() and j() after the comma
 i() is the variable the data will be at the level of
 j() will be how we're reshaping it*/
-help reshape 
+
 reshape wide childage, i(idcode) j(childidcode)
 
 // POLL 3 //
@@ -169,11 +171,14 @@ reshape wide childage, i(idcode) j(childidcode)
 
 /*1.1: Open up nlsw88_childvars, and reshape it to long format*/
 
-
+use nlsw88_childvars, clear
+reshape long childage, i(idcode) j(childidcode)
 
 /*1.2: Merge nlsw88_wave1and2 (using) into nlsw88_childvars (master)
 	using a many-to-one syntax*/
 
+help merge
+merge m:1 idcode using nlsw88_wave1and2
 
 /*1.3: We want this data to be organized at the woman-child level,
 	meaning we should have a number of observations for each woman matching
@@ -185,6 +190,7 @@ reshape wide childage, i(idcode) j(childidcode)
 	and then looking at the help file)
 	
 
+	
 	1.3.2: How could you check if there are women with extra observations? 
 		(note: there are many ways to 'answer' this question)
 		
@@ -193,6 +199,29 @@ reshape wide childage, i(idcode) j(childidcode)
 		
 	1.3.4: What is the correct number of observations in the end?*/
 
+	
+*1.3.1
+count // 12,635 observations
+unique idcode // this user-written command will tells us there should be 3167 women
+	
+ssc install unique
+help unique
+count 
+unique idcode // 3,167
+
+*1.3.2
+br idcode child_num // this simple code is one way (of many) of seeing many women have "extra" observations
+
+
+*1.3.3
+drop if childage==. & child_num>0 & child_num<. // these are children that "don't exist" but are created by the reshape
+// without children/didn't merge
+drop if (child_num==0 | child_num==.) & childidcode>1 & _merge!=2 // this keeps one observation per woman without a child
+
+*1.3.4
+count // 6,568 obserations
+unique idcode // still 3167
+	
 
 **********************************************
 * III. 	MACROS
@@ -202,7 +231,6 @@ reshape wide childage, i(idcode) j(childidcode)
 use nlsw88_complete.dta, clear
 
 *LOCALS
-help local 
 
 local i=1
 disp `i'
@@ -234,6 +262,8 @@ local industry_lab: value label industry
 display "The value label for industry is `industry_lab'."
 
 
+local i = I love Stata
+
 // POLL 4 //
 
 *GLOBALS
@@ -249,7 +279,7 @@ pwd
 
 * copy your own working directory and replace mine below*
 
-global mycomp "/Users/reneestarowicz/Desktop/Stata Fundamentals/Stata Fundamentals III"
+global mycomp "/Users/reneestarowicz/Downloads/stata-fundamentals-master 3 _2021 Updates/Stata Fundamentals III"
 
 //Check if it worked
 display "$mycomp"
@@ -261,7 +291,6 @@ cd "$mycomp"
 pwd
 
 // this global will be useful latter when we save files to a different folder
-
 
 **********************************************
 * IV. 	LOOPS
@@ -281,10 +310,8 @@ foreach var in wage ttl_exp hours {
 
 
 help foreach 
-
 //Instead of using foreach var in, we can also use foreach var of
 //This works only with variables
-
 foreach fudge of varlist wage ttl_exp hours {
 	reg `fudge' grade
 }
@@ -394,10 +421,19 @@ label of ttl_exp, and display it. The command can be found under the subheading
 "Macro functions for extracting data attributes" in the help file extended_fcn*/
 * (hint: the variable label is the explanation for what the variable is)
 
+local lbl : var label ttl_exp
+display "The variable label of ttl_exp is `lbl'."
+
 
 
 /*2.2: Make a loop which goes over ttl_exp, tenure, south and smsa and
 lists the variable label for each one.*/
+
+
+foreach var of varlist t* s* {
+	local lbl : var label `var'	
+	display "The variable label of `var' is `lbl'."
+}
 
 
 
@@ -406,11 +442,28 @@ lists the variable label for each one.*/
 	- in the following format: "ttl_exp (float) contains the total work experence for each
 	woman in the dataset." */
  
+
+local lbl : var label ttl_exp
+local type : type ttl_exp
+display "ttl_exp (`type') contains `lbl' for each woman in the dataset."
+
+ 
  
  
 /*2.4: Make a loop which takes your sentence above, and fills it in for
 	ttl_exp, tenure, south and smsa. Put a number at the beginning of each sentence
 	which updates by one every time your loop runs*/
+
+
+local x=1
+foreach var of varlist t* s* {
+	local lbl : var label `var'	
+	local type : type ttl_exp
+	display "`x'. `var' (`type') contains `lbl' for each woman in the dataset."
+	local x = `x' + 1
+}
+
+
 
 
 
@@ -420,7 +473,14 @@ lists the variable label for each one.*/
 	Hint: check the extended function help file and look at "word # of string".*/
 
 
-	
+local var_list ttl_exp tenure south smsa
+forvalues x=1/4 {
+	local var : word `x' of `var_list'
+	local lbl : var label `var'	
+	local type : type `var'
+	display "`x'. `var' (`type') contains `lbl' for each woman in the dataset."
+}
+
 	
 
 **********************************************
