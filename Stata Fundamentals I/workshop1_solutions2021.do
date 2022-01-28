@@ -1,17 +1,15 @@
 ********************************
 *	STATA FUNDAMENTALS: PART 1
-*	SPRING 2021, D-LAB
-* 	SOLUTIONS DO FILE
+*	AY 2021-2022, D-LAB
 ********************************
-
 
 **************************************************
 
 * Day 1 
 
 * Outline:
-* I. 	SETTING UP
-* II. 	COMMENTING
+* I. 	RUN COMMAND SHORTCUTS + SETTING UP
+* II. 	COMMENTING + OPERATORS LIST
 * III. 	EXAMINING DATA & DATA CLEANING
 *			A. MISSING VALUES
 *			B. DESCRIPTIVE STATISTICS
@@ -23,7 +21,21 @@
 
 **************************************************
 
+****************************** 
+*    RUN COMMAND SHORTCUTS 	 *
+******************************
 
+*shortcuts for running commands 
+
+/* 
+
+	on a mac
+	⌘ + Shift + D
+
+	on a windows device
+	Cntrl + D 
+
+*/
 
 ****************************** 
 *         SETTING UP   		 *
@@ -96,9 +108,12 @@ use nlsw88_13, clear
 	Pause here, and now highlight everything above this point and click
 	on the "do" button. It should run smoothly! You've started to create a 
 	functional do-file!
+
+
+	Reminder: Save your do file frequently so that you do not lose any
+	of  your updates.
+
 */
-
-
 
 ****************************** 
 *         COMMENTING   		 *
@@ -138,6 +153,39 @@ count
 */
 
 
+
+
+****************************** 
+*          OPERATORS    	 *
+******************************
+/*
+
+Very quick rundown of operators in Stata
+
+** Equations ** 
+
++	plus
+-	minus
+* 	multiply
+/	divide 
+^	exponent
+
+= 	equal 
+
+** If Conditions **
+
+&	and
+|	or
+>	greater than
+>=	greater than or equal to
+<=	less than or equal to
+<	less than 
+!	not (also ~)
+!=	not equal to (also ~=)
+==	logical test for equality (usually follows "if")
+
+*/
+
 **********************************************
 *    EXAMINING A DATA SET: THE BASICS    	 *
 **********************************************
@@ -174,8 +222,8 @@ count // counts the number of observations
 (3) Count the number of observations that are union members.
 variable: union
 */
-count if union == 1
 
+count if union == 1
 
 
 * SUMMARIZE * 
@@ -238,6 +286,7 @@ unmarried earn more (11.30) on average than those who are married (10.10).*/
 variables: wage married
 (hint: Use the operator "if")
 */
+
 sum wage if married == 0
 * OR 
 sum wage if married != 1
@@ -248,32 +297,32 @@ sum wage if married != 1
 (5) What is the average wage of those who have worked 10 or more years?
 variables: wage tenure
 */
-sum wage if tenure >= 10 & tenure != . 
 
+sum wage if tenure >= 10 & tenure != . 
 
 
 /* 
 (6) What is the average number of hours worked in the sample? 
 variable: hours
 */
-sum hours
 
+sum hours
 
 
 /*
 (7) What is the average age and age range of this sample? 
 Variable: age
 */
+
+
 sum age
-
-
 
 /*
 (8) What is the average age for non-married observations?
 variables: age, married
 */
-sum age if married == 0 
 
+sum age if married == 0 
 
 // Let's look at how missing variables can affect results:
 
@@ -318,14 +367,15 @@ tab union collgrad, cell
 (9) How many observations in this dataset fall into each race group? 
 Variables: race
 */
-tab race
 
+tab race
 
 
 /*
 (10) What percent of the sample is white?
 Variable: race
 */
+
 tab race
 
 
@@ -344,8 +394,8 @@ tab married collgrad, summarize(wage) means
 (11) Find average wage by industry.
 Variables: industry wage
 */
-tab industry, sum(wage) means
 
+tab industry, sum(wage) means
 
 
 // do you notice anything strange about the wages here?
@@ -544,8 +594,9 @@ label list hs_vallabel
 Let's make and label a new variable about college attendance.
 (12a)	Create a variable called somecollege, i.e. more than 12 and less than 
 	16 years of schooling) (call it somecollege, using any of the three methods 
-	we used to create hs).
+	we used to create hs.
 */
+
 // method 1
 gen somecollege1 = 1 if grade > 12 & grade < 16
 replace somecollege1 = 0 if grade <= 12 | grade >= 16
@@ -562,25 +613,24 @@ sum somecollege*
 rename somecollege1 somecollege
 
 
-
 /*
 (12b) Label somecollege "Attended some years of college" 
 */
+
 label variable somecollege "Attended some years of college"
-
-
 
 
 /*
 (12c) Create a new value label called somecollege_vallabel that assigns labels to 1 and 0
 */
-label define somecollege_vallabel 0 "did not attend college or completed college" 1 "attended some college"
 
+label define somecollege_vallabel 0 "did not attend college or completed college" 1 "attended some college"
 
 
 /*
 (12d) Add your new value label to somecollege and check it has added
 */
+
 label val somecollege somecollege_vallabel
 tab somecollege
 
@@ -624,6 +674,5 @@ clear all
 import excel using "nlsw88_clean.xlsx", first clear
 import excel "/Users/isabellecohen/Dropbox/DLab/Stata Fundamentals I/nlsw88_clean.xlsx", sheet("Sheet1") firstrow clear
 
-// "first" specifies that the first row in the excel file is a 
 
-des
+
