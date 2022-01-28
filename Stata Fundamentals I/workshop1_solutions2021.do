@@ -146,9 +146,12 @@ right now. */
 (2) Suspend all 3 lines of code below using one pair of /**/
 */ 
 
-des 
+/*
+des // describe data
 sum 
 count
+*/
+
 
 
 
@@ -220,7 +223,7 @@ count // counts the number of observations
 variable: union
 */
 
-
+count if union == 1
 
 
 * SUMMARIZE * 
@@ -284,6 +287,9 @@ variables: wage married
 (hint: Use the operator "if")
 */
 
+sum wage if married == 0
+* OR 
+sum wage if married != 1
 
 
 
@@ -292,7 +298,7 @@ variables: wage married
 variables: wage tenure
 */
 
-
+sum wage if tenure >= 10 & tenure != . 
 
 
 /* 
@@ -300,7 +306,7 @@ variables: wage tenure
 variable: hours
 */
 
-
+sum hours
 
 
 /*
@@ -309,14 +315,14 @@ Variable: age
 */
 
 
-
+sum age
 
 /*
 (8) What is the average age for non-married observations?
 variables: age, married
 */
 
-
+sum age if married == 0 
 
 // Let's look at how missing variables can affect results:
 
@@ -362,7 +368,7 @@ tab union collgrad, cell
 Variables: race
 */
 
-
+tab race
 
 
 /*
@@ -370,7 +376,7 @@ Variables: race
 Variable: race
 */
 
-
+tab race
 
 
 * TABULATE, SUMMARIZE
@@ -389,7 +395,7 @@ tab married collgrad, summarize(wage) means
 Variables: industry wage
 */
 
-
+tab industry, sum(wage) means
 
 
 // do you notice anything strange about the wages here?
@@ -591,26 +597,42 @@ Let's make and label a new variable about college attendance.
 	we used to create hs.
 */
 
+// method 1
+gen somecollege1 = 1 if grade > 12 & grade < 16
+replace somecollege1 = 0 if grade <= 12 | grade >= 16
+replace somecollege1 = . if grade == . 
 
+// method 2
+gen somecollege2 = (grade > 12 & grade <16) if grade != . 
+
+// method 3
+recode grade (0/12 = 0) (13/15 = 1) (16/18 = 0), gen(somecollege3)
+
+
+sum somecollege*
+rename somecollege1 somecollege
 
 
 /*
 (12b) Label somecollege "Attended some years of college" 
 */
 
-
+label variable somecollege "Attended some years of college"
 
 
 /*
 (12c) Create a new value label called somecollege_vallabel that assigns labels to 1 and 0
 */
 
-
+label define somecollege_vallabel 0 "did not attend college or completed college" 1 "attended some college"
 
 
 /*
 (12d) Add your new value label to somecollege and check it has added
 */
+
+label val somecollege somecollege_vallabel
+tab somecollege
 
 
 * RE-ORDERING VARIABLES
