@@ -71,7 +71,7 @@ pwd // check the current working directory
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My results window shows this:*/   
 
-cd "/Users/joseaveldanes/Desktop/D-Lab Job/stata-fundamentals/Stata Fundamentals I/"
+cd "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals I"
 
    
 /***
