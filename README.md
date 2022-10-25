@@ -44,7 +44,10 @@ In preparation for the upcoming workshop, you will need to install Stata and dow
 1. **Download & Install Stata**: To download the installation materials, please visit the [Stata website](https://download.stata.com). The credentials you need to enter will be emailed to you prior to the start of the workshop. For assistance with installation, you may view the [Stata installation
 guide](https://www.stata.com/install-guide). 
 
-2. **Install the Stata License**: The Stata license will be provided to you in your calendar invitation once your register for the workshop.
+2. **Install the Stata License**: The Stata license will be provided to you in your calendar invitation once your register for the workshop. If you currently have Stata installed, you do not need to reinstall Stata. However, if you would like to use the trial license we are providing for Stata17MP, feel free to install it.
+
+Please do not share this license and note that the license is a trial and will expire later next month.
+
 
 3. **Download the Workshop Materials:** The workshop materials can be obtained from this GitHub repository.
     * Click the green "Code" button in the top right of the repository information.
