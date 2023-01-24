@@ -55,7 +55,7 @@ We will take a few minutes at the start of the workshop to make sure everyone ha
 
 ## Is Stata not Working on Your Computer?
 
-If you have a Berkeley CalNet ID, attend the workshop anyway, where we can provide you with a cloud-based solution by using the [UC Berkeley Library Citrix Service] (https://guides.lib.berkeley.edu/c.php?g=267678&p=1786115) for [campus' shared Stata licenses] (https://guides.lib.berkeley.edu/citrix/stata).
+If you have a Berkeley CalNet ID, attend the workshop anyway, where we can provide you with a cloud-based solution by using the [UC Berkeley Library Citrix Service](http://guides.lib.berkeley.edu/c.php?g=267678&p=1786115) for [campus' shared Stata licenses](http://guides.lib.berkeley.edu/citrix/stata).
 # Additional Resources
 
 Check out the following resources to learn more about Stata:
