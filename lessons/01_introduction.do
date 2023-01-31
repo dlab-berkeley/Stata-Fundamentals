@@ -1,11 +1,11 @@
-********************************
-*	STATA FUNDAMENTALS: PART 1
-*	AY 2021-2022, D-LAB
-********************************
+********************************************************************************
+*	STATA FUNDAMENTALS: PART 1 INTRODUCTION									   *
+*	D-LAB																	   *
+********************************************************************************
 
-**************************************************
+********************************************************************************
 
-* Day 1 
+* Part 1 
 
 * Outline:
 * I. 	RUN COMMAND SHORTCUTS + SETTING UP
@@ -19,13 +19,14 @@
 * 			C. CREATING VARIABLES
 * VI. 	IMPORTING & EXPORTING 
 
-**************************************************
+********************************************************************************
 
-****************************** 
-*    RUN COMMAND SHORTCUTS 	 *
-******************************
 
-*shortcuts for running commands 
+* I. 	RUN COMMAND SHORTCUTS + SETTING UP
+
+******************************************************************************** 
+*   						 RUN COMMAND SHORTCUTS 	                           *
+********************************************************************************
 
 /* 
 
@@ -37,9 +38,9 @@
 
 */
 
-****************************** 
-*         SETTING UP   		 *
-******************************
+********************************************************************************
+*       						  SETTING UP   						 		   *
+********************************************************************************
 
 
 * clear all previously open data, variables, labels, matrices, memory, etc., 
@@ -49,7 +50,7 @@ clear all
 
 
 
-* SET A PROJECT DIRECTORY
+* SET A PROJECT DIRECTORY *
 
 pwd // check the current working directory
 
@@ -71,7 +72,7 @@ pwd // check the current working directory
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My results window shows this:*/   
 
-cd "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals I"
+cd "/Users/dr.reneestarowicz/Downloads/Stata-Fundamentals-main 3/lessons"
 
    
 /***
@@ -81,7 +82,17 @@ cd "C:\Users\heroa\Google Drive\DLab\stata-fundamentals\Stata Fundamentals I"
 		everything from the do-file.
 ***/
 
+
 // POLL 1 //
+
+*Run the command "pwd". Is your working directory set to the proper folder on YOUR computer?
+
+
+*(1) Yes
+*(2) No
+*(3) Don't know
+
+//
 
 
 /* Step 3: Open the data file */
@@ -115,9 +126,13 @@ use nlsw88_13, clear
 
 */
 
-****************************** 
-*         COMMENTING   		 *
-****************************** 
+********************************************************************************
+
+* II. 	COMMENTING + OPERATORS 
+
+********************************************************************************
+*     		    				COMMENTING   		 					       *
+********************************************************************************
 
 // There are a bunch of ways to comment your .do file.
 // Commenting is key for understanding your work. 
@@ -134,17 +149,34 @@ des *  describes the variables in the data  <-- this is wrong!
 /* But then say you wanted to write a really long
 and super informative comment that you didn't want 
 to have all on one line, like this one we're typing
-right now. */
+right now. I am continuing to write my longer comment */
+
+
 
 
 // POLL 2 //
 
+
+*Which of these include both a command and a comment (and would run the command without error)
+
+
+*(1) /*clear all – make sure environment is clear before reading in new data*/
+*(2) clear all * make sure environment is clear before reading in new data
+*(3) *clear all – make sure environment is clear before reading in new data
+*(4) // clear all // make sure environment is before reading in new data
+*(5) clear all // make sure environment is clear before reading in new data
+
+
+
 ** CHALLENGE **
 /* 
 (1) write "describes data" NEXT to the command "des" below as a comment
+*/
 
+/*
 (2) Suspend all 3 lines of code below using one pair of /**/
 */ 
+
 
 des 
 sum 
@@ -152,10 +184,10 @@ count
 
 
 
-****************************** 
-*          OPERATORS    	 *
-******************************
-/*
+********************************************************************************
+*       					 	  OPERATORS    	  							   *
+********************************************************************************
+/* 
 
 Very quick rundown of operators in Stata
 
@@ -179,22 +211,27 @@ Very quick rundown of operators in Stata
 <	less than 
 !	not (also ~)
 !=	not equal to (also ~=)
-==	logical test for equality (usually follows "if")
+==	logical test for equality (usually follows "if") 
 
 */
 
-**********************************************
-*    EXAMINING A DATA SET: THE BASICS    	 *
-**********************************************
+********************************************************************************
+
+* III. 	EXAMINING DATA & DATA CLEANING 
+
+********************************************************************************
+*    					EXAMINING A DATA SET: THE BASICS					   *
+********************************************************************************
+
 ** It is good practice to LOOK at your data before you start working with it
 ** That way, you get an idea of its shape and the variables in it quickly
 
-* DESCRIBE
+* DESCRIBE *
 
 des // describes dataset and variables
 
 
-* BROWSE 
+* BROWSE *
 br // browse data in data editor
 
 **What do the different colors mean?
@@ -202,25 +239,32 @@ des married married_txt
 
 
 
-* CODEBOOK
+* CODEBOOK *
 
 codebook union  // shows the contents of the variable union
 
 
 // POLL 3 //
 
+*What information is NOT included in the output of the command "codebook"
 
-* COUNT
+*(1) variable type
+*(2) value labels
+*(3) number of observations
+*(4) mean
+
+
+
+* COUNT *
 
 count // counts the number of observations
 
 
-/* CHALLENGE **
+** CHALLENGE **
+/*
 (3) Count the number of observations that are union members.
 variable: union
 */
-
-
 
 
 * SUMMARIZE * 
@@ -239,9 +283,9 @@ misstable summarize // tabulates missing values
 codebook union 
 
 
-**************************************************************
-*    BASIC DESCRIPTIVE STATISTICS: SUMMARIZE & TABULATE    	 *
-**************************************************************
+********************************************************************************
+*    		BASIC DESCRIPTIVE STATISTICS: SUMMARIZE & TABULATE   		 	   *
+********************************************************************************
 
 * SUMMARIZE *
 
@@ -270,6 +314,7 @@ sum wage if married==0 & collgrad==1 // unmarried graduate
 sum wage if married==0 & collgrad==0 // unmarried non-graduate
 sum wage if married==1 | collgrad==1 // married OR college graduate
 
+
 /* One basic interpretation from the above descriptive statistics:
 For the college graduates in the sample, those who are 
 unmarried earn more (11.30) on average than those who are married (10.10).*/
@@ -283,8 +328,6 @@ unmarried earn more (11.30) on average than those who are married (10.10).*/
 variables: wage married
 (hint: Use the operator "if")
 */
-
-
 
 
 /*
@@ -324,13 +367,22 @@ variables: age, married
 // Here are 5 ways you may think to write the code (warning: not all are correct!)
 
 /* A */ sum wage if union>0 
-/* B */ sum wage if union!=0
-/* C */ sum wage if union!=0 & union!=.
-/* D */ sum wage if union!=0 & union<.
-/* E */ sum wage if union==1
+/* B */ sum wage if union!=0 
+/* C */ sum wage if union!=0 & union!=. 
+/* D */ sum wage if union!=0 & union<. 
+/* E */ sum wage if union==1 
+
 
 // POLL 4 //
 
+*Which of the five options in the do file are correct?  
+/*
+(1) All 
+(2) E, only
+(3) A, B
+(4) C, D, E
+(5) B, C, D
+*/
 
 
 * TABULATION & CROSS TABULATION *
@@ -355,6 +407,16 @@ tab union collgrad, cell
 
 // POLL 5 //
 
+*If you wanted to know what percentage of white respondents lived in central cities, what code would you write?
+/*
+(1) tab race c_city, col
+(2) tab race c_city, row
+(3) tab c_city race, row
+(4) tab c_city race, cell
+(5) tab race c_city, cell
+*/
+
+
 
 ** CHALLENGE **
 /*
@@ -373,7 +435,7 @@ Variable: race
 
 
 
-* TABULATE, SUMMARIZE
+* TABULATE, SUMMARIZE *
 * Summary statistics of one variable with respect to others 
 /* e.g. What is the average wage for married/non-married 
  OR college graduates/non-graduates? */
@@ -383,7 +445,9 @@ tab collgrad, summarize(wage) means
 tab married collgrad, summarize(wage) means
 
 
+
 ** CHALLENGE **
+
 /*
 (11) Find average wage by industry.
 Variables: industry wage
@@ -415,13 +479,13 @@ label list indlbl
 br if industry==2
 
 
-*****************************************************
-*         DATA CLEANING: CREATING VARIABLES    	    *
-*****************************************************
+********************************************************************************
+*        			 DATA CLEANING: CREATING VARIABLES   			   	       *
+********************************************************************************
 
 * CREATE VARIABLES *
 
-// We will show 3 different examples:
+// We will show 3 different methods:
 // (1) Creating simple numeric variables (constants and simple mathematical transformations)
 // (2) Creating a numeric  variable from a string variable (manual labor and advanced)
 // (3) Creating a numeric indicator variable from another numeric variable 
@@ -448,7 +512,7 @@ sum wage if married == 1
 tab married_txt married 
 
 
-/* 	Method 1: manual labor	 */
+/*	Method 1: manual labor	*/
 
 
 *Remember married and married_txt?
@@ -462,7 +526,7 @@ replace married2=0 if married_txt=="single" | married_txt=="S" | married_txt=="S
 	| married_txt=="Single" | married_txt=="s" | married_txt=="sIngle" ///
 	| married_txt=="singLe" | married_txt=="single" | married_txt=="single " ///
 	| married_txt=="single  " | married_txt==" single" | married_txt=="single   "
-
+	
 encode married_txt, gen(married3) // good when strings are clean
 
 gen married_txt2 = married_txt
@@ -472,7 +536,7 @@ replace married_txt2=lower(married_txt2)
 replace married_txt2=upper(married_txt2)
 
 
-/*	 Method 2 (advanced!): regular expressions	 */
+/*	Method 2 (advanced!): regular expressions	*/
 
 
 /*
@@ -497,7 +561,7 @@ tab married married2
 
 
 
-* (3) Create numeric variables from other numeric variables
+/*	Method 3: create numeric variables from other numeric variables	  */
 
 // create a variable that indicates highschool graduate
 // Be careful to think about 
@@ -509,21 +573,21 @@ codebook grade
 // it has missing values, so beware
 
 
-// method 1
+// version 1
 gen hs1 = 1 if grade>=12 & grade!=. 
 replace hs1 = 0 if grade<12
 
 
-// method 2
-gen hs2 = (grade>=12 & grade!=.) 
+// version 2
+gen hs2 = (grade>=12 & grade!=.)
 // this assigns 1 to the observations meeting the condition in the () and 0 to all else
 
-//method 3
+// version 3
 recode grade (0/11 = 0) (12/18 = 1), gen(hs3) 
 
 
 //check all 3 versions
-sum hs1 hs2 hs3 
+sum hs1 hs2 hs3
 sum hs*
 
 
@@ -544,6 +608,14 @@ drop hs2 hs3
 
 // POLL 6 //
 
+*We want to create a variable indicating if people worked full time (40 hrs or more). Which option would NOT generate this variable properly?
+
+/*
+(1)  gen full_time=hours>=40
+(2)  gen full_time=hours>=40 if hours<.
+(3) recode hours (0/39 = 0) (40/80=1), gen(full_time)
+*/
+
 
 
 // Let's tabulate our new variable
@@ -551,7 +623,7 @@ tab hs1
 // we can make this variable more informative...
 
 
-*    LABEL VARIABLES AND ADD VALUE LABELS     *
+* LABEL VARIABLES AND ADD VALUE LABELS *
 
 
 
@@ -565,7 +637,7 @@ label variable hs "High school graduate"
 // Next, let's add a value label for each of the 2 values of hs
 /* This requires TWO steps: 
 	(1) create a separate value label assigning labels to 0 and 1
-	(2) add that value label to the variable hs1
+	(2) add that value label to the variable hs
 */
 
 // Let's define a value label called YN
@@ -583,7 +655,19 @@ label list hs_vallabel
 
 // POLL 7 //
 
+*We want to see the value labels and the values that they correspond to for the variable hs. Which option would NOT show us this?
+/*
+(1) br hs
+(2) label list
+(3) label list hs_vallabel
+(4) tab hs
+(5) codebook hs
+*/
+
+
+
 ** CHALLENGE **
+
 /*
 Let's make and label a new variable about college attendance.
 (12a)	Create a variable called somecollege, i.e. more than 12 and less than 
@@ -613,23 +697,31 @@ Let's make and label a new variable about college attendance.
 */
 
 
-* RE-ORDERING VARIABLES
+
+
+* RE-ORDERING VARIABLES *
 
 * Re-ordering how variables appead in the dataset
 order hs, before(collgrad)
 
 
 
-* SAVING CHANGES TO FILE
+* SAVING CHANGES TO FILE *
 
 * Save changes to a NEW file
 save "nlsw88_clean" , replace
 // why don't we want to save changes to the original file?
 
+ 
 
-*****************************************************
-*     			EXPORTING AND IMPORTING   	    	*
-*****************************************************
+********************************************************************************
+
+* VI. 	IMPORTING & EXPORTING 
+
+
+********************************************************************************
+*     			 			EXPORTING AND IMPORTING   			   	           *
+********************************************************************************
 
 
 * Export data for use with other programs

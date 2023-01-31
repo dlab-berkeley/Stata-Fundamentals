@@ -1,21 +1,27 @@
-********************************
-*	STATA FUNDAMENTALS: PART 2
-*	AY 2021-2022, D-LAB
-********************************
+********************************************************************************
+*	STATA FUNDAMENTALS: PART 2 DATA ANALYSIS								   *
+*	D-LAB																	   *
+********************************************************************************
 
+********************************************************************************
 
-**************************************************
-* Day 2
+* Part 2
 
 * Outline:
+* REVIEW SETTING UP
+* 0.	WORKSHOP PART 1 WRAP-UP
 * I. 	PLOTTING
 * II. 	CORRELATION AND T-TESTS
 * III. 	REGRESSION AND ITS OUTPUT
 * IV. 	POST-ESTIMATION
 * V. 	PLOTTING REGRESSION RESULTS
 
-**************************************************
+********************************************************************************
 
+
+********************************************************************************
+*       					REVIEW SETTING UP   						 	   *
+********************************************************************************
 
 
 /* Step 1: File > Change Working Directory > Navigate to the folder where you 
@@ -24,7 +30,7 @@
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My result window shows this:*/   
 
-cd "/Users/reneestarowicz/Downloads/stata-fundamentals-master 3 _2021 Updates/Stata Fundamentals II"
+cd "/Users/dr.reneestarowicz/Downloads/Stata-Fundamentals-main 3/lessons"
 
    
 /***
@@ -35,15 +41,27 @@ cd "/Users/reneestarowicz/Downloads/stata-fundamentals-master 3 _2021 Updates/St
 ***/
 
 // POLL 1 //
+* Run the command "pwd". Is your working directory set to the proper folder on YOUR computer?
+*(1) Yes
+*(2) No
+*(3) Don't know
 
-**********************************************
-* 0. 	WORKSHOP I WRAP-UP
-**********************************************
+******************************************************************************** 
+
+* 0.	WORKSHOP PART 1 WRAP-UP
+
+******************************************************************************** 
+* 								WRAP-UP								   		   *
+********************************************************************************
+
+******************************************************************************** 
 
 
-**************************************************
 * I. 	PLOTTING
-**************************************************
+
+********************************************************************************
+*								PLOTTING								       *
+********************************************************************************
 
 //Let's use the unchanged data again
 
@@ -56,11 +74,19 @@ using the drop down menus as well */
 
 
 
-*** HISTOGRAM ***
+* HISTOGRAM *
 
 help histogram //let's take a look at the histogram command
 
 // POLL 2 //
+
+*Based on the help file syntax, what information MUST be provided to run a command?
+*(1) bolded words
+*(2) bolded words and italicized arguments
+*(3) bolded words and text in brackets
+*(4) bolded words and words after commas
+*(5) bolded words, italicized arguments, and words after commas
+
 
 histogram age
 histogram age, freq
@@ -95,12 +121,14 @@ histogram wage, freq width(2) ///
 
 
 ** CHALLENGE **
-* 1. Plot a histogram of weekly hours worked in which each bar represents 5 hours.
+/*
+(1) Plot a histogram of weekly hours worked in which each bar represents 5 hours.
 * Label the x-axis "Weekly Hours"
 	// variable: hours
+*/
 
 
-*** Additional options for a Histogram
+*** Additional options for a Histogram ***
 
 
 *We can restrict our sample with a conditional statement
@@ -114,20 +142,21 @@ histogram wage, by(married)
 histogram wage, by(married) name(hist_wageXmarried)
 
 
-// POLL 3 //
+
 
 ** CHALLENGE **
-* 2. Create a graph with one historgram of wage for each industry.
+/*
+(2) Create a graph with one historgram of wage for each industry.
 	// variables: wage, industry
-	
+*/
+
+
 * Bonus: Include a (single) title for the whole graph
 	// hint: this is an option WITHIN an option
-
-	
 	
 
 
-*** SCATTERPLOT ***
+* SCATTERPLOT *
 
 
 help scatter //now scatterplots
@@ -156,7 +185,8 @@ scatter wage age, title("Hourly  vs. Age") legend(on) ///
 
 
 	
-*** COMBINE GRAPHS
+	
+* COMBINE GRAPHS *
 help twoway
 
 //We want to make a scatterplot, and add a linear prediction-based line of best fit 	
@@ -192,7 +222,7 @@ graph export "hist_wageXmarried.png", name(hist_wageXmarried) replace
 
 
 
-** Additional options for a Scatter Plot
+*** Additional options for a Scatter Plot ***
 
 
 
@@ -237,29 +267,24 @@ twoway (histogram wage if union==1, percent fcolor(blue%50) lcolor(black) start(
 	
 
 ** CHALLENGE **
-* 3. Create a graph with a scatter plot of wage (y-axis) and total work experience (x-axis)
-* for (1) white women and (2) black women on the same set of axes.
-* Include a legend that labels the plot for each race
+/*
+(3) Create a graph with a scatter plot of wage (y-axis) and total work experience (x-axis)
+for (1) white women and (2) black women on the same set of axes.
+Include a legend that labels the plot for each race
 	// variables: wage, ttl_exp, race (1=white, 2=black)
 
-* BONUS: change the marker colors from the default to 2 different fun colors
+BONUS: change the marker colors from the default to 2 different fun colors
 	// hint: help colorstyle	
+*/
 	
-	
-	
-	
-	
-	
-// POLL 4 //
 
+********************************************************************************
 
-**********************************************
-* II. 	CORRELATION AND T-TESTS
-**********************************************
+* II. CORRELATION AND T-TESTS
 
-
-
-*CORRELATION AND T-TESTS
+********************************************************************************
+* 							CORRELATION 									   *
+********************************************************************************
 
 
 /* Correlations measure the strength and direction of the linear relationship between the two variables. 
@@ -280,20 +305,24 @@ corr age wage
 corr age wage tenure
 pwcorr age wage tenure
 
-// POLL 5 //
+// POLL 3 //
 corr age grade wage hours ttl_exp
-
+*Which have the strongest relationship?
 
 ** CHALLENGE **
-* 4. Correlate ALL of the continuous variables in the dataset that are non-missing for ALL variables
+/*
+(4)) Correlate ALL of the continuous variables in the dataset that are non-missing for ALL variables
 	// hint: continuous variables are numeric variables for which a "unit increase" 
 	// (or decrease) has inherent meaning.
+*/
 	
 	
 
 	
+********************************************************************************
+*									T-TESTS									   *
+********************************************************************************
 
-*T-TESTS
 
 /* Example breakdown of the output for Stata T-tests:
  https://stats.idre.ucla.edu/stata/output/t-test/ 
@@ -328,20 +357,23 @@ ttest wage, by(south)
 
 
 ** CHALLENGE **
-* 5. Is there a statistically significant difference in the mean wage of white and black women?
+/*
+(5) Is there a statistically significant difference in the mean wage of white and black women?
 	// variables: wage race
 	// hint: the ttest approach requires a conditional statement
-	
-	
-	
-
+*/
 	
 
-**************************************************
+
+********************************************************************************
+
 * III. 	REGRESSION AND ITS OUTPUT
-**********************************************
 
-*LINEAR REGRESSION
+********************************************************************************
+* 								REGRESSION									   *
+********************************************************************************
+
+* LINEAR REGRESSION *
 
 /* Example of Stata Regression output breakdown:
 https://stats.idre.ucla.edu/stata/output/regression-analysis/
@@ -372,10 +404,6 @@ reg wage age union married
 
 
 
-// POLL 6 //
-
-
-
 *Why can't we use married_txt?
 reg wage age union married_txt
 
@@ -400,7 +428,7 @@ reg wage age union married i.industry
 //What if we only want to run this regression for certain industries?
 //COMMAND:
 
-
+label list indlbl
 reg wage age union married if industry==5
 reg wage age union married if industry==12
 
@@ -410,7 +438,8 @@ reg wage age union married if industry==12
 *Do all of them match?
 *Why not?
 
-* OMMITTED CATEGORY 
+* OMMITTED CATEGORY *
+
 * when we run a regression with a categorical variable, there is always an ommitted category 
 * the coefficients are interpretted relative to the ommitted category
  reg wage age union married i.industry
@@ -419,7 +448,7 @@ reg wage age union married if industry==12
  codebook occupation
  label list occlbl	// farmers = 9 
  reg wage ttl_exp collgrad union ib9.occupation
- 
+  reg wage ttl_exp collgrad union ib10.occupation
  
 * a bivariate (two variable) regression is equivalent to testing the difference in group means
 reg wage i.race
@@ -430,7 +459,9 @@ ttest wage if race <3, by(race)
 
 
 ** CHALLENGE **
-* 6. Regress wage (dependent variable) on:
+
+/*
+(6) Regress wage (dependent variable) on:
 *	total experience, 
 *	college graduation,
 *	union status, and 
@@ -438,17 +469,19 @@ ttest wage if race <3, by(race)
 * Omit respondents in occupations that are:
 *	(1) unknown (i.e., "other" or missing) or (2) have fewer than 20 respondents.
 	// variables: wage ttl_exp collgrad union occupation
+*/
 
 
 
 
 
 
-*INTERACTIONS
+* INTERACTIONS *
 
 // Let's add an interaction term for being married and graduating from college
 
-*Basic regression
+
+* Basic regression *
 reg wage age union married collgrad
 
 gen marriedXcollgrad= married*collgrad
@@ -458,7 +491,8 @@ reg wage age union married collgrad marriedXcollgrad
 
 // Another way to do this:
 
-*	Including Interactions	*
+
+* Including Interactions *
 *https://www.stata.com/why-use-stata/easy-to-grow-with/linear.pdf
 
 *To include only the interaction terms, put # between the terms
@@ -474,16 +508,20 @@ reg wage age union married##collgrad
 // How do these two specifications differ?
 
 
+********************************************************************************
 
-******************************************
 * IV. 	POST-ESTIMATION
-******************************************
+ 
+********************************************************************************
+* 							POST-ESTIMATION TESTS							   *
+********************************************************************************
+
 //We can do more than just display coefficients following regression
 //Examples from linear regression
 //Postestimation commands are commands that can be run after a model is fit
 help regress postestimation // here is the relevant help file
 
-*TESTING FOR HETEROSKEDASTICITY
+* TESTING FOR HETEROSKEDASTICITY *
 /* That is, the variance of the error term is constant (Homoskedasticity). If the error terms do not have constant variance, they are said to be heteroskedastic.
 */
 
@@ -492,7 +530,8 @@ estat hettest
 
 
 
-*WALD TESTS
+* WALD TESTS *
+
 /*
 https://www.stata.com/manuals13/rtest.pdf
 
@@ -505,27 +544,24 @@ test union = married
 /* We find that we can reject the hypothesis at the .05 and/or at the .01 levels */
 
 
+********************************************************************************
 
-** CHALLENGE **
-* 7. Are the wages of clerical/unskilled workers significantly different from
-* unskilled workers? 
-*(hint: two methods - one using Wald test, another using ommitted categories)
-
-
-
-
-******************************************
 * V.	PLOTTING REGRESSION RESULTS
-******************************************
+
+********************************************************************************
+* 				PLOTTING REGRESSION RESULTS	WITH COEFPLOT					   *
+********************************************************************************
 
 // Sometimes, we may want to display results in figures rather than tables
 
 //you will need to run the below to install this very useful user-written command
 ssc install coefplot
+help coefplot 
 
 reg wage union age married i.industry
 coefplot
 coefplot, horizontal
+coefplot, vertical
 coefplot, drop(_cons) horizontal
 
 
