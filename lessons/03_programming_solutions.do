@@ -1,20 +1,29 @@
-******************************* 
-*	STATA FUNDAMENTALS: WORKSHOP 3
-*	 AY 2021- 2022, D-LAB
-********************************
+********************************************************************************
+*	STATA FUNDAMENTALS: PART 3 PROGRAMMING								   *
+*	D-LAB																	   *
+********************************************************************************
 
-**************************************************
-* Day 3
+********************************************************************************
+
+* Part 3 
 
 * Outline:
-* 0. 	WORKSHOP 2 WRAP-UP
+* REVIEW SETTING UP
+* 0. 	WORKSHOP PART 2 WRAP-UP
 * I. 	APPENDING & MERGING
 * II.	RESHAPING	
 * III.	MACROS
 * IV.	LOOPS
 * V. 	EXPORTING RESULTS
 
-**************************************************
+
+********************************************************************************
+
+
+********************************************************************************
+*       					REVIEW SETTING UP   						 	   *
+********************************************************************************
+
 
 /* Step 1: File > Change Working Directory > Navigate to the folder where you 
    have saved the data file nlsw88.dta */
@@ -22,7 +31,7 @@
 /* Step 2: Copy-paste the last command that shows up on result screen.
    My result window shows this:*/   
 
-cd "/Users/reneestarowicz/Downloads/stata-fundamentals-master 3 _2021 Updates/Stata Fundamentals III"
+cd "/Users/reneestarowicz/Desktop/Stata Fundamentals/Stata Fundamentals III"
    
 /***
 		We paste this command above so that next time we can just run this 
@@ -31,19 +40,27 @@ cd "/Users/reneestarowicz/Downloads/stata-fundamentals-master 3 _2021 Updates/St
 		everything from the do-file.
 ***/
 
-pwd
 // POLL 1 //
+* Run the command "pwd". Is your working directory set to the proper folder on YOUR computer?
+*(1) Yes
+*(2) No
+*(3) Don't know
+******************************************************************************** 
 
-**********************************************
-* 0. 	WORKSHOP II WRAP-UP
-**********************************************
+* 0.	WORKSHOP PART 2 WRAP-UP
 
+******************************************************************************** 
+* 								WRAP-UP								   		   *
+********************************************************************************
 
-**********************************************
+********************************************************************************
+
 * I. 	APPENDING & MERGING
-**********************************************
+ 
+******************************************************************************** 
+* 						 	APPENDING DATASETS 								   *
+******************************************************************************** 
 
-*APPEND DATASETS
 
 *Data for round 1
 
@@ -56,8 +73,6 @@ sum idcode // what is the range of id numbers in this dataset?
 br // let's browse the data
 
 
-
-
 * Data for round 2,
 
 use nlsw88_wave2.dta, clear
@@ -67,15 +82,14 @@ sum idcode // what is the range of id numbers in this dataset?
 br // let's browse the data
 
 
-// how many observations should we have if we combine them?
+// how many observations should we have if we combine them? What would we expect to see for the Max. and Min. idcodes?
 
-
-// 2246 + 916 = 3,162
 
 * Append the datastat
 
 use nlsw88.dta, clear
 append using nlsw88_wave2.dta
+help append
 
 count // Do we have the correct number of observations?
 sum idcode // Do we have all the expected ids?
@@ -86,7 +100,11 @@ save nlsw88_wave1and2.dta, replace
 
 
 
-* MERGE DATASETS
+******************************************************************************** 
+* 						 	MERGING DATASETS 								   *
+******************************************************************************** 
+
+
 
 * Data for wave 1 
 use nlsw88_wave1and2.dta
@@ -132,9 +150,21 @@ save nlsw88_complete.dta, replace
 
 // POLL 2 //
 
-**********************************************
+*Which of the following are true about appending and merging?
+
+*(1) to merge, a variable must uniquely identify obs in both datasets
+*(2) appending only works if all variables appear in both datasets
+*(3) if not all observations merge, an error has occurred
+*correct ---> (4) appending requires fewer arguments than merging
+*(5) you can never lose information appending or merging
+
+******************************************************************************** 
+
 * II. 	RESHAPING
-**********************************************
+
+******************************************************************************** 
+*									RESHAPING								   *
+******************************************************************************** 
 
 
 *Load data
@@ -158,49 +188,53 @@ Instead, let's put the data at the individual (idcode- mother) level, so each ro
 Note that we need to specify i() and j() after the comma
 i() is the variable the data will be at the level of
 j() will be how we're reshaping it*/
-
+help reshape 
 reshape wide childage, i(idcode) j(childidcode)
 
 // POLL 3 //
+*When merging and reshaping data, Stata uses `idcode' as its unique identifier because…
+
+*(1) it has `id' in the name
+*(2) it has `code' in the name
+*(3) because it has no duplicates
+*correct ---> (4) because we tell Stata in the command
+*(5) Both 1 and 4 are correct
 
 
-/* CHALLENGE: RESHAPING AND MERGING **
-	Rather than merging nlsw88_childvars into nlsw88_wave1and2 and then reshaping,
-	we could instead have first reshaped nlsw88_childvars, and then done a
-	many-to-one merge. Let's try that now!*/
 
-/*1.1: Open up nlsw88_childvars, and reshape it to long format*/
+** CHALLENGE **
+/*
+Rather than merging nlsw88_childvars into nlsw88_wave1and2 and then reshaping,
+we could instead have first reshaped nlsw88_childvars, and then done a
+many-to-one merge. Let's try that now!
+*/
+
+/*
+(1.1) Open up nlsw88_childvars, and reshape it to long format
+*/
 
 use nlsw88_childvars, clear
 reshape long childage, i(idcode) j(childidcode)
 
-/*1.2: Merge nlsw88_wave1and2 (using) into nlsw88_childvars (master)
-	using a many-to-one syntax*/
+/*
+(1.2) Merge nlsw88_wave1and2 (using) into nlsw88_childvars (master)
+	using a many-to-one syntax
+*/
 
 help merge
 merge m:1 idcode using nlsw88_wave1and2
 
-/*1.3: We want this data to be organized at the woman-child level,
+/*
+(1.3) We want this data to be organized at the woman-child level,
 	meaning we should have a number of observations for each woman matching
 	the number of children she has. For example, if a women has 3 children, there
 	should be 3 observations for her. 
 	
-	1.3.1: How many observations are there initially? How many women are there in our data?
+(1.3.1) How many observations are there initially? How many women are there in our data?
 	(hint: use the user-written command --unique-- by typing "ssc install unique"
 	and then looking at the help file)
-	
+*/
 
-	
-	1.3.2: How could you check if there are women with extra observations? 
-		(note: there are many ways to 'answer' this question)
-		
-	1.3.3: Can you find a way to drop observations for "fake" (created by the reshape)
-		child observations?
-		
-	1.3.4: What is the correct number of observations in the end?*/
-
-	
-*1.3.1
 count // 12,635 observations
 unique idcode // this user-written command will tells us there should be 3167 women
 	
@@ -209,28 +243,43 @@ help unique
 count 
 unique idcode // 3,167
 
-*1.3.2
+
+/*
+(1.3.2) How could you check if there are women with extra observations? 
+		(note: there are many ways to 'answer' this question)
+*/
+
 br idcode child_num // this simple code is one way (of many) of seeing many women have "extra" observations
 
+/*		
+(1.3.3) Can you find a way to drop observations for "fake" (created by the reshape)
+		child observations?
+*/
 
-*1.3.3
 drop if childage==. & child_num>0 & child_num<. // these are children that "don't exist" but are created by the reshape
 // without children/didn't merge
 drop if (child_num==0 | child_num==.) & childidcode>1 & _merge!=2 // this keeps one observation per woman without a child
 
-*1.3.4
+/*		
+(1.3.4) What is the correct number of observations in the end?
+*/
+	
 count // 6,568 obserations
 unique idcode // still 3167
 	
 
-**********************************************
+******************************************************************************** 
+
 * III. 	MACROS
-**********************************************
+
+******************************************************************************** 
+*									LOCALS								       *
+******************************************************************************** 
 
 //Imagine you want to do some analysis on our NLSW data
 use nlsw88_complete.dta, clear
 
-*LOCALS
+help local 
 
 local i=1
 disp `i'
@@ -262,24 +311,22 @@ local industry_lab: value label industry
 display "The value label for industry is `industry_lab'."
 
 
-local i = I love Stata
-
-// POLL 4 //
-
-*GLOBALS
+******************************************************************************** 
+*									GLOBALS								       *
+******************************************************************************** 
 
 //Considered bad form in programming, use sparingly.
 //Easy list of long set of variable names
 //Set the file path name for different computers
 
-/* Making a Global:*/
+/* Making a Global: */
 
 //We could store the file path to the working directory in a global
 pwd
 
 * copy your own working directory and replace mine below*
 
-global mycomp "/Users/reneestarowicz/Downloads/stata-fundamentals-master 3 _2021 Updates/Stata Fundamentals III"
+global mycomp "/Users/reneestarowicz/Desktop/Stata Fundamentals/Stata Fundamentals III"
 
 //Check if it worked
 display "$mycomp"
@@ -292,11 +339,15 @@ pwd
 
 // this global will be useful latter when we save files to a different folder
 
-**********************************************
-* IV. 	LOOPS
-**********************************************
 
-*FOREACH LOOPS
+******************************************************************************** 
+
+* IV. 	LOOPS
+
+******************************************************************************** 
+*  								FOREACH LOOPS								   *
+******************************************************************************** 
+
 
 reg wage grade
 reg ttl_exp grade
@@ -310,8 +361,10 @@ foreach var in wage ttl_exp hours {
 
 
 help foreach 
+
 //Instead of using foreach var in, we can also use foreach var of
 //This works only with variables
+
 foreach fudge of varlist wage ttl_exp hours {
 	reg `fudge' grade
 }
@@ -326,12 +379,22 @@ foreach fudge of varlist t* {
 quite as well documented as from outside a loop
 It can be helpful to add display lines explaining where the code is*/
  
-// POLL 5 //
- 
+// POLL 4 //
+
 foreach fudge in wage ttl_exp hours {
 	disp "********This regresses `fudge' on grade **********"
 	reg `fudge' grade
 }
+
+*Look at the code for the loop on the screen. How many times will the code inside this loop run?
+*(1) One time
+*(2) Two times
+*correct ---> (3) Three times
+*(4) Four times 
+*(5) Six times
+*(6) There's no way to know
+
+
 
 /*When running a long loop, you may want to turn off the --more-- command
 This can be done with --set more off--
@@ -347,7 +410,9 @@ foreach var in wage ttl_exp hours {
 }
 set trace off
 
-*FORVALUES LOOPS
+******************************************************************************** 
+*  								FORVALUES LOOPS								   *
+******************************************************************************** 
 
 //What if you want to loop over numbers?
 foreach X in 1 2 3 4 5 6 7 8 9 10 {
@@ -364,8 +429,6 @@ forvalues X=1(1)10 {
 forvalues x=1/4 {
 	summ childage`x'
 }
-
-
 
 
 
@@ -386,7 +449,9 @@ foreach outcome of local outcome_list {
 }
 
 
-* NESTED LOOPS
+******************************************************************************** 
+*  								NESTED LOOPS								   *
+******************************************************************************** 
 
 forvalues X=1/10 {
 	forvalues Y=1/10 {
@@ -406,29 +471,45 @@ foreach var of varlist `outcomes' {
 	}
 }
 
-// POLL 6 //
 
 
-/** CHALLENGE 2: LOCALS AND LOOPS **
-	Let's use nlsw88_complete to explore locals and loops further! Let's imagine we want to
-	make a "dictionary" from this dataset, or print on the screen some information
-	about each of the variables in the data.
+// POLL 5 //
+
+*Which of the following is true about loops?
+
+*correct ---> (1) you must select part of EACH line of the loop (including the close bracket) for it to run
+*(2) forval loops can loop over any list of numbers
+*(3) you cannot create/change locals inside a loop
+*(4) foreach loops can only loop over variables
+*(5) if looping over a macro, you always need to use typical macro syntax ($global or `local')
+
+
+
+
+** CHALLENGE **
+/*
+(2) Let's use nlsw88_complete to explore locals and loops further! Let's imagine we want to make a "dictionary" from this dataset, or print on the screen some information
+about each of the variables in the data.
 	
-	In this exercise, we'll focus on ttl_exp, tenure, south and smsa.*/
+In this exercise, we'll focus on ttl_exp, tenure, south and smsa.
+*/
 
-/*2.1: Use the --help extended_fcn-- file to make a local containing the variable 
+/*
+(2.1) Use the --help extended_fcn-- file to make a local containing the variable 
 label of ttl_exp, and display it. The command can be found under the subheading
-"Macro functions for extracting data attributes" in the help file extended_fcn*/
-* (hint: the variable label is the explanation for what the variable is)
+"Macro functions for extracting data attributes" in the help file extended_fcn
+
+Hint: the variable label is the explanation for what the variable is
+*/
 
 local lbl : var label ttl_exp
 display "The variable label of ttl_exp is `lbl'."
 
 
-
-/*2.2: Make a loop which goes over ttl_exp, tenure, south and smsa and
-lists the variable label for each one.*/
-
+/*
+(2.2) Make a loop which goes over ttl_exp, tenure, south and smsa and
+lists the variable label for each one.
+*/
 
 foreach var of varlist t* s* {
 	local lbl : var label `var'	
@@ -438,40 +519,39 @@ foreach var of varlist t* s* {
 
 
 
-/*2.3: Display the sentence - using locals and extended functions, not words
+/*
+(2.3) Display the sentence - using locals and extended functions, not words
 	- in the following format: "ttl_exp (float) contains the total work experence for each
 	woman in the dataset." */
  
-
+ 
 local lbl : var label ttl_exp
 local type : type ttl_exp
 display "ttl_exp (`type') contains `lbl' for each woman in the dataset."
 
  
  
- 
-/*2.4: Make a loop which takes your sentence above, and fills it in for
+/*
+(2.4) Make a loop which takes your sentence above, and fills it in for
 	ttl_exp, tenure, south and smsa. Put a number at the beginning of each sentence
 	which updates by one every time your loop runs*/
-
 
 local x=1
 foreach var of varlist t* s* {
 	local lbl : var label `var'	
-	local type : type ttl_exp
+	local type : type `var'
 	display "`x'. `var' (`type') contains `lbl' for each woman in the dataset."
 	local x = `x' + 1
 }
 
 
 
+/*
+(2.5) Write a loop which produces the exact same results, 
+but this time use a forvalues loop to loop over the numbers 1 to 4 to do so.
 
-
-/*2.5 (CHALLENGE): Write a loop which produces the exact same results, 
-	but this time use a forvalues loop to loop over the numbers 1 to 4 to do so.
-
-	Hint: check the extended function help file and look at "word # of string".*/
-
+Hint: check the extended function help file and look at "word # of string".
+*/
 
 local var_list ttl_exp tenure south smsa
 forvalues x=1/4 {
@@ -482,10 +562,13 @@ forvalues x=1/4 {
 }
 
 	
-
-**********************************************
+	
+********************************************************************************	
 * V. 	EXPORTING RESULTS
-**********************************************
+
+********************************************************************************
+* 							 	EXPORTING RESULTS							   *
+********************************************************************************
 
 //Create a folder to store output
 //the mkdir folder creates the folder specified in " " (if the file path makes sense)
@@ -503,7 +586,15 @@ help outreg2
 
 global controlvars south married union
 
-// POLL 7 //
+// POLL 6 //
+*Take a look at the outreg2 help file on the screen. Which parts of the command must be specified for the command to run in the Full Syntax?
+
+*(1) Whether the command replaces or appends
+*(2) A column title
+*(3) A list of variables or estimations to export
+*correct ---> (4) A file name for where the results will be stored
+*(5) None of the above
+
 
 // Export results to EXCEL (default is text file)
 
@@ -546,5 +637,3 @@ foreach var of varlist `outcomes' {
 		local j = `j' + 1
 	}
 }
-
-putexcel // writes Stata expressions, matrices, tables, images, and returned results to an Excel
