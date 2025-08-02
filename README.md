@@ -7,6 +7,10 @@ Please refer to the [Stata Fundamentals Google
 Slides](https://docs.google.com/presentation/d/1UsaH3xREfqFM-tW0FQ4Uykfwnfv8CccLSIsLZH_bDG0/edit?usp=sharing)
 for the accompanying material to this workshop.
 
+## Prerequisites
+
+None. Check out D-Lab’s [Workshop Catalog](https://dlab-berkeley.github.io/dlab-workshops/) to browse all workshops, see what’s running now, and review prerequisites.
+
 ## Workshop Goals
 
 This workshop is a three-part introductory series that will teach you Stata from scratch with clear introductions, concise examples, and support documents. You will learn how to download and install the Stata software, understand data and basic manipulations, import and subset data, explore and visualize data, and understand the basics of automation in the form of loops and functions. After completion of this workshop you will have a foundational understanding to create, organize, and utilize workflows for your personal research.
